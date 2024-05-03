@@ -1,8 +1,8 @@
 {
-  "hash": "48ef972ec87657f77732a1c74cbb65e5",
+  "hash": "1288c655d5706de19d92eb1793585663",
   "result": {
     "engine": "knitr",
-    "markdown": "---\ntitle: \"tensorflowing\"\n---\n\n\nThis is a Quarto website.\n\nTo learn more about Quarto websites visit <https://quarto.org/docs/websites>.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n",
+    "markdown": "---\ntitle: \"tensorflowing\"\n---\n\n\nThis is a Quarto website.\n\nTo learn more about Quarto websites visit <https://quarto.org/docs/websites>.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n\n\n\n\nhttps://www.deeplearning.ai/courses/tensorflow-developer-professional-certificate/",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"

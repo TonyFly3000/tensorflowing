@@ -696,6 +696,24 @@ print(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())
 print(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())
 ```
 
+# save model
+
+```{python}
+# Save the entire model as a `.keras` zip archive.
+model_tune.save('c4week2_model.keras')
+```
+
+# load model
+
+```{python}
+new_model = tf.keras.models.load_model('c4week2_model.keras')
+```
+
+
+```{python}
+new_model.predict(series[0:20][np.newaxis])
+```
+
 
 
 # resource:

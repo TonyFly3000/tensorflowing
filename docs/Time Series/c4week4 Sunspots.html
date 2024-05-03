@@ -1,0 +1,2250 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tensorflowing - W4:Real-world time series data sunspots</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.jpg" rel="icon" type="image/jpeg">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../logo.jpg" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Tensorflowing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-intro" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Intro</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-intro">    
+        <li class="dropdown-header">Intro</li>
+        <li>
+    <a class="dropdown-item" href="../intro/about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-deep-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Deep Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-deep-neural-networks">    
+        <li class="dropdown-header">DeepLearning</li>
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w1.html">
+ <span class="dropdown-text">W1:A New Programming Paradigm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w2.html">
+ <span class="dropdown-text">W2:Introduction to Computer Vision</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w3.html">
+ <span class="dropdown-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w4.html">
+ <span class="dropdown-text">W4:Using Real-world Images</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-convolutional-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Convolutional Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-convolutional-neural-networks">    
+        <li class="dropdown-header">Convolutional Neural Networks in TensorFlow</li>
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week1.html">
+ <span class="dropdown-text">W1:Exploring a Larger Dataset</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week2.html">
+ <span class="dropdown-text">W2:Augmentation: A technique to avoid overfitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week3.html">
+ <span class="dropdown-text">W3:Transfer learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week4.html">
+ <span class="dropdown-text">W4:multi-class classification</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-natural-language-processing" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Natural Language Processing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-natural-language-processing">    
+        <li class="dropdown-header">Natural Language Processing</li>
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week1.html">
+ <span class="dropdown-text">W1:Sentiment in text</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week2.html">
+ <span class="dropdown-text">W2:Word Embeddings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week3.html">
+ <span class="dropdown-text">W3:Sequence models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week4.html">
+ <span class="dropdown-text">W4:Sequence models and literature</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-time-series" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Time Series</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-time-series">    
+        <li class="dropdown-header">Time Series</li>
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week1.html">
+ <span class="dropdown-text">W1:Sequences and Prediction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week2.html">
+ <span class="dropdown-text">W2:Deep Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week3.html">
+ <span class="dropdown-text">W3:Recurrent Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week4.html">
+ <span class="dropdown-text">W4:Real-world time series data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week4 Sunspots.html">
+ <span class="dropdown-text">W4:Real-world time series data sunspots</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tensorflow-tree-model" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">tensorflow tree model</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tensorflow-tree-model">    
+        <li class="dropdown-header">tree model</li>
+        <li>
+    <a class="dropdown-item" href="../tree model/1 install package.html">
+ <span class="dropdown-text">install pacakge</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/2 Keras random forests regression model.html">
+ <span class="dropdown-text">Keras random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/3 Keras tuned random forests regression model.html">
+ <span class="dropdown-text">Keras tuned random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/4 Keras GBT regression model.html">
+ <span class="dropdown-text">Keras Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/5 Keras tuned GBT regression model.html">
+ <span class="dropdown-text">Keras tuned Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Time Series/c4week1.html">Time Series</a></li><li class="breadcrumb-item"><a href="../Time Series/c4week4 Sunspots.html">W4:Real-world time series data sunspots</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Time Series</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Time Series/c4week1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W1:Sequences and Prediction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Time Series/c4week2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W2:Deep Neural Networks for Time Series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Time Series/c4week3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W3:Recurrent Neural Networks for Time Series</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Time Series/c4week4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W4:Real-world time series data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Time Series/c4week4 Sunspots.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">W4:Real-world time series data sunspots</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#download-data" id="toc-download-data" class="nav-link active" data-scroll-target="#download-data"><span class="header-section-number">1</span> download data</a></li>
+  <li><a href="#read-in-data" id="toc-read-in-data" class="nav-link" data-scroll-target="#read-in-data"><span class="header-section-number">2</span> read in data</a></li>
+  <li><a href="#plot-data" id="toc-plot-data" class="nav-link" data-scroll-target="#plot-data"><span class="header-section-number">3</span> plot data</a></li>
+  <li><a href="#split-the-dataset" id="toc-split-the-dataset" class="nav-link" data-scroll-target="#split-the-dataset"><span class="header-section-number">4</span> Split the Dataset</a></li>
+  <li><a href="#prepare-features-and-labels" id="toc-prepare-features-and-labels" class="nav-link" data-scroll-target="#prepare-features-and-labels"><span class="header-section-number">5</span> Prepare Features and Labels</a></li>
+  <li><a href="#dnn-model" id="toc-dnn-model" class="nav-link" data-scroll-target="#dnn-model"><span class="header-section-number">6</span> DNN model</a>
+  <ul class="collapse">
+  <li><a href="#define-dnn-model" id="toc-define-dnn-model" class="nav-link" data-scroll-target="#define-dnn-model"><span class="header-section-number">6.1</span> define DNN Model</a></li>
+  <li><a href="#tune-the-learning-rate" id="toc-tune-the-learning-rate" class="nav-link" data-scroll-target="#tune-the-learning-rate"><span class="header-section-number">6.2</span> Tune the Learning Rate</a></li>
+  <li><a href="#define-dnn-model-after-tunned" id="toc-define-dnn-model-after-tunned" class="nav-link" data-scroll-target="#define-dnn-model-after-tunned"><span class="header-section-number">6.3</span> define DNN Model after tunned</a></li>
+  <li><a href="#complie-model" id="toc-complie-model" class="nav-link" data-scroll-target="#complie-model"><span class="header-section-number">6.4</span> complie model</a></li>
+  <li><a href="#train-dnn-model-after-tunned" id="toc-train-dnn-model-after-tunned" class="nav-link" data-scroll-target="#train-dnn-model-after-tunned"><span class="header-section-number">6.5</span> train DNN Model after tunned</a></li>
+  <li><a href="#model-prediction" id="toc-model-prediction" class="nav-link" data-scroll-target="#model-prediction"><span class="header-section-number">6.6</span> Model Prediction</a></li>
+  <li><a href="#model-result" id="toc-model-result" class="nav-link" data-scroll-target="#model-result"><span class="header-section-number">6.7</span> model result</a></li>
+  </ul></li>
+  <li><a href="#rnn-model" id="toc-rnn-model" class="nav-link" data-scroll-target="#rnn-model"><span class="header-section-number">7</span> RNN model</a>
+  <ul class="collapse">
+  <li><a href="#define-rnn-model" id="toc-define-rnn-model" class="nav-link" data-scroll-target="#define-rnn-model"><span class="header-section-number">7.1</span> define RNN Model</a></li>
+  <li><a href="#tune-the-learning-rate-1" id="toc-tune-the-learning-rate-1" class="nav-link" data-scroll-target="#tune-the-learning-rate-1"><span class="header-section-number">7.2</span> Tune the Learning Rate</a></li>
+  <li><a href="#define-rnn-model-after-tunned" id="toc-define-rnn-model-after-tunned" class="nav-link" data-scroll-target="#define-rnn-model-after-tunned"><span class="header-section-number">7.3</span> define RNN model after tunned</a></li>
+  <li><a href="#complie-model-1" id="toc-complie-model-1" class="nav-link" data-scroll-target="#complie-model-1"><span class="header-section-number">7.4</span> complie model</a></li>
+  <li><a href="#train-rnn-model-after-tunned" id="toc-train-rnn-model-after-tunned" class="nav-link" data-scroll-target="#train-rnn-model-after-tunned"><span class="header-section-number">7.5</span> train RNN Model after tunned</a></li>
+  <li><a href="#model-prediction-1" id="toc-model-prediction-1" class="nav-link" data-scroll-target="#model-prediction-1"><span class="header-section-number">7.6</span> Model Prediction</a></li>
+  <li><a href="#model-result-1" id="toc-model-result-1" class="nav-link" data-scroll-target="#model-result-1"><span class="header-section-number">7.7</span> model result</a></li>
+  </ul></li>
+  <li><a href="#resource" id="toc-resource" class="nav-link" data-scroll-target="#resource"><span class="header-section-number">8</span> resource:</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Time Series/c4week1.html">Time Series</a></li><li class="breadcrumb-item"><a href="../Time Series/c4week4 Sunspots.html">W4:Real-world time series data sunspots</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">W4:Real-world time series data sunspots</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Week 4 sunspots data</p>
+<div id="e07a431f" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="download-data" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> download data</h1>
+<div id="c0a5fc99" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>url<span class="op">=</span><span class="st">"https://storage.googleapis.com/tensorflow-1-public/course4/Sunspots.csv"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve(url, <span class="st">"Sunspots.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>('Sunspots.csv', &lt;http.client.HTTPMessage at 0x291fef150&gt;)</code></pre>
+</div>
+</div>
+<div id="718f2b04" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_series(x, y, <span class="bu">format</span><span class="op">=</span><span class="st">"-"</span>, start<span class="op">=</span><span class="dv">0</span>, end<span class="op">=</span><span class="va">None</span>, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                title<span class="op">=</span><span class="va">None</span>, xlabel<span class="op">=</span><span class="va">None</span>, ylabel<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">None</span> ):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Visualizes time series data</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">      x (array of int) - contains values for the x-axis</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">      y (array of int or tuple of arrays) - contains the values for the y-axis</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">      format (string) - line style when plotting the graph</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">      label (string) - tag for the line</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">      start (int) - first time step to plot</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">      end (int) - last time step to plot</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">      title (string) - title of the plot</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">      xlabel (string) - label for the x-axis</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">      ylabel (string) - label for the y-axis</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">      legend (list of strings) - legend for the plot</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Setup dimensions of the graph figure</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if there are more than two series to plot</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">type</span>(y) <span class="kw">is</span> <span class="bu">tuple</span>:</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Loop over the y elements</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> y_curr <span class="kw">in</span> y:</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot the x and current y values</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        plt.plot(x[start:end], y_curr[start:end], <span class="bu">format</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Plot the x and y values</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>      plt.plot(x[start:end], y[start:end], <span class="bu">format</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Label the x-axis</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(xlabel)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Label the y-axis</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(ylabel)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the legend</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> legend:</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>      plt.legend(legend)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the title</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    plt.title(title)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Overlay a grid on the graph</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    plt.grid(<span class="va">True</span>)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw the graph on screen</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="read-in-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> read in data</h1>
+<div id="b975ceb5" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span>pd.read_csv(<span class="st">'./Sunspots.csv'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<div>
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Unnamed: 0</th>
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">Monthly Mean Total Sunspot Number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0</td>
+<td>1749-01-31</td>
+<td>96.7</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>1</td>
+<td>1749-02-28</td>
+<td>104.3</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>2</td>
+<td>1749-03-31</td>
+<td>116.7</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>3</td>
+<td>1749-04-30</td>
+<td>92.8</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>4</td>
+<td>1749-05-31</td>
+<td>141.7</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<div id="b46f7a9e" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<pre><code>['Unnamed: 0', 'Date', 'Monthly Mean Total Sunspot Number']</code></pre>
+</div>
+</div>
+<div id="9f7f04ad" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>time<span class="op">=</span>data[<span class="st">'Unnamed: 0'</span>].to_numpy()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="7dcf76a8" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>series<span class="op">=</span>data[<span class="st">"Monthly Mean Total Sunspot Number"</span>].to_numpy()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="plot-data" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> plot data</h1>
+<div id="59694545" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the data</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plot_series(time, series, xlabel<span class="op">=</span><span class="st">'Month'</span>, ylabel<span class="op">=</span><span class="st">'Monthly Mean Total Sunspot Number'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c4week4 Sunspots_files/figure-html/cell-9-output-1.png" width="816" height="503" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="split-the-dataset" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Split the Dataset</h1>
+<div id="4433bc87" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the split time</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>split_time <span class="op">=</span> <span class="dv">3000</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the train set </span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>time_train <span class="op">=</span> time[:split_time]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> series[:split_time]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the validation set</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>time_valid <span class="op">=</span> time[split_time:]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>x_valid <span class="op">=</span> series[split_time:]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="prepare-features-and-labels" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Prepare Features and Labels</h1>
+<div id="d9c20693" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> windowed_dataset(series, window_size, batch_size, shuffle_buffer):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Generates dataset windows</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">      series (array of float) - contains the values of the time series</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">      window_size (int) - the number of time steps to include in the feature</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">      batch_size (int) - the batch size</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">      shuffle_buffer(int) - buffer size to use for the shuffle method</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">      dataset (TF Dataset) - TF Dataset containing time windows</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a TF Dataset from the series values</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> tf.data.Dataset.from_tensor_slices(series)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Window the data but only take those with the specified size</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.window(window_size <span class="op">+</span> <span class="dv">1</span>, shift<span class="op">=</span><span class="dv">1</span>, drop_remainder<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the windows by putting its elements in a single batch</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.flat_map(<span class="kw">lambda</span> window: window.batch(window_size <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create tuples with features and labels </span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.<span class="bu">map</span>(<span class="kw">lambda</span> window: (window[:<span class="op">-</span><span class="dv">1</span>], window[<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Shuffle the windows</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.shuffle(shuffle_buffer)</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create batches of windows</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.batch(batch_size).prefetch(<span class="dv">1</span>)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="2e6a213e" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>window_size <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>shuffle_buffer_size <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the dataset windows</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>train_set <span class="op">=</span> windowed_dataset(x_train, window_size, batch_size, shuffle_buffer_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="dnn-model" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> DNN model</h1>
+<section id="define-dnn-model" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="define-dnn-model"><span class="header-section-number">6.1</span> define DNN Model</h2>
+<div id="2a7ecf96" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset states generated by Keras</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the model</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">30</span>, input_shape<span class="op">=</span>[window_size], activation<span class="op">=</span><span class="st">"relu"</span>), </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">1</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Model: "sequential"</span>
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold"> Layer (type)                    </span>┃<span style="font-weight: bold"> Output Shape           </span>┃<span style="font-weight: bold">       Param # </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ dense (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                   │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">30</span>)             │           <span style="color: #00af00; text-decoration-color: #00af00">930</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">10</span>)             │           <span style="color: #00af00; text-decoration-color: #00af00">310</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_2 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">1</span>)              │            <span style="color: #00af00; text-decoration-color: #00af00">11</span> │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Total params: </span><span style="color: #00af00; text-decoration-color: #00af00">1,251</span> (4.89 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">1,251</span> (4.89 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Non-trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+</div>
+</section>
+<section id="tune-the-learning-rate" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="tune-the-learning-rate"><span class="header-section-number">6.2</span> Tune the Learning Rate</h2>
+<div id="ba8b3d57" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate scheduler</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>lr_schedule <span class="op">=</span> tf.keras.callbacks.LearningRateScheduler(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> epoch: <span class="fl">1e-8</span> <span class="op">*</span> <span class="dv">10</span><span class="op">**</span>(epoch <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the optimizer</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(), optimizer<span class="op">=</span>optimizer)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set, epochs<span class="op">=</span><span class="dv">100</span>, callbacks<span class="op">=</span>[lr_schedule],verbose<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="05edf0f6" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the learning rate array</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>lrs <span class="op">=</span> <span class="fl">1e-8</span> <span class="op">*</span> (<span class="dv">10</span> <span class="op">**</span> (np.arange(<span class="dv">100</span>) <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the figure size</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the grid</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the loss in log scale</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>plt.semilogx(lrs, history.history[<span class="st">"loss"</span>])</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Increase the tickmarks size</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>plt.tick_params(<span class="st">'both'</span>, length<span class="op">=</span><span class="dv">10</span>, width<span class="op">=</span><span class="dv">1</span>, which<span class="op">=</span><span class="st">'both'</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the plot boundaries</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>plt.axis([<span class="fl">1e-8</span>, <span class="fl">1e-3</span>, <span class="dv">0</span>, <span class="dv">100</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c4week4 Sunspots_files/figure-html/cell-15-output-1.png" width="822" height="500" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="define-dnn-model-after-tunned" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="define-dnn-model-after-tunned"><span class="header-section-number">6.3</span> define DNN Model after tunned</h2>
+<div id="ddab6d79" class="cell" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset states generated by Keras</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Model</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">30</span>, input_shape<span class="op">=</span>[window_size], activation<span class="op">=</span><span class="st">"relu"</span>), </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">1</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="complie-model" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="complie-model"><span class="header-section-number">6.4</span> complie model</h2>
+<div id="010bdfd4" class="cell" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">2e-5</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the optimizer </span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(learning_rate<span class="op">=</span>learning_rate, momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>optimizer,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mae"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="train-dnn-model-after-tunned" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="train-dnn-model-after-tunned"><span class="header-section-number">6.5</span> train DNN Model after tunned</h2>
+<div id="02ab9f35" class="cell" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set,epochs<span class="op">=</span><span class="dv">100</span>,verbose<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="model-prediction" class="level2" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="model-prediction"><span class="header-section-number">6.6</span> Model Prediction</h2>
+<div id="16889684" class="cell" data-execution_count="18">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model_forecast(model, series, window_size, batch_size):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Uses an input model to generate predictions on data windows</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">      model (TF Keras Model) - model that accepts data windows</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">      series (array of float) - contains the values of the time series</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">      window_size (int) - the number of time steps to include in the window</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">      batch_size (int) - the batch size</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">      forecast (numpy array) - array containing predictions</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a TF Dataset from the series values</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> tf.data.Dataset.from_tensor_slices(series)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Window the data but only take those with the specified size</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.window(window_size, shift<span class="op">=</span><span class="dv">1</span>, drop_remainder<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the windows by putting its elements in a single batch</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.flat_map(<span class="kw">lambda</span> w: w.batch(window_size))</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create batches of windows</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.batch(batch_size).prefetch(<span class="dv">1</span>)</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get predictions on the entire dataset</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    forecast <span class="op">=</span> model.predict(dataset)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> forecast</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>forcast one value</p>
+<div id="19cf8497" class="cell" data-execution_count="19">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time:split_time<span class="op">+</span>window_size]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1/Unknown 0s 18ms/step1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step</code></pre>
+</div>
+</div>
+<div id="98b8fdf8" class="cell" data-execution_count="20">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="55">
+<pre><code>array(176.29543, dtype=float32)</code></pre>
+</div>
+</div>
+<div id="359c201b" class="cell" data-execution_count="21">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce the original series</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time<span class="op">-</span>window_size:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Use helper function to generate predictions</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop single dimensional axis</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>plot_series(time_valid, (x_valid, results))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>WARNING:tensorflow:5 out of the last 18 calls to &lt;function TensorFlowTrainer.make_predict_function.&lt;locals&gt;.one_step_on_data_distributed at 0x2a1cdb060&gt; triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has reduce_retracing=True option that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
+      1/Unknown 0s 19ms/step8/8 ━━━━━━━━━━━━━━━━━━━━ 0s 1ms/step</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c4week4 Sunspots_files/figure-html/cell-22-output-2.png" width="798" height="485" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-result" class="level2" data-number="6.7">
+<h2 data-number="6.7" class="anchored" data-anchor-id="model-result"><span class="header-section-number">6.7</span> model result</h2>
+<div id="8554aa6d" class="cell" data-execution_count="22">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Compute the MAE and MSE</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>464.83243</code></pre>
+</div>
+</div>
+<div id="63b31cc3" class="cell" data-execution_count="23">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>15.030133</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="rnn-model" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> RNN model</h1>
+<section id="define-rnn-model" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="define-rnn-model"><span class="header-section-number">7.1</span> define RNN Model</h2>
+<div id="0c7f67a8" class="cell" data-execution_count="24">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Model</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Conv1D(filters<span class="op">=</span><span class="dv">64</span>, kernel_size<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                      strides<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                      activation<span class="op">=</span><span class="st">"relu"</span>,</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                      padding<span class="op">=</span><span class="st">'causal'</span>,</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>                      input_shape<span class="op">=</span>[window_size, <span class="dv">1</span>]),</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.LSTM(<span class="dv">64</span>, return_sequences<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.LSTM(<span class="dv">64</span>),</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">30</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">1</span>),</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Lambda(<span class="kw">lambda</span> x: x <span class="op">*</span> <span class="dv">400</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a> <span class="co"># Print the model summary </span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Model: "sequential_1"</span>
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold"> Layer (type)                    </span>┃<span style="font-weight: bold"> Output Shape           </span>┃<span style="font-weight: bold">       Param # </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ conv1d (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv1D</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">30</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)         │           <span style="color: #00af00; text-decoration-color: #00af00">256</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ lstm (<span style="color: #0087ff; text-decoration-color: #0087ff">LSTM</span>)                     │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">30</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)         │        <span style="color: #00af00; text-decoration-color: #00af00">33,024</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ lstm_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">LSTM</span>)                   │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)             │        <span style="color: #00af00; text-decoration-color: #00af00">33,024</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_3 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">30</span>)             │         <span style="color: #00af00; text-decoration-color: #00af00">1,950</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_4 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">10</span>)             │           <span style="color: #00af00; text-decoration-color: #00af00">310</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_5 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">1</span>)              │            <span style="color: #00af00; text-decoration-color: #00af00">11</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ lambda (<span style="color: #0087ff; text-decoration-color: #0087ff">Lambda</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">1</span>)              │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Total params: </span><span style="color: #00af00; text-decoration-color: #00af00">68,575</span> (267.87 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">68,575</span> (267.87 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Non-trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+</div>
+</section>
+<section id="tune-the-learning-rate-1" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="tune-the-learning-rate-1"><span class="header-section-number">7.2</span> Tune the Learning Rate</h2>
+<div id="4ba1a808" class="cell" data-execution_count="25">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get initial weights</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>init_weights <span class="op">=</span> model.get_weights()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="20a90b26" class="cell" data-execution_count="26">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate scheduler</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>lr_schedule <span class="op">=</span> tf.keras.callbacks.LearningRateScheduler(</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> epoch: <span class="fl">1e-8</span> <span class="op">*</span> <span class="dv">10</span><span class="op">**</span>(epoch <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the optimizer</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(), optimizer<span class="op">=</span>optimizer)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set, epochs<span class="op">=</span><span class="dv">100</span>, callbacks<span class="op">=</span>[lr_schedule],verbose<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="8c4da35e" class="cell" data-execution_count="27">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the learning rate array</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>lrs <span class="op">=</span> <span class="fl">1e-8</span> <span class="op">*</span> (<span class="dv">10</span> <span class="op">**</span> (np.arange(<span class="dv">100</span>) <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the figure size</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the grid</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the loss in log scale</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>plt.semilogx(lrs, history.history[<span class="st">"loss"</span>])</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Increase the tickmarks size</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>plt.tick_params(<span class="st">'both'</span>, length<span class="op">=</span><span class="dv">10</span>, width<span class="op">=</span><span class="dv">1</span>, which<span class="op">=</span><span class="st">'both'</span>)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the plot boundaries</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>plt.axis([<span class="fl">1e-8</span>, <span class="fl">1e-3</span>, <span class="dv">0</span>, <span class="dv">100</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c4week4 Sunspots_files/figure-html/cell-28-output-1.png" width="822" height="500" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="define-rnn-model-after-tunned" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="define-rnn-model-after-tunned"><span class="header-section-number">7.3</span> define RNN model after tunned</h2>
+<div id="055cce4a" class="cell" data-execution_count="28">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset states generated by Keras</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset the weights</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>model.set_weights(init_weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="9f414cb8" class="cell" data-execution_count="29">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Model: "sequential_1"</span>
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold"> Layer (type)                    </span>┃<span style="font-weight: bold"> Output Shape           </span>┃<span style="font-weight: bold">       Param # </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ conv1d (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv1D</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">30</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)         │           <span style="color: #00af00; text-decoration-color: #00af00">256</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ lstm (<span style="color: #0087ff; text-decoration-color: #0087ff">LSTM</span>)                     │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">30</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)         │        <span style="color: #00af00; text-decoration-color: #00af00">33,024</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ lstm_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">LSTM</span>)                   │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)             │        <span style="color: #00af00; text-decoration-color: #00af00">33,024</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_3 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">30</span>)             │         <span style="color: #00af00; text-decoration-color: #00af00">1,950</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_4 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">10</span>)             │           <span style="color: #00af00; text-decoration-color: #00af00">310</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_5 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">1</span>)              │            <span style="color: #00af00; text-decoration-color: #00af00">11</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ lambda (<span style="color: #0087ff; text-decoration-color: #0087ff">Lambda</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">1</span>)              │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Total params: </span><span style="color: #00af00; text-decoration-color: #00af00">137,152</span> (535.75 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">68,575</span> (267.87 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Non-trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Optimizer params: </span><span style="color: #00af00; text-decoration-color: #00af00">68,577</span> (267.88 KB)
+</pre>
+</div>
+</div>
+</section>
+<section id="complie-model-1" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="complie-model-1"><span class="header-section-number">7.4</span> complie model</h2>
+<div id="5154d83a" class="cell" data-execution_count="30">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">8e-7</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the optimizer </span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(learning_rate<span class="op">=</span>learning_rate, momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(),</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>optimizer,</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mae"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="train-rnn-model-after-tunned" class="level2" data-number="7.5">
+<h2 data-number="7.5" class="anchored" data-anchor-id="train-rnn-model-after-tunned"><span class="header-section-number">7.5</span> train RNN Model after tunned</h2>
+<div id="0530dad0" class="cell" data-execution_count="31">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set,epochs<span class="op">=</span><span class="dv">100</span>,verbose<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="354d958a" class="cell" data-execution_count="32">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get mae and loss from history log</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>mae<span class="op">=</span>history.history[<span class="st">'mae'</span>]</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>loss<span class="op">=</span>history.history[<span class="st">'loss'</span>]</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Get number of epochs</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>epochs<span class="op">=</span><span class="bu">range</span>(<span class="bu">len</span>(loss)) </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot mae and loss</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>plot_series(</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>epochs, </span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>(mae, loss), </span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'MAE and Loss'</span>, </span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">'MAE'</span>,</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">'Loss'</span>,</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span>[<span class="st">'MAE'</span>, <span class="st">'Loss'</span>]</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Only plot the last 80% of the epochs</span></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>zoom_split <span class="op">=</span> <span class="bu">int</span>(epochs[<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> <span class="fl">0.2</span>)</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>epochs_zoom <span class="op">=</span> epochs[zoom_split:]</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>mae_zoom <span class="op">=</span> mae[zoom_split:]</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>loss_zoom <span class="op">=</span> loss[zoom_split:]</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot zoomed mae and loss</span></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>plot_series(</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>epochs_zoom, </span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>(mae_zoom, loss_zoom), </span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'MAE and Loss'</span>, </span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">'MAE'</span>,</span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">'Loss'</span>,</span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span>[<span class="st">'MAE'</span>, <span class="st">'Loss'</span>]</span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c4week4 Sunspots_files/figure-html/cell-33-output-1.png" width="808" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c4week4 Sunspots_files/figure-html/cell-33-output-2.png" width="829" height="523" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-prediction-1" class="level2" data-number="7.6">
+<h2 data-number="7.6" class="anchored" data-anchor-id="model-prediction-1"><span class="header-section-number">7.6</span> Model Prediction</h2>
+<div id="2f4e7ca2" class="cell" data-execution_count="33">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce the original series</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time<span class="op">-</span>window_size:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Use helper function to generate predictions</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop single dimensional axis</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>plot_series(time_valid, (x_valid, results))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1/Unknown 0s 153ms/step      8/Unknown 0s 23ms/step 8/8 ━━━━━━━━━━━━━━━━━━━━ 0s 24ms/step</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c4week4 Sunspots_files/figure-html/cell-34-output-2.png" width="798" height="485" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-result-1" class="level2" data-number="7.7">
+<h2 data-number="7.7" class="anchored" data-anchor-id="model-result-1"><span class="header-section-number">7.7</span> model result</h2>
+<div id="928301e3" class="cell" data-execution_count="34">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Compute the MAE and MSE</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>419.6377</code></pre>
+</div>
+</div>
+<div id="9db5cb7f" class="cell" data-execution_count="35">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>14.465482</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="resource" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> resource:</h1>
+<p>https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction</p>
+<p>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C4</p>
+
+
+<!-- -->
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb46" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "W4:Real-world time series data sunspots"</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">  error: false</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-location: right</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-bg: true</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-border-left: "#31BAE9"</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>Week 4 sunspots data</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a><span class="fu"># download data</span></span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>url<span class="op">=</span><span class="st">"https://storage.googleapis.com/tensorflow-1-public/course4/Sunspots.csv"</span></span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve(url, <span class="st">"Sunspots.csv"</span>)</span>
+<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Show the code"</span></span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_series(x, y, <span class="bu">format</span><span class="op">=</span><span class="st">"-"</span>, start<span class="op">=</span><span class="dv">0</span>, end<span class="op">=</span><span class="va">None</span>, </span>
+<span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a>                title<span class="op">=</span><span class="va">None</span>, xlabel<span class="op">=</span><span class="va">None</span>, ylabel<span class="op">=</span><span class="va">None</span>, legend<span class="op">=</span><span class="va">None</span> ):</span>
+<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a><span class="co">    Visualizes time series data</span></span>
+<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a><span class="co">      x (array of int) - contains values for the x-axis</span></span>
+<span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a><span class="co">      y (array of int or tuple of arrays) - contains the values for the y-axis</span></span>
+<span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a><span class="co">      format (string) - line style when plotting the graph</span></span>
+<span id="cb46-55"><a href="#cb46-55" aria-hidden="true" tabindex="-1"></a><span class="co">      label (string) - tag for the line</span></span>
+<span id="cb46-56"><a href="#cb46-56" aria-hidden="true" tabindex="-1"></a><span class="co">      start (int) - first time step to plot</span></span>
+<span id="cb46-57"><a href="#cb46-57" aria-hidden="true" tabindex="-1"></a><span class="co">      end (int) - last time step to plot</span></span>
+<span id="cb46-58"><a href="#cb46-58" aria-hidden="true" tabindex="-1"></a><span class="co">      title (string) - title of the plot</span></span>
+<span id="cb46-59"><a href="#cb46-59" aria-hidden="true" tabindex="-1"></a><span class="co">      xlabel (string) - label for the x-axis</span></span>
+<span id="cb46-60"><a href="#cb46-60" aria-hidden="true" tabindex="-1"></a><span class="co">      ylabel (string) - label for the y-axis</span></span>
+<span id="cb46-61"><a href="#cb46-61" aria-hidden="true" tabindex="-1"></a><span class="co">      legend (list of strings) - legend for the plot</span></span>
+<span id="cb46-62"><a href="#cb46-62" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb46-63"><a href="#cb46-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-64"><a href="#cb46-64" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Setup dimensions of the graph figure</span></span>
+<span id="cb46-65"><a href="#cb46-65" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb46-66"><a href="#cb46-66" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-67"><a href="#cb46-67" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if there are more than two series to plot</span></span>
+<span id="cb46-68"><a href="#cb46-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">type</span>(y) <span class="kw">is</span> <span class="bu">tuple</span>:</span>
+<span id="cb46-69"><a href="#cb46-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-70"><a href="#cb46-70" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Loop over the y elements</span></span>
+<span id="cb46-71"><a href="#cb46-71" aria-hidden="true" tabindex="-1"></a>      <span class="cf">for</span> y_curr <span class="kw">in</span> y:</span>
+<span id="cb46-72"><a href="#cb46-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-73"><a href="#cb46-73" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot the x and current y values</span></span>
+<span id="cb46-74"><a href="#cb46-74" aria-hidden="true" tabindex="-1"></a>        plt.plot(x[start:end], y_curr[start:end], <span class="bu">format</span>)</span>
+<span id="cb46-75"><a href="#cb46-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-76"><a href="#cb46-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb46-77"><a href="#cb46-77" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Plot the x and y values</span></span>
+<span id="cb46-78"><a href="#cb46-78" aria-hidden="true" tabindex="-1"></a>      plt.plot(x[start:end], y[start:end], <span class="bu">format</span>)</span>
+<span id="cb46-79"><a href="#cb46-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-80"><a href="#cb46-80" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Label the x-axis</span></span>
+<span id="cb46-81"><a href="#cb46-81" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(xlabel)</span>
+<span id="cb46-82"><a href="#cb46-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-83"><a href="#cb46-83" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Label the y-axis</span></span>
+<span id="cb46-84"><a href="#cb46-84" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(ylabel)</span>
+<span id="cb46-85"><a href="#cb46-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-86"><a href="#cb46-86" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the legend</span></span>
+<span id="cb46-87"><a href="#cb46-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> legend:</span>
+<span id="cb46-88"><a href="#cb46-88" aria-hidden="true" tabindex="-1"></a>      plt.legend(legend)</span>
+<span id="cb46-89"><a href="#cb46-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-90"><a href="#cb46-90" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set the title</span></span>
+<span id="cb46-91"><a href="#cb46-91" aria-hidden="true" tabindex="-1"></a>    plt.title(title)</span>
+<span id="cb46-92"><a href="#cb46-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-93"><a href="#cb46-93" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Overlay a grid on the graph</span></span>
+<span id="cb46-94"><a href="#cb46-94" aria-hidden="true" tabindex="-1"></a>    plt.grid(<span class="va">True</span>)</span>
+<span id="cb46-95"><a href="#cb46-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-96"><a href="#cb46-96" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw the graph on screen</span></span>
+<span id="cb46-97"><a href="#cb46-97" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb46-98"><a href="#cb46-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-99"><a href="#cb46-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-100"><a href="#cb46-100" aria-hidden="true" tabindex="-1"></a><span class="fu"># read in data</span></span>
+<span id="cb46-101"><a href="#cb46-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-104"><a href="#cb46-104" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-105"><a href="#cb46-105" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb46-106"><a href="#cb46-106" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span>pd.read_csv(<span class="st">'./Sunspots.csv'</span>)</span>
+<span id="cb46-107"><a href="#cb46-107" aria-hidden="true" tabindex="-1"></a>data.head()</span>
+<span id="cb46-108"><a href="#cb46-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-111"><a href="#cb46-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-112"><a href="#cb46-112" aria-hidden="true" tabindex="-1"></a><span class="bu">list</span>(data)</span>
+<span id="cb46-113"><a href="#cb46-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-114"><a href="#cb46-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-115"><a href="#cb46-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-116"><a href="#cb46-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-119"><a href="#cb46-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-120"><a href="#cb46-120" aria-hidden="true" tabindex="-1"></a>time<span class="op">=</span>data[<span class="st">'Unnamed: 0'</span>].to_numpy()</span>
+<span id="cb46-121"><a href="#cb46-121" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-122"><a href="#cb46-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-125"><a href="#cb46-125" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-126"><a href="#cb46-126" aria-hidden="true" tabindex="-1"></a>series<span class="op">=</span>data[<span class="st">"Monthly Mean Total Sunspot Number"</span>].to_numpy()</span>
+<span id="cb46-127"><a href="#cb46-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-128"><a href="#cb46-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-129"><a href="#cb46-129" aria-hidden="true" tabindex="-1"></a><span class="fu"># plot data</span></span>
+<span id="cb46-130"><a href="#cb46-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-133"><a href="#cb46-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-134"><a href="#cb46-134" aria-hidden="true" tabindex="-1"></a><span class="co"># Preview the data</span></span>
+<span id="cb46-135"><a href="#cb46-135" aria-hidden="true" tabindex="-1"></a>plot_series(time, series, xlabel<span class="op">=</span><span class="st">'Month'</span>, ylabel<span class="op">=</span><span class="st">'Monthly Mean Total Sunspot Number'</span>)</span>
+<span id="cb46-136"><a href="#cb46-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-137"><a href="#cb46-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-138"><a href="#cb46-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-139"><a href="#cb46-139" aria-hidden="true" tabindex="-1"></a><span class="fu"># Split the Dataset</span></span>
+<span id="cb46-142"><a href="#cb46-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-143"><a href="#cb46-143" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the split time</span></span>
+<span id="cb46-144"><a href="#cb46-144" aria-hidden="true" tabindex="-1"></a>split_time <span class="op">=</span> <span class="dv">3000</span></span>
+<span id="cb46-145"><a href="#cb46-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-146"><a href="#cb46-146" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the train set </span></span>
+<span id="cb46-147"><a href="#cb46-147" aria-hidden="true" tabindex="-1"></a>time_train <span class="op">=</span> time[:split_time]</span>
+<span id="cb46-148"><a href="#cb46-148" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> series[:split_time]</span>
+<span id="cb46-149"><a href="#cb46-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-150"><a href="#cb46-150" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the validation set</span></span>
+<span id="cb46-151"><a href="#cb46-151" aria-hidden="true" tabindex="-1"></a>time_valid <span class="op">=</span> time[split_time:]</span>
+<span id="cb46-152"><a href="#cb46-152" aria-hidden="true" tabindex="-1"></a>x_valid <span class="op">=</span> series[split_time:]</span>
+<span id="cb46-153"><a href="#cb46-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-154"><a href="#cb46-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-155"><a href="#cb46-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-156"><a href="#cb46-156" aria-hidden="true" tabindex="-1"></a><span class="fu"># Prepare Features and Labels</span></span>
+<span id="cb46-157"><a href="#cb46-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-158"><a href="#cb46-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-159"><a href="#cb46-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-162"><a href="#cb46-162" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-163"><a href="#cb46-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb46-164"><a href="#cb46-164" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Show the code"</span></span>
+<span id="cb46-165"><a href="#cb46-165" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> windowed_dataset(series, window_size, batch_size, shuffle_buffer):</span>
+<span id="cb46-166"><a href="#cb46-166" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Generates dataset windows</span></span>
+<span id="cb46-167"><a href="#cb46-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-168"><a href="#cb46-168" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb46-169"><a href="#cb46-169" aria-hidden="true" tabindex="-1"></a><span class="co">      series (array of float) - contains the values of the time series</span></span>
+<span id="cb46-170"><a href="#cb46-170" aria-hidden="true" tabindex="-1"></a><span class="co">      window_size (int) - the number of time steps to include in the feature</span></span>
+<span id="cb46-171"><a href="#cb46-171" aria-hidden="true" tabindex="-1"></a><span class="co">      batch_size (int) - the batch size</span></span>
+<span id="cb46-172"><a href="#cb46-172" aria-hidden="true" tabindex="-1"></a><span class="co">      shuffle_buffer(int) - buffer size to use for the shuffle method</span></span>
+<span id="cb46-173"><a href="#cb46-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-174"><a href="#cb46-174" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb46-175"><a href="#cb46-175" aria-hidden="true" tabindex="-1"></a><span class="co">      dataset (TF Dataset) - TF Dataset containing time windows</span></span>
+<span id="cb46-176"><a href="#cb46-176" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb46-177"><a href="#cb46-177" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb46-178"><a href="#cb46-178" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a TF Dataset from the series values</span></span>
+<span id="cb46-179"><a href="#cb46-179" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> tf.data.Dataset.from_tensor_slices(series)</span>
+<span id="cb46-180"><a href="#cb46-180" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-181"><a href="#cb46-181" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Window the data but only take those with the specified size</span></span>
+<span id="cb46-182"><a href="#cb46-182" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.window(window_size <span class="op">+</span> <span class="dv">1</span>, shift<span class="op">=</span><span class="dv">1</span>, drop_remainder<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb46-183"><a href="#cb46-183" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-184"><a href="#cb46-184" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the windows by putting its elements in a single batch</span></span>
+<span id="cb46-185"><a href="#cb46-185" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.flat_map(<span class="kw">lambda</span> window: window.batch(window_size <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb46-186"><a href="#cb46-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-187"><a href="#cb46-187" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create tuples with features and labels </span></span>
+<span id="cb46-188"><a href="#cb46-188" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.<span class="bu">map</span>(<span class="kw">lambda</span> window: (window[:<span class="op">-</span><span class="dv">1</span>], window[<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb46-189"><a href="#cb46-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-190"><a href="#cb46-190" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Shuffle the windows</span></span>
+<span id="cb46-191"><a href="#cb46-191" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.shuffle(shuffle_buffer)</span>
+<span id="cb46-192"><a href="#cb46-192" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-193"><a href="#cb46-193" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create batches of windows</span></span>
+<span id="cb46-194"><a href="#cb46-194" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.batch(batch_size).prefetch(<span class="dv">1</span>)</span>
+<span id="cb46-195"><a href="#cb46-195" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-196"><a href="#cb46-196" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> dataset</span>
+<span id="cb46-197"><a href="#cb46-197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-198"><a href="#cb46-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-199"><a href="#cb46-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-200"><a href="#cb46-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-203"><a href="#cb46-203" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-204"><a href="#cb46-204" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters</span></span>
+<span id="cb46-205"><a href="#cb46-205" aria-hidden="true" tabindex="-1"></a>window_size <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb46-206"><a href="#cb46-206" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb46-207"><a href="#cb46-207" aria-hidden="true" tabindex="-1"></a>shuffle_buffer_size <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb46-208"><a href="#cb46-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-209"><a href="#cb46-209" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the dataset windows</span></span>
+<span id="cb46-210"><a href="#cb46-210" aria-hidden="true" tabindex="-1"></a>train_set <span class="op">=</span> windowed_dataset(x_train, window_size, batch_size, shuffle_buffer_size)</span>
+<span id="cb46-211"><a href="#cb46-211" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-212"><a href="#cb46-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-213"><a href="#cb46-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-214"><a href="#cb46-214" aria-hidden="true" tabindex="-1"></a><span class="fu"># DNN model</span></span>
+<span id="cb46-215"><a href="#cb46-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-216"><a href="#cb46-216" aria-hidden="true" tabindex="-1"></a><span class="fu">## define DNN Model</span></span>
+<span id="cb46-217"><a href="#cb46-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-220"><a href="#cb46-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-221"><a href="#cb46-221" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset states generated by Keras</span></span>
+<span id="cb46-222"><a href="#cb46-222" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb46-223"><a href="#cb46-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-224"><a href="#cb46-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-225"><a href="#cb46-225" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the model</span></span>
+<span id="cb46-226"><a href="#cb46-226" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb46-227"><a href="#cb46-227" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">30</span>, input_shape<span class="op">=</span>[window_size], activation<span class="op">=</span><span class="st">"relu"</span>), </span>
+<span id="cb46-228"><a href="#cb46-228" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb46-229"><a href="#cb46-229" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">1</span>)</span>
+<span id="cb46-230"><a href="#cb46-230" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb46-231"><a href="#cb46-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-232"><a href="#cb46-232" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb46-233"><a href="#cb46-233" aria-hidden="true" tabindex="-1"></a>model.summary()</span>
+<span id="cb46-234"><a href="#cb46-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-235"><a href="#cb46-235" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-236"><a href="#cb46-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-237"><a href="#cb46-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-238"><a href="#cb46-238" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tune the Learning Rate</span></span>
+<span id="cb46-239"><a href="#cb46-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-242"><a href="#cb46-242" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-243"><a href="#cb46-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb46-244"><a href="#cb46-244" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate scheduler</span></span>
+<span id="cb46-245"><a href="#cb46-245" aria-hidden="true" tabindex="-1"></a>lr_schedule <span class="op">=</span> tf.keras.callbacks.LearningRateScheduler(</span>
+<span id="cb46-246"><a href="#cb46-246" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> epoch: <span class="fl">1e-8</span> <span class="op">*</span> <span class="dv">10</span><span class="op">**</span>(epoch <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb46-247"><a href="#cb46-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-248"><a href="#cb46-248" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the optimizer</span></span>
+<span id="cb46-249"><a href="#cb46-249" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb46-250"><a href="#cb46-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-251"><a href="#cb46-251" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb46-252"><a href="#cb46-252" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(), optimizer<span class="op">=</span>optimizer)</span>
+<span id="cb46-253"><a href="#cb46-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-254"><a href="#cb46-254" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb46-255"><a href="#cb46-255" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set, epochs<span class="op">=</span><span class="dv">100</span>, callbacks<span class="op">=</span>[lr_schedule],verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb46-256"><a href="#cb46-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-257"><a href="#cb46-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-258"><a href="#cb46-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-259"><a href="#cb46-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-262"><a href="#cb46-262" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-263"><a href="#cb46-263" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the learning rate array</span></span>
+<span id="cb46-264"><a href="#cb46-264" aria-hidden="true" tabindex="-1"></a>lrs <span class="op">=</span> <span class="fl">1e-8</span> <span class="op">*</span> (<span class="dv">10</span> <span class="op">**</span> (np.arange(<span class="dv">100</span>) <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb46-265"><a href="#cb46-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-266"><a href="#cb46-266" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the figure size</span></span>
+<span id="cb46-267"><a href="#cb46-267" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb46-268"><a href="#cb46-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-269"><a href="#cb46-269" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the grid</span></span>
+<span id="cb46-270"><a href="#cb46-270" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb46-271"><a href="#cb46-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-272"><a href="#cb46-272" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the loss in log scale</span></span>
+<span id="cb46-273"><a href="#cb46-273" aria-hidden="true" tabindex="-1"></a>plt.semilogx(lrs, history.history[<span class="st">"loss"</span>])</span>
+<span id="cb46-274"><a href="#cb46-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-275"><a href="#cb46-275" aria-hidden="true" tabindex="-1"></a><span class="co"># Increase the tickmarks size</span></span>
+<span id="cb46-276"><a href="#cb46-276" aria-hidden="true" tabindex="-1"></a>plt.tick_params(<span class="st">'both'</span>, length<span class="op">=</span><span class="dv">10</span>, width<span class="op">=</span><span class="dv">1</span>, which<span class="op">=</span><span class="st">'both'</span>)</span>
+<span id="cb46-277"><a href="#cb46-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-278"><a href="#cb46-278" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the plot boundaries</span></span>
+<span id="cb46-279"><a href="#cb46-279" aria-hidden="true" tabindex="-1"></a>plt.axis([<span class="fl">1e-8</span>, <span class="fl">1e-3</span>, <span class="dv">0</span>, <span class="dv">100</span>])</span>
+<span id="cb46-280"><a href="#cb46-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-281"><a href="#cb46-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-282"><a href="#cb46-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-283"><a href="#cb46-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## define DNN Model after tunned</span></span>
+<span id="cb46-284"><a href="#cb46-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-287"><a href="#cb46-287" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-288"><a href="#cb46-288" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset states generated by Keras</span></span>
+<span id="cb46-289"><a href="#cb46-289" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb46-290"><a href="#cb46-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-291"><a href="#cb46-291" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Model</span></span>
+<span id="cb46-292"><a href="#cb46-292" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb46-293"><a href="#cb46-293" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">30</span>, input_shape<span class="op">=</span>[window_size], activation<span class="op">=</span><span class="st">"relu"</span>), </span>
+<span id="cb46-294"><a href="#cb46-294" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb46-295"><a href="#cb46-295" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">1</span>)</span>
+<span id="cb46-296"><a href="#cb46-296" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb46-297"><a href="#cb46-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-298"><a href="#cb46-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-299"><a href="#cb46-299" aria-hidden="true" tabindex="-1"></a><span class="fu">## complie model</span></span>
+<span id="cb46-302"><a href="#cb46-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-303"><a href="#cb46-303" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate</span></span>
+<span id="cb46-304"><a href="#cb46-304" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">2e-5</span></span>
+<span id="cb46-305"><a href="#cb46-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-306"><a href="#cb46-306" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the optimizer </span></span>
+<span id="cb46-307"><a href="#cb46-307" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(learning_rate<span class="op">=</span>learning_rate, momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb46-308"><a href="#cb46-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-309"><a href="#cb46-309" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb46-310"><a href="#cb46-310" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(),</span>
+<span id="cb46-311"><a href="#cb46-311" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>optimizer,</span>
+<span id="cb46-312"><a href="#cb46-312" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mae"</span>])</span>
+<span id="cb46-313"><a href="#cb46-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-314"><a href="#cb46-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-315"><a href="#cb46-315" aria-hidden="true" tabindex="-1"></a><span class="fu">## train DNN Model after tunned</span></span>
+<span id="cb46-318"><a href="#cb46-318" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-319"><a href="#cb46-319" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb46-320"><a href="#cb46-320" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb46-321"><a href="#cb46-321" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set,epochs<span class="op">=</span><span class="dv">100</span>,verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb46-322"><a href="#cb46-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-323"><a href="#cb46-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-324"><a href="#cb46-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-325"><a href="#cb46-325" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Prediction</span></span>
+<span id="cb46-326"><a href="#cb46-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-329"><a href="#cb46-329" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-330"><a href="#cb46-330" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb46-331"><a href="#cb46-331" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Show the code"</span></span>
+<span id="cb46-332"><a href="#cb46-332" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model_forecast(model, series, window_size, batch_size):</span>
+<span id="cb46-333"><a href="#cb46-333" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Uses an input model to generate predictions on data windows</span></span>
+<span id="cb46-334"><a href="#cb46-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-335"><a href="#cb46-335" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb46-336"><a href="#cb46-336" aria-hidden="true" tabindex="-1"></a><span class="co">      model (TF Keras Model) - model that accepts data windows</span></span>
+<span id="cb46-337"><a href="#cb46-337" aria-hidden="true" tabindex="-1"></a><span class="co">      series (array of float) - contains the values of the time series</span></span>
+<span id="cb46-338"><a href="#cb46-338" aria-hidden="true" tabindex="-1"></a><span class="co">      window_size (int) - the number of time steps to include in the window</span></span>
+<span id="cb46-339"><a href="#cb46-339" aria-hidden="true" tabindex="-1"></a><span class="co">      batch_size (int) - the batch size</span></span>
+<span id="cb46-340"><a href="#cb46-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-341"><a href="#cb46-341" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb46-342"><a href="#cb46-342" aria-hidden="true" tabindex="-1"></a><span class="co">      forecast (numpy array) - array containing predictions</span></span>
+<span id="cb46-343"><a href="#cb46-343" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb46-344"><a href="#cb46-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-345"><a href="#cb46-345" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a TF Dataset from the series values</span></span>
+<span id="cb46-346"><a href="#cb46-346" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> tf.data.Dataset.from_tensor_slices(series)</span>
+<span id="cb46-347"><a href="#cb46-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-348"><a href="#cb46-348" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Window the data but only take those with the specified size</span></span>
+<span id="cb46-349"><a href="#cb46-349" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.window(window_size, shift<span class="op">=</span><span class="dv">1</span>, drop_remainder<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb46-350"><a href="#cb46-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-351"><a href="#cb46-351" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the windows by putting its elements in a single batch</span></span>
+<span id="cb46-352"><a href="#cb46-352" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.flat_map(<span class="kw">lambda</span> w: w.batch(window_size))</span>
+<span id="cb46-353"><a href="#cb46-353" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-354"><a href="#cb46-354" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create batches of windows</span></span>
+<span id="cb46-355"><a href="#cb46-355" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.batch(batch_size).prefetch(<span class="dv">1</span>)</span>
+<span id="cb46-356"><a href="#cb46-356" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-357"><a href="#cb46-357" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get predictions on the entire dataset</span></span>
+<span id="cb46-358"><a href="#cb46-358" aria-hidden="true" tabindex="-1"></a>    forecast <span class="op">=</span> model.predict(dataset)</span>
+<span id="cb46-359"><a href="#cb46-359" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-360"><a href="#cb46-360" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> forecast</span>
+<span id="cb46-361"><a href="#cb46-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-362"><a href="#cb46-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-363"><a href="#cb46-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-364"><a href="#cb46-364" aria-hidden="true" tabindex="-1"></a>forcast one value</span>
+<span id="cb46-367"><a href="#cb46-367" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-368"><a href="#cb46-368" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time:split_time<span class="op">+</span>window_size]</span>
+<span id="cb46-369"><a href="#cb46-369" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span>
+<span id="cb46-370"><a href="#cb46-370" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-371"><a href="#cb46-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-374"><a href="#cb46-374" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-375"><a href="#cb46-375" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
+<span id="cb46-376"><a href="#cb46-376" aria-hidden="true" tabindex="-1"></a>results</span>
+<span id="cb46-377"><a href="#cb46-377" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-378"><a href="#cb46-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-379"><a href="#cb46-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-380"><a href="#cb46-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-383"><a href="#cb46-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-384"><a href="#cb46-384" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce the original series</span></span>
+<span id="cb46-385"><a href="#cb46-385" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time<span class="op">-</span>window_size:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb46-386"><a href="#cb46-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-387"><a href="#cb46-387" aria-hidden="true" tabindex="-1"></a><span class="co"># Use helper function to generate predictions</span></span>
+<span id="cb46-388"><a href="#cb46-388" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span>
+<span id="cb46-389"><a href="#cb46-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-390"><a href="#cb46-390" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop single dimensional axis</span></span>
+<span id="cb46-391"><a href="#cb46-391" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
+<span id="cb46-392"><a href="#cb46-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-393"><a href="#cb46-393" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb46-394"><a href="#cb46-394" aria-hidden="true" tabindex="-1"></a>plot_series(time_valid, (x_valid, results))</span>
+<span id="cb46-395"><a href="#cb46-395" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-396"><a href="#cb46-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-397"><a href="#cb46-397" aria-hidden="true" tabindex="-1"></a><span class="fu">## model result</span></span>
+<span id="cb46-398"><a href="#cb46-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-401"><a href="#cb46-401" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-402"><a href="#cb46-402" aria-hidden="true" tabindex="-1"></a><span class="co">## Compute the MAE and MSE</span></span>
+<span id="cb46-403"><a href="#cb46-403" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())</span>
+<span id="cb46-404"><a href="#cb46-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-405"><a href="#cb46-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-406"><a href="#cb46-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-409"><a href="#cb46-409" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-410"><a href="#cb46-410" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())</span>
+<span id="cb46-411"><a href="#cb46-411" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-412"><a href="#cb46-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-413"><a href="#cb46-413" aria-hidden="true" tabindex="-1"></a><span class="fu"># RNN model</span></span>
+<span id="cb46-414"><a href="#cb46-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-415"><a href="#cb46-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-416"><a href="#cb46-416" aria-hidden="true" tabindex="-1"></a><span class="fu">## define RNN Model</span></span>
+<span id="cb46-417"><a href="#cb46-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-420"><a href="#cb46-420" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-421"><a href="#cb46-421" aria-hidden="true" tabindex="-1"></a><span class="co"># Build the Model</span></span>
+<span id="cb46-422"><a href="#cb46-422" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb46-423"><a href="#cb46-423" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Conv1D(filters<span class="op">=</span><span class="dv">64</span>, kernel_size<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb46-424"><a href="#cb46-424" aria-hidden="true" tabindex="-1"></a>                      strides<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb46-425"><a href="#cb46-425" aria-hidden="true" tabindex="-1"></a>                      activation<span class="op">=</span><span class="st">"relu"</span>,</span>
+<span id="cb46-426"><a href="#cb46-426" aria-hidden="true" tabindex="-1"></a>                      padding<span class="op">=</span><span class="st">'causal'</span>,</span>
+<span id="cb46-427"><a href="#cb46-427" aria-hidden="true" tabindex="-1"></a>                      input_shape<span class="op">=</span>[window_size, <span class="dv">1</span>]),</span>
+<span id="cb46-428"><a href="#cb46-428" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.LSTM(<span class="dv">64</span>, return_sequences<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb46-429"><a href="#cb46-429" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.LSTM(<span class="dv">64</span>),</span>
+<span id="cb46-430"><a href="#cb46-430" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">30</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb46-431"><a href="#cb46-431" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">"relu"</span>),</span>
+<span id="cb46-432"><a href="#cb46-432" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">1</span>),</span>
+<span id="cb46-433"><a href="#cb46-433" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Lambda(<span class="kw">lambda</span> x: x <span class="op">*</span> <span class="dv">400</span>)</span>
+<span id="cb46-434"><a href="#cb46-434" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb46-435"><a href="#cb46-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-436"><a href="#cb46-436" aria-hidden="true" tabindex="-1"></a> <span class="co"># Print the model summary </span></span>
+<span id="cb46-437"><a href="#cb46-437" aria-hidden="true" tabindex="-1"></a>model.summary()</span>
+<span id="cb46-438"><a href="#cb46-438" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-439"><a href="#cb46-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-440"><a href="#cb46-440" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tune the Learning Rate</span></span>
+<span id="cb46-441"><a href="#cb46-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-444"><a href="#cb46-444" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-445"><a href="#cb46-445" aria-hidden="true" tabindex="-1"></a><span class="co"># Get initial weights</span></span>
+<span id="cb46-446"><a href="#cb46-446" aria-hidden="true" tabindex="-1"></a>init_weights <span class="op">=</span> model.get_weights()</span>
+<span id="cb46-447"><a href="#cb46-447" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-448"><a href="#cb46-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-449"><a href="#cb46-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-452"><a href="#cb46-452" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-453"><a href="#cb46-453" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb46-454"><a href="#cb46-454" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate scheduler</span></span>
+<span id="cb46-455"><a href="#cb46-455" aria-hidden="true" tabindex="-1"></a>lr_schedule <span class="op">=</span> tf.keras.callbacks.LearningRateScheduler(</span>
+<span id="cb46-456"><a href="#cb46-456" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> epoch: <span class="fl">1e-8</span> <span class="op">*</span> <span class="dv">10</span><span class="op">**</span>(epoch <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb46-457"><a href="#cb46-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-458"><a href="#cb46-458" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the optimizer</span></span>
+<span id="cb46-459"><a href="#cb46-459" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb46-460"><a href="#cb46-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-461"><a href="#cb46-461" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb46-462"><a href="#cb46-462" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(), optimizer<span class="op">=</span>optimizer)</span>
+<span id="cb46-463"><a href="#cb46-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-464"><a href="#cb46-464" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb46-465"><a href="#cb46-465" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set, epochs<span class="op">=</span><span class="dv">100</span>, callbacks<span class="op">=</span>[lr_schedule],verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb46-466"><a href="#cb46-466" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-467"><a href="#cb46-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-468"><a href="#cb46-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-469"><a href="#cb46-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-470"><a href="#cb46-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-473"><a href="#cb46-473" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-474"><a href="#cb46-474" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the learning rate array</span></span>
+<span id="cb46-475"><a href="#cb46-475" aria-hidden="true" tabindex="-1"></a>lrs <span class="op">=</span> <span class="fl">1e-8</span> <span class="op">*</span> (<span class="dv">10</span> <span class="op">**</span> (np.arange(<span class="dv">100</span>) <span class="op">/</span> <span class="dv">20</span>))</span>
+<span id="cb46-476"><a href="#cb46-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-477"><a href="#cb46-477" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the figure size</span></span>
+<span id="cb46-478"><a href="#cb46-478" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb46-479"><a href="#cb46-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-480"><a href="#cb46-480" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the grid</span></span>
+<span id="cb46-481"><a href="#cb46-481" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb46-482"><a href="#cb46-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-483"><a href="#cb46-483" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the loss in log scale</span></span>
+<span id="cb46-484"><a href="#cb46-484" aria-hidden="true" tabindex="-1"></a>plt.semilogx(lrs, history.history[<span class="st">"loss"</span>])</span>
+<span id="cb46-485"><a href="#cb46-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-486"><a href="#cb46-486" aria-hidden="true" tabindex="-1"></a><span class="co"># Increase the tickmarks size</span></span>
+<span id="cb46-487"><a href="#cb46-487" aria-hidden="true" tabindex="-1"></a>plt.tick_params(<span class="st">'both'</span>, length<span class="op">=</span><span class="dv">10</span>, width<span class="op">=</span><span class="dv">1</span>, which<span class="op">=</span><span class="st">'both'</span>)</span>
+<span id="cb46-488"><a href="#cb46-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-489"><a href="#cb46-489" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the plot boundaries</span></span>
+<span id="cb46-490"><a href="#cb46-490" aria-hidden="true" tabindex="-1"></a>plt.axis([<span class="fl">1e-8</span>, <span class="fl">1e-3</span>, <span class="dv">0</span>, <span class="dv">100</span>])</span>
+<span id="cb46-491"><a href="#cb46-491" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-492"><a href="#cb46-492" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-493"><a href="#cb46-493" aria-hidden="true" tabindex="-1"></a><span class="fu">## define RNN model after tunned</span></span>
+<span id="cb46-496"><a href="#cb46-496" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-497"><a href="#cb46-497" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset states generated by Keras</span></span>
+<span id="cb46-498"><a href="#cb46-498" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb46-499"><a href="#cb46-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-500"><a href="#cb46-500" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset the weights</span></span>
+<span id="cb46-501"><a href="#cb46-501" aria-hidden="true" tabindex="-1"></a>model.set_weights(init_weights)</span>
+<span id="cb46-502"><a href="#cb46-502" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-503"><a href="#cb46-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-506"><a href="#cb46-506" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-507"><a href="#cb46-507" aria-hidden="true" tabindex="-1"></a>model.summary()</span>
+<span id="cb46-508"><a href="#cb46-508" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-509"><a href="#cb46-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-510"><a href="#cb46-510" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-511"><a href="#cb46-511" aria-hidden="true" tabindex="-1"></a><span class="fu">## complie model</span></span>
+<span id="cb46-514"><a href="#cb46-514" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-515"><a href="#cb46-515" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate</span></span>
+<span id="cb46-516"><a href="#cb46-516" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">8e-7</span></span>
+<span id="cb46-517"><a href="#cb46-517" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-518"><a href="#cb46-518" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the optimizer </span></span>
+<span id="cb46-519"><a href="#cb46-519" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(learning_rate<span class="op">=</span>learning_rate, momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb46-520"><a href="#cb46-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-521"><a href="#cb46-521" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb46-522"><a href="#cb46-522" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(),</span>
+<span id="cb46-523"><a href="#cb46-523" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>optimizer,</span>
+<span id="cb46-524"><a href="#cb46-524" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mae"</span>])</span>
+<span id="cb46-525"><a href="#cb46-525" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-526"><a href="#cb46-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-527"><a href="#cb46-527" aria-hidden="true" tabindex="-1"></a><span class="fu">## train RNN Model after tunned</span></span>
+<span id="cb46-528"><a href="#cb46-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-531"><a href="#cb46-531" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-532"><a href="#cb46-532" aria-hidden="true" tabindex="-1"></a><span class="co">#| error: false</span></span>
+<span id="cb46-533"><a href="#cb46-533" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb46-534"><a href="#cb46-534" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(train_set,epochs<span class="op">=</span><span class="dv">100</span>,verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb46-535"><a href="#cb46-535" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-536"><a href="#cb46-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-537"><a href="#cb46-537" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-540"><a href="#cb46-540" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-541"><a href="#cb46-541" aria-hidden="true" tabindex="-1"></a><span class="co"># Get mae and loss from history log</span></span>
+<span id="cb46-542"><a href="#cb46-542" aria-hidden="true" tabindex="-1"></a>mae<span class="op">=</span>history.history[<span class="st">'mae'</span>]</span>
+<span id="cb46-543"><a href="#cb46-543" aria-hidden="true" tabindex="-1"></a>loss<span class="op">=</span>history.history[<span class="st">'loss'</span>]</span>
+<span id="cb46-544"><a href="#cb46-544" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-545"><a href="#cb46-545" aria-hidden="true" tabindex="-1"></a><span class="co"># Get number of epochs</span></span>
+<span id="cb46-546"><a href="#cb46-546" aria-hidden="true" tabindex="-1"></a>epochs<span class="op">=</span><span class="bu">range</span>(<span class="bu">len</span>(loss)) </span>
+<span id="cb46-547"><a href="#cb46-547" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-548"><a href="#cb46-548" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot mae and loss</span></span>
+<span id="cb46-549"><a href="#cb46-549" aria-hidden="true" tabindex="-1"></a>plot_series(</span>
+<span id="cb46-550"><a href="#cb46-550" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>epochs, </span>
+<span id="cb46-551"><a href="#cb46-551" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>(mae, loss), </span>
+<span id="cb46-552"><a href="#cb46-552" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'MAE and Loss'</span>, </span>
+<span id="cb46-553"><a href="#cb46-553" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">'MAE'</span>,</span>
+<span id="cb46-554"><a href="#cb46-554" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">'Loss'</span>,</span>
+<span id="cb46-555"><a href="#cb46-555" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span>[<span class="st">'MAE'</span>, <span class="st">'Loss'</span>]</span>
+<span id="cb46-556"><a href="#cb46-556" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-557"><a href="#cb46-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-558"><a href="#cb46-558" aria-hidden="true" tabindex="-1"></a><span class="co"># Only plot the last 80% of the epochs</span></span>
+<span id="cb46-559"><a href="#cb46-559" aria-hidden="true" tabindex="-1"></a>zoom_split <span class="op">=</span> <span class="bu">int</span>(epochs[<span class="op">-</span><span class="dv">1</span>] <span class="op">*</span> <span class="fl">0.2</span>)</span>
+<span id="cb46-560"><a href="#cb46-560" aria-hidden="true" tabindex="-1"></a>epochs_zoom <span class="op">=</span> epochs[zoom_split:]</span>
+<span id="cb46-561"><a href="#cb46-561" aria-hidden="true" tabindex="-1"></a>mae_zoom <span class="op">=</span> mae[zoom_split:]</span>
+<span id="cb46-562"><a href="#cb46-562" aria-hidden="true" tabindex="-1"></a>loss_zoom <span class="op">=</span> loss[zoom_split:]</span>
+<span id="cb46-563"><a href="#cb46-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-564"><a href="#cb46-564" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot zoomed mae and loss</span></span>
+<span id="cb46-565"><a href="#cb46-565" aria-hidden="true" tabindex="-1"></a>plot_series(</span>
+<span id="cb46-566"><a href="#cb46-566" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>epochs_zoom, </span>
+<span id="cb46-567"><a href="#cb46-567" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span>(mae_zoom, loss_zoom), </span>
+<span id="cb46-568"><a href="#cb46-568" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">'MAE and Loss'</span>, </span>
+<span id="cb46-569"><a href="#cb46-569" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">'MAE'</span>,</span>
+<span id="cb46-570"><a href="#cb46-570" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">'Loss'</span>,</span>
+<span id="cb46-571"><a href="#cb46-571" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span>[<span class="st">'MAE'</span>, <span class="st">'Loss'</span>]</span>
+<span id="cb46-572"><a href="#cb46-572" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-573"><a href="#cb46-573" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-574"><a href="#cb46-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-575"><a href="#cb46-575" aria-hidden="true" tabindex="-1"></a><span class="fu">## Model Prediction</span></span>
+<span id="cb46-576"><a href="#cb46-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-579"><a href="#cb46-579" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-580"><a href="#cb46-580" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce the original series</span></span>
+<span id="cb46-581"><a href="#cb46-581" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time<span class="op">-</span>window_size:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb46-582"><a href="#cb46-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-583"><a href="#cb46-583" aria-hidden="true" tabindex="-1"></a><span class="co"># Use helper function to generate predictions</span></span>
+<span id="cb46-584"><a href="#cb46-584" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span>
+<span id="cb46-585"><a href="#cb46-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-586"><a href="#cb46-586" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop single dimensional axis</span></span>
+<span id="cb46-587"><a href="#cb46-587" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
+<span id="cb46-588"><a href="#cb46-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-589"><a href="#cb46-589" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb46-590"><a href="#cb46-590" aria-hidden="true" tabindex="-1"></a>plot_series(time_valid, (x_valid, results))</span>
+<span id="cb46-591"><a href="#cb46-591" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-592"><a href="#cb46-592" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-593"><a href="#cb46-593" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-594"><a href="#cb46-594" aria-hidden="true" tabindex="-1"></a><span class="fu">## model result</span></span>
+<span id="cb46-595"><a href="#cb46-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-598"><a href="#cb46-598" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-599"><a href="#cb46-599" aria-hidden="true" tabindex="-1"></a><span class="co">## Compute the MAE and MSE</span></span>
+<span id="cb46-600"><a href="#cb46-600" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())</span>
+<span id="cb46-601"><a href="#cb46-601" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-602"><a href="#cb46-602" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-603"><a href="#cb46-603" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-606"><a href="#cb46-606" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-607"><a href="#cb46-607" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())</span>
+<span id="cb46-608"><a href="#cb46-608" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-609"><a href="#cb46-609" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-610"><a href="#cb46-610" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-611"><a href="#cb46-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-612"><a href="#cb46-612" aria-hidden="true" tabindex="-1"></a><span class="fu"># save model</span></span>
+<span id="cb46-613"><a href="#cb46-613" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-616"><a href="#cb46-616" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-617"><a href="#cb46-617" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras.models <span class="im">import</span> load_model, save_model</span>
+<span id="cb46-618"><a href="#cb46-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-619"><a href="#cb46-619" aria-hidden="true" tabindex="-1"></a>save_model(model,<span class="st">'c4week4sunsports_model.keras'</span>)</span>
+<span id="cb46-620"><a href="#cb46-620" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-621"><a href="#cb46-621" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-622"><a href="#cb46-622" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-623"><a href="#cb46-623" aria-hidden="true" tabindex="-1"></a><span class="fu"># load model</span></span>
+<span id="cb46-624"><a href="#cb46-624" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-627"><a href="#cb46-627" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-628"><a href="#cb46-628" aria-hidden="true" tabindex="-1"></a>new_model <span class="op">=</span> load_model(<span class="st">'c4week4sunsports_model.keras'</span>,safe_mode<span class="op">=</span><span class="va">False</span> )</span>
+<span id="cb46-629"><a href="#cb46-629" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-630"><a href="#cb46-630" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-631"><a href="#cb46-631" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-632"><a href="#cb46-632" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-635"><a href="#cb46-635" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb46-636"><a href="#cb46-636" aria-hidden="true" tabindex="-1"></a>new_model.predict(series[<span class="dv">0</span>:<span class="dv">20</span>][np.newaxis])</span>
+<span id="cb46-637"><a href="#cb46-637" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb46-638"><a href="#cb46-638" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-639"><a href="#cb46-639" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb46-640"><a href="#cb46-640" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-641"><a href="#cb46-641" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction</span>
+<span id="cb46-642"><a href="#cb46-642" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-643"><a href="#cb46-643" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C4</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This website is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

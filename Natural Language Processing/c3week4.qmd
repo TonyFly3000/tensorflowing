@@ -126,14 +126,16 @@ print(f'sample sentence: {sentence}')
 first sentence after tokenizer
 
 ```{python}
-
+#| output: false
 # Initialize token list
 token_list = []
 
 # Look up the indices of each word and append to the list
 for word in sentence: 
   token_list.append(tokenizer.word_index[word])
+```
 
+```{python}
 # Print the token list
 print(token_list)
 ```
@@ -250,6 +252,7 @@ output_word
 # Generating next 100 Text
 
 ```{python}
+#| output: false
 # Define seed text
 seed_text = "Laurence went to Dublin"
 
@@ -279,7 +282,9 @@ for _ in range(next_words):
 
 		# Combine with the seed text
 		seed_text += " " + output_word
+```
 
+```{python}
 # Print the result	
 print(seed_text)
 ```
@@ -287,6 +292,7 @@ print(seed_text)
 # Generating next 100 Text and random choose from top 3 probabilities words
 
 ```{python}
+#| output: false
 # Define seed text
 seed_text = "Laurence went to Dublin"
 
@@ -379,6 +385,7 @@ Next, you will be generating the training sequences and their labels. As discuss
 I ---\> am I am ---\> using I am using ---\> Tensorflow
 
 ```{python}
+#| output: false
 # Initialize the sequences list
 input_sequences = []
 
@@ -396,7 +403,9 @@ for line in corpus:
 
 		# Append the subphrase to the sequences list
 		input_sequences.append(n_gram_sequence)
+```
 
+```{python}
 max_sequence_len = max([len(x) for x in input_sequences])
 max_sequence_len
 ```
@@ -423,14 +432,16 @@ print(f'sample sentence: {sentence}')
 first sentence after tokenizer
 
 ```{python}
-
+#| output: false
 # Initialize token list
 token_list = []
 
 # Look up the indices of each word and append to the list
 for word in sentence: 
   token_list.append(tokenizer.word_index[word])
+```
 
+```{python}
 # Print the token list
 print(token_list)
 ```
@@ -547,6 +558,7 @@ output_word
 # Generating next 100 Text
 
 ```{python}
+#| output: false
 # Define seed text
 seed_text = "Laurence went to Dublin"
 
@@ -576,7 +588,9 @@ for _ in range(next_words):
 
 		# Combine with the seed text
 		seed_text += " " + output_word
+```
 
+```{python}
 # Print the result	
 print(seed_text)
 ```
@@ -584,6 +598,7 @@ print(seed_text)
 # Generating next 100 Text and random choose from top 3 probabilities words
 
 ```{python}
+#| output: false
 # Define seed text
 seed_text = "Laurence went to Dublin"
 

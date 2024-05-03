@@ -26,7 +26,7 @@ website:
   title: "Tensorflowing"
   favicon: "logo.jpg"
   navbar:
-    logo: "1.png"
+    logo: "logo.jpg"
     left:
       - text: "Home"
         file: index.qmd

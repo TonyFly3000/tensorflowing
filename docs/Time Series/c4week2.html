@@ -116,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../1.png" alt="" class="navbar-logo">
+    <img src="../logo.jpg" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Tensorflowing</span>
@@ -152,19 +152,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="dropdown-header">DeepLearning</li>
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w1.html">
- <span class="dropdown-text">Introduction to TensorFlow W1:A New Programming Paradigm</span></a>
+ <span class="dropdown-text">W1:A New Programming Paradigm</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w2.html">
- <span class="dropdown-text">Introduction to TensorFlow W2:Introduction to Computer Vision</span></a>
+ <span class="dropdown-text">W2:Introduction to Computer Vision</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w3.html">
- <span class="dropdown-text">Introduction to TensorFlow W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+ <span class="dropdown-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w4.html">
- <span class="dropdown-text">Introduction to TensorFlow W4:Using Real-world Images</span></a>
+ <span class="dropdown-text">W4:Using Real-world Images</span></a>
   </li>  
     </ul>
   </li>
@@ -237,6 +237,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../Time Series/c4week4.html">
  <span class="dropdown-text">W4:Real-world time series data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week4 Sunspots.html">
+ <span class="dropdown-text">W4:Real-world time series data sunspots</span></a>
   </li>  
     </ul>
   </li>
@@ -322,6 +326,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../Time Series/c4week4.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">W4:Real-world time series data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Time Series/c4week4 Sunspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W4:Real-world time series data sunspots</span></a>
   </div>
 </li>
       </ul>
@@ -2570,13 +2580,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb70-794"><a href="#cb70-794" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())</span>
 <span id="cb70-795"><a href="#cb70-795" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb70-796"><a href="#cb70-796" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-797"><a href="#cb70-797" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-797"><a href="#cb70-797" aria-hidden="true" tabindex="-1"></a><span class="fu"># save model</span></span>
 <span id="cb70-798"><a href="#cb70-798" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-799"><a href="#cb70-799" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
-<span id="cb70-800"><a href="#cb70-800" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-801"><a href="#cb70-801" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction</span>
-<span id="cb70-802"><a href="#cb70-802" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb70-803"><a href="#cb70-803" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C4</span>
+<span id="cb70-801"><a href="#cb70-801" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb70-802"><a href="#cb70-802" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the entire model as a `.keras` zip archive.</span></span>
+<span id="cb70-803"><a href="#cb70-803" aria-hidden="true" tabindex="-1"></a>model_tune.save(<span class="st">'c4week2_model.keras'</span>)</span>
+<span id="cb70-804"><a href="#cb70-804" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb70-805"><a href="#cb70-805" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-806"><a href="#cb70-806" aria-hidden="true" tabindex="-1"></a><span class="fu"># load model</span></span>
+<span id="cb70-807"><a href="#cb70-807" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-810"><a href="#cb70-810" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb70-811"><a href="#cb70-811" aria-hidden="true" tabindex="-1"></a>new_model <span class="op">=</span> tf.keras.models.load_model(<span class="st">'c4week2_model.keras'</span>)</span>
+<span id="cb70-812"><a href="#cb70-812" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb70-813"><a href="#cb70-813" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-814"><a href="#cb70-814" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-817"><a href="#cb70-817" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb70-818"><a href="#cb70-818" aria-hidden="true" tabindex="-1"></a>new_model.predict(series[<span class="dv">0</span>:<span class="dv">20</span>][np.newaxis])</span>
+<span id="cb70-819"><a href="#cb70-819" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb70-820"><a href="#cb70-820" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-821"><a href="#cb70-821" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-822"><a href="#cb70-822" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-823"><a href="#cb70-823" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb70-824"><a href="#cb70-824" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-825"><a href="#cb70-825" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction</span>
+<span id="cb70-826"><a href="#cb70-826" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-827"><a href="#cb70-827" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C4</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

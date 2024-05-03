@@ -116,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../1.png" alt="" class="navbar-logo">
+    <img src="../logo.jpg" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Tensorflowing</span>
@@ -152,19 +152,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="dropdown-header">DeepLearning</li>
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w1.html">
- <span class="dropdown-text">Introduction to TensorFlow W1:A New Programming Paradigm</span></a>
+ <span class="dropdown-text">W1:A New Programming Paradigm</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w2.html">
- <span class="dropdown-text">Introduction to TensorFlow W2:Introduction to Computer Vision</span></a>
+ <span class="dropdown-text">W2:Introduction to Computer Vision</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w3.html">
- <span class="dropdown-text">Introduction to TensorFlow W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+ <span class="dropdown-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../DeepLearning/c1w4.html">
- <span class="dropdown-text">Introduction to TensorFlow W4:Using Real-world Images</span></a>
+ <span class="dropdown-text">W4:Using Real-world Images</span></a>
   </li>  
     </ul>
   </li>
@@ -237,6 +237,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../Time Series/c4week4.html">
  <span class="dropdown-text">W4:Real-world time series data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week4 Sunspots.html">
+ <span class="dropdown-text">W4:Real-world time series data sunspots</span></a>
   </li>  
     </ul>
   </li>
@@ -322,6 +326,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../Time Series/c4week4.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">W4:Real-world time series data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Time Series/c4week4 Sunspots.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W4:Real-world time series data sunspots</span></a>
   </div>
 </li>
       </ul>
@@ -2027,93 +2037,95 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb31-537"><a href="#cb31-537" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">1</span>),</span>
 <span id="cb31-538"><a href="#cb31-538" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Lambda(<span class="kw">lambda</span> x: x <span class="op">*</span> <span class="fl">100.0</span>)</span>
 <span id="cb31-539"><a href="#cb31-539" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb31-540"><a href="#cb31-540" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-541"><a href="#cb31-541" aria-hidden="true" tabindex="-1"></a><span class="co"># compile</span></span>
-<span id="cb31-542"><a href="#cb31-542" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-543"><a href="#cb31-543" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate</span></span>
-<span id="cb31-544"><a href="#cb31-544" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">2e-6</span></span>
-<span id="cb31-545"><a href="#cb31-545" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-546"><a href="#cb31-546" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the optimizer </span></span>
-<span id="cb31-547"><a href="#cb31-547" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(learning_rate<span class="op">=</span>learning_rate, momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
-<span id="cb31-548"><a href="#cb31-548" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-549"><a href="#cb31-549" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
-<span id="cb31-550"><a href="#cb31-550" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(),</span>
-<span id="cb31-551"><a href="#cb31-551" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>optimizer,</span>
-<span id="cb31-552"><a href="#cb31-552" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mae"</span>])</span>
-<span id="cb31-553"><a href="#cb31-553" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-554"><a href="#cb31-554" aria-hidden="true" tabindex="-1"></a><span class="co"># Train</span></span>
-<span id="cb31-555"><a href="#cb31-555" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
-<span id="cb31-556"><a href="#cb31-556" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(dataset,epochs<span class="op">=</span><span class="dv">100</span>,verbose<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb31-557"><a href="#cb31-557" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb31-558"><a href="#cb31-558" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-559"><a href="#cb31-559" aria-hidden="true" tabindex="-1"></a><span class="fu"># Model Prediction</span></span>
-<span id="cb31-560"><a href="#cb31-560" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-563"><a href="#cb31-563" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb31-564"><a href="#cb31-564" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
-<span id="cb31-565"><a href="#cb31-565" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Show the code"</span></span>
-<span id="cb31-566"><a href="#cb31-566" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model_forecast(model, series, window_size, batch_size):</span>
-<span id="cb31-567"><a href="#cb31-567" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Uses an input model to generate predictions on data windows</span></span>
-<span id="cb31-568"><a href="#cb31-568" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-569"><a href="#cb31-569" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
-<span id="cb31-570"><a href="#cb31-570" aria-hidden="true" tabindex="-1"></a><span class="co">      model (TF Keras Model) - model that accepts data windows</span></span>
-<span id="cb31-571"><a href="#cb31-571" aria-hidden="true" tabindex="-1"></a><span class="co">      series (array of float) - contains the values of the time series</span></span>
-<span id="cb31-572"><a href="#cb31-572" aria-hidden="true" tabindex="-1"></a><span class="co">      window_size (int) - the number of time steps to include in the window</span></span>
-<span id="cb31-573"><a href="#cb31-573" aria-hidden="true" tabindex="-1"></a><span class="co">      batch_size (int) - the batch size</span></span>
-<span id="cb31-574"><a href="#cb31-574" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-575"><a href="#cb31-575" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
-<span id="cb31-576"><a href="#cb31-576" aria-hidden="true" tabindex="-1"></a><span class="co">      forecast (numpy array) - array containing predictions</span></span>
-<span id="cb31-577"><a href="#cb31-577" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb31-540"><a href="#cb31-540" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-541"><a href="#cb31-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-544"><a href="#cb31-544" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb31-545"><a href="#cb31-545" aria-hidden="true" tabindex="-1"></a><span class="co"># compile</span></span>
+<span id="cb31-546"><a href="#cb31-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-547"><a href="#cb31-547" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the learning rate</span></span>
+<span id="cb31-548"><a href="#cb31-548" aria-hidden="true" tabindex="-1"></a>learning_rate <span class="op">=</span> <span class="fl">2e-6</span></span>
+<span id="cb31-549"><a href="#cb31-549" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-550"><a href="#cb31-550" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the optimizer </span></span>
+<span id="cb31-551"><a href="#cb31-551" aria-hidden="true" tabindex="-1"></a>optimizer <span class="op">=</span> tf.keras.optimizers.SGD(learning_rate<span class="op">=</span>learning_rate, momentum<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb31-552"><a href="#cb31-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-553"><a href="#cb31-553" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the training parameters</span></span>
+<span id="cb31-554"><a href="#cb31-554" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span>tf.keras.losses.Huber(),</span>
+<span id="cb31-555"><a href="#cb31-555" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>optimizer,</span>
+<span id="cb31-556"><a href="#cb31-556" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mae"</span>])</span>
+<span id="cb31-557"><a href="#cb31-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-558"><a href="#cb31-558" aria-hidden="true" tabindex="-1"></a><span class="co"># Train</span></span>
+<span id="cb31-559"><a href="#cb31-559" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb31-560"><a href="#cb31-560" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(dataset,epochs<span class="op">=</span><span class="dv">100</span>,verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb31-561"><a href="#cb31-561" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-562"><a href="#cb31-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-563"><a href="#cb31-563" aria-hidden="true" tabindex="-1"></a><span class="fu"># Model Prediction</span></span>
+<span id="cb31-564"><a href="#cb31-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-567"><a href="#cb31-567" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb31-568"><a href="#cb31-568" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb31-569"><a href="#cb31-569" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Show the code"</span></span>
+<span id="cb31-570"><a href="#cb31-570" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model_forecast(model, series, window_size, batch_size):</span>
+<span id="cb31-571"><a href="#cb31-571" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Uses an input model to generate predictions on data windows</span></span>
+<span id="cb31-572"><a href="#cb31-572" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-573"><a href="#cb31-573" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb31-574"><a href="#cb31-574" aria-hidden="true" tabindex="-1"></a><span class="co">      model (TF Keras Model) - model that accepts data windows</span></span>
+<span id="cb31-575"><a href="#cb31-575" aria-hidden="true" tabindex="-1"></a><span class="co">      series (array of float) - contains the values of the time series</span></span>
+<span id="cb31-576"><a href="#cb31-576" aria-hidden="true" tabindex="-1"></a><span class="co">      window_size (int) - the number of time steps to include in the window</span></span>
+<span id="cb31-577"><a href="#cb31-577" aria-hidden="true" tabindex="-1"></a><span class="co">      batch_size (int) - the batch size</span></span>
 <span id="cb31-578"><a href="#cb31-578" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-579"><a href="#cb31-579" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a TF Dataset from the series values</span></span>
-<span id="cb31-580"><a href="#cb31-580" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> tf.data.Dataset.from_tensor_slices(series)</span>
-<span id="cb31-581"><a href="#cb31-581" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-582"><a href="#cb31-582" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Window the data but only take those with the specified size</span></span>
-<span id="cb31-583"><a href="#cb31-583" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.window(window_size, shift<span class="op">=</span><span class="dv">1</span>, drop_remainder<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb31-584"><a href="#cb31-584" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-585"><a href="#cb31-585" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the windows by putting its elements in a single batch</span></span>
-<span id="cb31-586"><a href="#cb31-586" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.flat_map(<span class="kw">lambda</span> w: w.batch(window_size))</span>
-<span id="cb31-587"><a href="#cb31-587" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb31-588"><a href="#cb31-588" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create batches of windows</span></span>
-<span id="cb31-589"><a href="#cb31-589" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.batch(batch_size).prefetch(<span class="dv">1</span>)</span>
-<span id="cb31-590"><a href="#cb31-590" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb31-591"><a href="#cb31-591" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get predictions on the entire dataset</span></span>
-<span id="cb31-592"><a href="#cb31-592" aria-hidden="true" tabindex="-1"></a>    forecast <span class="op">=</span> model.predict(dataset)</span>
-<span id="cb31-593"><a href="#cb31-593" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb31-594"><a href="#cb31-594" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> forecast</span>
-<span id="cb31-595"><a href="#cb31-595" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb31-596"><a href="#cb31-596" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-599"><a href="#cb31-599" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb31-600"><a href="#cb31-600" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
-<span id="cb31-601"><a href="#cb31-601" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb31-602"><a href="#cb31-602" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce the original series</span></span>
-<span id="cb31-603"><a href="#cb31-603" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time<span class="op">-</span>window_size:<span class="op">-</span><span class="dv">1</span>]</span>
-<span id="cb31-604"><a href="#cb31-604" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-605"><a href="#cb31-605" aria-hidden="true" tabindex="-1"></a><span class="co"># Use helper function to generate predictions</span></span>
-<span id="cb31-606"><a href="#cb31-606" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span>
-<span id="cb31-607"><a href="#cb31-607" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-608"><a href="#cb31-608" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop single dimensional axis</span></span>
-<span id="cb31-609"><a href="#cb31-609" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
-<span id="cb31-610"><a href="#cb31-610" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-611"><a href="#cb31-611" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
-<span id="cb31-612"><a href="#cb31-612" aria-hidden="true" tabindex="-1"></a>plot_series(time_valid, (x_valid, results))</span>
-<span id="cb31-613"><a href="#cb31-613" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-579"><a href="#cb31-579" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb31-580"><a href="#cb31-580" aria-hidden="true" tabindex="-1"></a><span class="co">      forecast (numpy array) - array containing predictions</span></span>
+<span id="cb31-581"><a href="#cb31-581" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb31-582"><a href="#cb31-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-583"><a href="#cb31-583" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Generate a TF Dataset from the series values</span></span>
+<span id="cb31-584"><a href="#cb31-584" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> tf.data.Dataset.from_tensor_slices(series)</span>
+<span id="cb31-585"><a href="#cb31-585" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-586"><a href="#cb31-586" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Window the data but only take those with the specified size</span></span>
+<span id="cb31-587"><a href="#cb31-587" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.window(window_size, shift<span class="op">=</span><span class="dv">1</span>, drop_remainder<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb31-588"><a href="#cb31-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-589"><a href="#cb31-589" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the windows by putting its elements in a single batch</span></span>
+<span id="cb31-590"><a href="#cb31-590" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.flat_map(<span class="kw">lambda</span> w: w.batch(window_size))</span>
+<span id="cb31-591"><a href="#cb31-591" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-592"><a href="#cb31-592" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create batches of windows</span></span>
+<span id="cb31-593"><a href="#cb31-593" aria-hidden="true" tabindex="-1"></a>    dataset <span class="op">=</span> dataset.batch(batch_size).prefetch(<span class="dv">1</span>)</span>
+<span id="cb31-594"><a href="#cb31-594" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-595"><a href="#cb31-595" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get predictions on the entire dataset</span></span>
+<span id="cb31-596"><a href="#cb31-596" aria-hidden="true" tabindex="-1"></a>    forecast <span class="op">=</span> model.predict(dataset)</span>
+<span id="cb31-597"><a href="#cb31-597" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-598"><a href="#cb31-598" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> forecast</span>
+<span id="cb31-599"><a href="#cb31-599" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-600"><a href="#cb31-600" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-603"><a href="#cb31-603" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb31-604"><a href="#cb31-604" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb31-605"><a href="#cb31-605" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb31-606"><a href="#cb31-606" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce the original series</span></span>
+<span id="cb31-607"><a href="#cb31-607" aria-hidden="true" tabindex="-1"></a>forecast_series <span class="op">=</span> series[split_time<span class="op">-</span>window_size:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb31-608"><a href="#cb31-608" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-609"><a href="#cb31-609" aria-hidden="true" tabindex="-1"></a><span class="co"># Use helper function to generate predictions</span></span>
+<span id="cb31-610"><a href="#cb31-610" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> model_forecast(model, forecast_series, window_size, batch_size)</span>
+<span id="cb31-611"><a href="#cb31-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-612"><a href="#cb31-612" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop single dimensional axis</span></span>
+<span id="cb31-613"><a href="#cb31-613" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> forecast.squeeze()</span>
 <span id="cb31-614"><a href="#cb31-614" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-617"><a href="#cb31-617" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb31-618"><a href="#cb31-618" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the MSE and MAE</span></span>
-<span id="cb31-619"><a href="#cb31-619" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())</span>
-<span id="cb31-620"><a href="#cb31-620" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb31-621"><a href="#cb31-621" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-624"><a href="#cb31-624" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb31-625"><a href="#cb31-625" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())</span>
-<span id="cb31-626"><a href="#cb31-626" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb31-627"><a href="#cb31-627" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-628"><a href="#cb31-628" aria-hidden="true" tabindex="-1"></a><span class="fu"># </span></span>
-<span id="cb31-629"><a href="#cb31-629" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-630"><a href="#cb31-630" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb31-615"><a href="#cb31-615" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb31-616"><a href="#cb31-616" aria-hidden="true" tabindex="-1"></a>plot_series(time_valid, (x_valid, results))</span>
+<span id="cb31-617"><a href="#cb31-617" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-618"><a href="#cb31-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-621"><a href="#cb31-621" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb31-622"><a href="#cb31-622" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the MSE and MAE</span></span>
+<span id="cb31-623"><a href="#cb31-623" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())</span>
+<span id="cb31-624"><a href="#cb31-624" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-625"><a href="#cb31-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-628"><a href="#cb31-628" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb31-629"><a href="#cb31-629" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())</span>
+<span id="cb31-630"><a href="#cb31-630" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb31-631"><a href="#cb31-631" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-632"><a href="#cb31-632" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction</span>
+<span id="cb31-632"><a href="#cb31-632" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-633"><a href="#cb31-633" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-634"><a href="#cb31-634" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C4</span>
+<span id="cb31-634"><a href="#cb31-634" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb31-635"><a href="#cb31-635" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-636"><a href="#cb31-636" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction</span>
+<span id="cb31-637"><a href="#cb31-637" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-638"><a href="#cb31-638" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C4</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

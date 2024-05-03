@@ -212,7 +212,7 @@ callbacks = myCallback()
 history = model.fit(
       train_generator,
       #steps_per_epoch=100,  # 2000 images = batch_size * steps
-      epochs=5,
+      epochs=10,
       validation_data=validation_generator,
       #validation_steps=50,  # 1000 images = batch_size * steps
       verbose=1,
@@ -254,6 +254,26 @@ plt.legend()
 
 plt.show()
 ```
+
+
+# save model
+
+```{python}
+# Save the entire model as a `.keras` zip archive.
+model.save('c2week4_rock_paper_scissors.keras')
+```
+
+# load model
+
+```{python}
+new_model = tf.keras.models.load_model('c2week4_rock_paper_scissors.keras')
+```
+
+
+```{python}
+new_model.summary()
+```
+
 
 
 # resource:

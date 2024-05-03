@@ -18,13 +18,36 @@ Week3 Sequence models
 
 In the last couple of weeks you looked first at Tokenizing words to get numeric values from them, and then using Embeddings to group words of similar meaning depending on how they were labelled. This gave you a good, but rough, sentiment analysis -- words such as 'fun' and 'entertaining' might show up in a positive movie review, and 'boring' and 'dull' might show up in a negative one. But sentiment can also be determined by the sequence in which words appear. For example, you could have 'not fun', which of course is the opposite of 'fun'. This week you'll start digging into a variety of model formats that are used in training models to understand context in sequence!
 
+
+
+```{python}
+import tensorflow as tf
+```
+
+
+```{python}
+import sys
+print(sys.version)
+```
+
+```{python}
+import os
+os.system('pip3 show tensorflow')
+```
+```{python}
+import os
+os.system('pip3 show keras')
+```
+
+
+
 # LSTMs
 
 ## download data 
 
 subwords positive/negative IMDB movie review 
 ```{python}
-#| eval: false
+
 import tensorflow_datasets as tfds
 
 # Download the subword encoded pretokenized dataset
@@ -36,7 +59,7 @@ tokenizer = info.features['text'].encoder
 
 ## make training and testing data
 ```{python}
-#| eval: false
+
 BUFFER_SIZE = 10000
 BATCH_SIZE = 256
 
@@ -54,7 +77,7 @@ test_dataset = test_data.padded_batch(BATCH_SIZE)
 ## define model
 
 ```{python}
-#| eval: false
+
 import tensorflow as tf
 
 # Hyperparameters
@@ -64,24 +87,24 @@ dense_dim = 16
 
 # Build the model
 model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(tokenizer.vocab_size, embedding_dim),
-    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm_dim,return_sequence=True)),
+    tf.keras.layers.Embedding(tokenizer.vocab_size, 32),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32, return_sequences=True)),
       tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(16)),
-    tf.keras.layers.Dense(dense_dim, activation='relu'),
+    tf.keras.layers.Dense(16, activation='relu'),
     tf.keras.layers.Dense(1, activation='sigmoid')
 ])
 ```
 
 
 ```{python}
-#| eval: false
+
 # Print the model summary
 model.summary()
 ```
 
 ## compile model
 ```{python}
-#| eval: false
+
 # Set the training parameters
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 ```
@@ -89,8 +112,8 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 
 ## training model
 ```{python}
-#| eval: false
-NUM_EPOCHS = 2
+
+NUM_EPOCHS = 3
 
 history = model.fit(train_dataset, epochs=NUM_EPOCHS, validation_data=test_dataset)
 ```
@@ -98,7 +121,7 @@ history = model.fit(train_dataset, epochs=NUM_EPOCHS, validation_data=test_datas
 ## model result
 
 ```{python}
-#| eval: false
+
 import matplotlib.pyplot as plt
 
 # Plot utility
@@ -113,6 +136,27 @@ def plot_graphs(history, string):
 # Plot the accuracy and results 
 plot_graphs(history, "accuracy")
 plot_graphs(history, "loss")
+```
+
+
+# save model
+
+```{python}
+# Save the entire model as a `.keras` zip archive.
+from keras.models import load_model, save_model
+
+save_model(model,'c3week3_movie_review_model.keras')
+```
+
+# load model
+
+```{python}
+new_model = load_model('c3week3_movie_review_model.keras')
+```
+
+
+```{python}
+new_model.summary()
 ```
 
 

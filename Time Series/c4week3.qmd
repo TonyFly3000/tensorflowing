@@ -494,7 +494,9 @@ model = tf.keras.models.Sequential([
   tf.keras.layers.Dense(1),
   tf.keras.layers.Lambda(lambda x: x * 100.0)
 ])
+```
 
+```{python}
 # compile
 
 # Set the learning rate
@@ -574,7 +576,7 @@ print(tf.keras.metrics.mean_squared_error(x_valid, results).numpy())
 print(tf.keras.metrics.mean_absolute_error(x_valid, results).numpy())
 ```
 
-# 
+
 
 # resource:
 
