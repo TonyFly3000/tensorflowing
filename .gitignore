@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+/.quarto/
+
+validation-horse-or-human
+
+horse-or-human
+
+tmp

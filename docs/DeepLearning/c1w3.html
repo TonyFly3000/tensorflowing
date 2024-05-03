@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tensorflowing - W3:Enhancing Vision with Convolutional Neural Networks</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.jpg" rel="icon" type="image/jpeg">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Tensorflowing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-intro" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Intro</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-intro">    
+        <li class="dropdown-header">Intro</li>
+        <li>
+    <a class="dropdown-item" href="../intro/about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-deep-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Deep Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-deep-neural-networks">    
+        <li class="dropdown-header">DeepLearning</li>
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w1.html">
+ <span class="dropdown-text">W1:A New Programming Paradigm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w2.html">
+ <span class="dropdown-text">W2:Introduction to Computer Vision</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w3.html">
+ <span class="dropdown-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w4.html">
+ <span class="dropdown-text">W4:Using Real-world Images</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-convolutional-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Convolutional Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-convolutional-neural-networks">    
+        <li class="dropdown-header">Convolutional Neural Networks in TensorFlow</li>
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week1.html">
+ <span class="dropdown-text">W1:Exploring a Larger Dataset</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week2.html">
+ <span class="dropdown-text">W2:Augmentation: A technique to avoid overfitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week3.html">
+ <span class="dropdown-text">W3:Transfer learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week4.html">
+ <span class="dropdown-text">W4:multi-class classification</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-natural-language-processing" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Natural Language Processing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-natural-language-processing">    
+        <li class="dropdown-header">Natural Language Processing</li>
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week1.html">
+ <span class="dropdown-text">W1:Sentiment in text</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week2.html">
+ <span class="dropdown-text">W2:Word Embeddings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week3.html">
+ <span class="dropdown-text">W3:Sequence models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week4.html">
+ <span class="dropdown-text">W4:Sequence models and literature</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-time-series" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Time Series</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-time-series">    
+        <li class="dropdown-header">Time Series</li>
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week1.html">
+ <span class="dropdown-text">W1:Sequences and Prediction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week2.html">
+ <span class="dropdown-text">W2:Deep Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week3.html">
+ <span class="dropdown-text">W3:Recurrent Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week4.html">
+ <span class="dropdown-text">W4:Real-world time series data</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tensorflow-tree-model" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">tensorflow tree model</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tensorflow-tree-model">    
+        <li class="dropdown-header">tree model</li>
+        <li>
+    <a class="dropdown-item" href="../tree model/1 install package.html">
+ <span class="dropdown-text">install pacakge</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/2 Keras random forests regression model.html">
+ <span class="dropdown-text">Keras random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/3 Keras tuned random forests regression model.html">
+ <span class="dropdown-text">Keras tuned random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/4 Keras GBT regression model.html">
+ <span class="dropdown-text">Keras Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/5 Keras tuned GBT regression model.html">
+ <span class="dropdown-text">Keras tuned Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../DeepLearning/c1w1.html">DeepLearning</a></li><li class="breadcrumb-item"><a href="../DeepLearning/c1w3.html">W3:Enhancing Vision with Convolutional Neural Networks</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">DeepLearning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W1:A New Programming Paradigm</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W2:Introduction to Computer Vision</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w3.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W4:Using Real-world Images</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#convolutional" id="toc-convolutional" class="nav-link active" data-scroll-target="#convolutional"><span class="header-section-number">1</span> convolutional</a></li>
+  <li><a href="#load-the-data" id="toc-load-the-data" class="nav-link" data-scroll-target="#load-the-data"><span class="header-section-number">2</span> Load the data</a></li>
+  <li><a href="#define-convolutional-model" id="toc-define-convolutional-model" class="nav-link" data-scroll-target="#define-convolutional-model"><span class="header-section-number">3</span> define convolutional model</a></li>
+  <li><a href="#compile-model" id="toc-compile-model" class="nav-link" data-scroll-target="#compile-model"><span class="header-section-number">4</span> compile model</a></li>
+  <li><a href="#callbacks" id="toc-callbacks" class="nav-link" data-scroll-target="#callbacks"><span class="header-section-number">5</span> Callbacks</a></li>
+  <li><a href="#train-model" id="toc-train-model" class="nav-link" data-scroll-target="#train-model"><span class="header-section-number">6</span> train model</a></li>
+  <li><a href="#evaluate" id="toc-evaluate" class="nav-link" data-scroll-target="#evaluate"><span class="header-section-number">7</span> evaluate</a></li>
+  <li><a href="#resource" id="toc-resource" class="nav-link" data-scroll-target="#resource"><span class="header-section-number">8</span> resource:</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../DeepLearning/c1w1.html">DeepLearning</a></li><li class="breadcrumb-item"><a href="../DeepLearning/c1w3.html">W3:Enhancing Vision with Convolutional Neural Networks</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Introduction to TensorFlow W3:Enhancing Vision with Convolutional Neural Networks</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>by Laurence Moroney</p>
+<section id="convolutional" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> convolutional</h1>
+<p><img src="images/Screenshot 2024-03-21 at 1.54.17 PM.png" class="img-fluid"></p>
+<p><img src="images/Screenshot 2024-03-21 at 1.54.22 PM.png" class="img-fluid"></p>
+<p>pooling</p>
+<p><img src="images/Screenshot 2024-03-21 at 1.54.55 PM.png" class="img-fluid"></p>
+<div id="24a0bebf" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.__version__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>2.16.1</code></pre>
+</div>
+</div>
+</section>
+<section id="load-the-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Load the data</h1>
+<div id="2b44e8f6" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Fashion MNIST dataset</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fmnist <span class="op">=</span> tf.keras.datasets.fashion_mnist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="d82d3613" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the training and test split of the Fashion MNIST dataset</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(training_images, training_labels), (test_images, test_labels) <span class="op">=</span> fmnist.load_data()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="ccf7f53b" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># You can put between 0 to 59999 here</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set number of characters per row when printing</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(linewidth<span class="op">=</span><span class="dv">320</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the label and image</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'LABEL: </span><span class="sc">{</span>training_labels[index]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'</span><span class="ch">\n</span><span class="ss">IMAGE PIXEL ARRAY:</span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>training_images[index]<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>LABEL: 9
+
+IMAGE PIXEL ARRAY:
+ [[  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   1   0   0  13  73   0   0   1   4   0   0   0   0   1   1   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   3   0  36 136 127  62  54   0   0   0   1   3   4   0   0   3]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   6   0 102 204 176 134 144 123  23   0   0   0   0  12  10   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0 155 236 207 178 107 156 161 109  64  23  77 130  72  15]
+ [  0   0   0   0   0   0   0   0   0   0   0   1   0  69 207 223 218 216 216 163 127 121 122 146 141  88 172  66]
+ [  0   0   0   0   0   0   0   0   0   1   1   1   0 200 232 232 233 229 223 223 215 213 164 127 123 196 229   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0 183 225 216 223 228 235 227 224 222 224 221 223 245 173   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0 193 228 218 213 198 180 212 210 211 213 223 220 243 202   0]
+ [  0   0   0   0   0   0   0   0   0   1   3   0  12 219 220 212 218 192 169 227 208 218 224 212 226 197 209  52]
+ [  0   0   0   0   0   0   0   0   0   0   6   0  99 244 222 220 218 203 198 221 215 213 222 220 245 119 167  56]
+ [  0   0   0   0   0   0   0   0   0   4   0   0  55 236 228 230 228 240 232 213 218 223 234 217 217 209  92   0]
+ [  0   0   1   4   6   7   2   0   0   0   0   0 237 226 217 223 222 219 222 221 216 223 229 215 218 255  77   0]
+ [  0   3   0   0   0   0   0   0   0  62 145 204 228 207 213 221 218 208 211 218 224 223 219 215 224 244 159   0]
+ [  0   0   0   0  18  44  82 107 189 228 220 222 217 226 200 205 211 230 224 234 176 188 250 248 233 238 215   0]
+ [  0  57 187 208 224 221 224 208 204 214 208 209 200 159 245 193 206 223 255 255 221 234 221 211 220 232 246   0]
+ [  3 202 228 224 221 211 211 214 205 205 205 220 240  80 150 255 229 221 188 154 191 210 204 209 222 228 225   0]
+ [ 98 233 198 210 222 229 229 234 249 220 194 215 217 241  65  73 106 117 168 219 221 215 217 223 223 224 229  29]
+ [ 75 204 212 204 193 205 211 225 216 185 197 206 198 213 240 195 227 245 239 223 218 212 209 222 220 221 230  67]
+ [ 48 203 183 194 213 197 185 190 194 192 202 214 219 221 220 236 225 216 199 206 186 181 177 172 181 205 206 115]
+ [  0 122 219 193 179 171 183 196 204 210 213 207 211 210 200 196 194 191 195 191 198 192 176 156 167 177 210  92]
+ [  0   0  74 189 212 191 175 172 175 181 185 188 189 188 193 198 204 209 210 210 211 188 188 194 192 216 170   0]
+ [  2   0   0   0  66 200 222 237 239 242 246 243 244 221 220 193 191 179 182 182 181 176 166 168  99  58   0   0]
+ [  0   0   0   0   0   0   0  40  61  44  72  41  35   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]]</code></pre>
+</div>
+</div>
+<div id="d42f8f70" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the image</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(training_images[index])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c1w3_files/figure-html/cell-6-output-1.png" width="415" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You’ll notice that all of the values in the number are between 0 and 255. If you are training a neural network especially in image processing, for various reasons it will usually learn better if you scale all values to between 0 and 1. It’s a process called normalization and fortunately in Python, it’s easy to normalize an array without looping. You do it like this:</p>
+<div id="1b3be948" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the pixel values of the train and test images</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>training_images  <span class="op">=</span> training_images <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>test_images <span class="op">=</span> test_images <span class="op">/</span> <span class="fl">255.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="define-convolutional-model" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> define convolutional model</h1>
+<p>input 28 by 28 black&amp;white image</p>
+<p>flow into32 3by3 convolutional layers and 2by2 pooling</p>
+<p>output is 10 neural(0-9) with softmax function</p>
+<div id="bcf7e0db" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the model</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                                                         </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add convolutions and max pooling</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>, input_shape<span class="op">=</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the same layers as before</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Flatten(),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">128</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="7c4fab1f" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Model: "sequential_2"</span>
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold"> Layer (type)                    </span>┃<span style="font-weight: bold"> Output Shape           </span>┃<span style="font-weight: bold">       Param # </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ conv2d_4 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">26</span>, <span style="color: #00af00; text-decoration-color: #00af00">26</span>, <span style="color: #00af00; text-decoration-color: #00af00">32</span>)     │           <span style="color: #00af00; text-decoration-color: #00af00">320</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_4 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">13</span>, <span style="color: #00af00; text-decoration-color: #00af00">13</span>, <span style="color: #00af00; text-decoration-color: #00af00">32</span>)     │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_5 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">11</span>, <span style="color: #00af00; text-decoration-color: #00af00">11</span>, <span style="color: #00af00; text-decoration-color: #00af00">32</span>)     │         <span style="color: #00af00; text-decoration-color: #00af00">9,248</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_5 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">5</span>, <span style="color: #00af00; text-decoration-color: #00af00">5</span>, <span style="color: #00af00; text-decoration-color: #00af00">32</span>)       │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten_2 (<span style="color: #0087ff; text-decoration-color: #0087ff">Flatten</span>)             │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">800</span>)            │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_4 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">128</span>)            │       <span style="color: #00af00; text-decoration-color: #00af00">102,528</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_5 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">10</span>)             │         <span style="color: #00af00; text-decoration-color: #00af00">1,290</span> │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Total params: </span><span style="color: #00af00; text-decoration-color: #00af00">113,386</span> (442.91 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">113,386</span> (442.91 KB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Non-trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+</div>
+</section>
+<section id="compile-model" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> compile model</h1>
+<div id="25faa47e" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer <span class="op">=</span> tf.optimizers.Adam(),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>              loss <span class="op">=</span> <span class="st">'sparse_categorical_crossentropy'</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="callbacks" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Callbacks</h1>
+<div id="b88a1b20" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Halts the training when the loss falls below 0.4</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">      epoch (integer) - index of epoch (required but unused in the function definition below)</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">      logs (dict) - metric results from the training epoch</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check the loss</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'loss'</span>) <span class="op">&lt;</span> <span class="fl">0.3</span>):</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Stop if threshold is met</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Loss is lower than 0.4 so cancelling training!"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"cancelling training with:"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(epoch<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="train-model" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> train model</h1>
+<div id="254fbd67" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model.fit(training_images, training_labels, epochs<span class="op">=</span><span class="dv">10</span>,callbacks<span class="op">=</span>[callbacks])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 10:33 338ms/step - accuracy: 0.0938 - loss: 2.3688  12/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.2628 - loss: 2.2724       23/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.2986 - loss: 2.1824  35/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.3336 - loss: 2.0582  46/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.3607 - loss: 1.9535  57/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.3849 - loss: 1.8617  68/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.4071 - loss: 1.7814  79/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.4270 - loss: 1.7110  90/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.4443 - loss: 1.6500 101/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.4593 - loss: 1.5967 112/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.4730 - loss: 1.5488 123/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.4856 - loss: 1.5058 134/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.4971 - loss: 1.4671 145/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.5076 - loss: 1.4320 156/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.5172 - loss: 1.4001 167/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5258 - loss: 1.3710 177/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5331 - loss: 1.3466 188/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5407 - loss: 1.3218 199/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5476 - loss: 1.2990 210/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5540 - loss: 1.2779 221/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5600 - loss: 1.2583 232/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5657 - loss: 1.2399 243/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5711 - loss: 1.2225 254/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5761 - loss: 1.2062 265/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5810 - loss: 1.1908 276/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5855 - loss: 1.1762 287/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5898 - loss: 1.1624 298/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5938 - loss: 1.1493 310/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.5980 - loss: 1.1358 321/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.6017 - loss: 1.1240 332/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.6052 - loss: 1.1127 343/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.6086 - loss: 1.1019 354/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.6118 - loss: 1.0916 365/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.6150 - loss: 1.0817 376/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.6180 - loss: 1.0723 387/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6209 - loss: 1.0633 398/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6237 - loss: 1.0546 409/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6263 - loss: 1.0462 421/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6292 - loss: 1.0375 432/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6317 - loss: 1.0298 443/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6341 - loss: 1.0224 454/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6364 - loss: 1.0151 465/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6387 - loss: 1.0081 476/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6409 - loss: 1.0013 487/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6431 - loss: 0.9947 496/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6448 - loss: 0.9895 507/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6469 - loss: 0.9832 518/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6489 - loss: 0.9771 529/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6508 - loss: 0.9712 540/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6527 - loss: 0.9654 551/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6546 - loss: 0.9598 562/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6564 - loss: 0.9543 573/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6582 - loss: 0.9489 584/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6600 - loss: 0.9436 595/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.6617 - loss: 0.9385 606/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6634 - loss: 0.9336 617/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6650 - loss: 0.9287 628/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6666 - loss: 0.9240 639/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6681 - loss: 0.9194 650/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6696 - loss: 0.9149 659/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6708 - loss: 0.9113 664/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6715 - loss: 0.9093 675/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6730 - loss: 0.9050 686/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6744 - loss: 0.9007 696/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6756 - loss: 0.8970 707/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6770 - loss: 0.8929 718/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6784 - loss: 0.8890 729/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6797 - loss: 0.8851 740/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6810 - loss: 0.8813 751/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6822 - loss: 0.8776 762/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6835 - loss: 0.8739 773/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6847 - loss: 0.8704 784/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6859 - loss: 0.8668 795/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6871 - loss: 0.8634 806/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6883 - loss: 0.8600 817/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.6894 - loss: 0.8567 828/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6905 - loss: 0.8534 839/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6916 - loss: 0.8502 849/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6926 - loss: 0.8473 859/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6936 - loss: 0.8445 870/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6947 - loss: 0.8414 881/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6957 - loss: 0.8384 892/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6967 - loss: 0.8354 903/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6977 - loss: 0.8325 914/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6987 - loss: 0.8296 925/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.6997 - loss: 0.8268 936/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7007 - loss: 0.8240 946/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7016 - loss: 0.8215 957/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7025 - loss: 0.8188 968/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7034 - loss: 0.8161 979/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7044 - loss: 0.8134 990/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7053 - loss: 0.81091001/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7062 - loss: 0.80831011/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7070 - loss: 0.80601021/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7078 - loss: 0.80371032/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.7086 - loss: 0.80131043/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7095 - loss: 0.79891053/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7102 - loss: 0.79671064/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7110 - loss: 0.79431075/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7119 - loss: 0.79201086/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7127 - loss: 0.78971097/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7135 - loss: 0.78741108/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7143 - loss: 0.78521119/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7150 - loss: 0.78301130/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7158 - loss: 0.78081141/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7166 - loss: 0.77871152/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7173 - loss: 0.77651163/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7180 - loss: 0.77441174/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7188 - loss: 0.77241185/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7195 - loss: 0.77031196/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7202 - loss: 0.76831207/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7209 - loss: 0.76631218/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7216 - loss: 0.76431229/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7223 - loss: 0.76241240/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.7230 - loss: 0.76041251/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7237 - loss: 0.75851262/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7243 - loss: 0.75661273/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7250 - loss: 0.75471284/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7257 - loss: 0.75291295/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7263 - loss: 0.75101306/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7270 - loss: 0.74921317/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7276 - loss: 0.74741328/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7282 - loss: 0.74571339/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7289 - loss: 0.74391350/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7295 - loss: 0.74221361/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7301 - loss: 0.74051372/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7307 - loss: 0.73881383/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7313 - loss: 0.73711394/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7319 - loss: 0.73551405/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7325 - loss: 0.73381416/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7331 - loss: 0.73221427/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7336 - loss: 0.73061438/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7342 - loss: 0.72901449/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.7348 - loss: 0.72741460/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7353 - loss: 0.72581471/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7359 - loss: 0.72431482/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7364 - loss: 0.72281493/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7370 - loss: 0.72121504/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7375 - loss: 0.71971515/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7381 - loss: 0.71831526/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7386 - loss: 0.71681537/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7391 - loss: 0.71531548/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7396 - loss: 0.71391559/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7402 - loss: 0.71241570/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7407 - loss: 0.71101581/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7412 - loss: 0.70961592/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7417 - loss: 0.70821603/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7422 - loss: 0.70691614/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7427 - loss: 0.70551625/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7432 - loss: 0.70421636/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7436 - loss: 0.70281647/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7441 - loss: 0.70151658/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.7446 - loss: 0.70021669/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7451 - loss: 0.69891678/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7454 - loss: 0.69781689/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7459 - loss: 0.69651700/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7464 - loss: 0.69531711/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7468 - loss: 0.69401722/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7473 - loss: 0.69281733/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7477 - loss: 0.69151744/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7482 - loss: 0.69031755/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7486 - loss: 0.68911766/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7490 - loss: 0.68791777/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7495 - loss: 0.68671788/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7499 - loss: 0.68551798/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7503 - loss: 0.68441808/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7507 - loss: 0.68331818/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7511 - loss: 0.68221828/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7515 - loss: 0.68121838/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7518 - loss: 0.68011848/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7522 - loss: 0.67911859/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7526 - loss: 0.67791870/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.7530 - loss: 0.67681875/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.7532 - loss: 0.6762
+Epoch 2/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 28s 15ms/step - accuracy: 0.7812 - loss: 0.4195  12/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.8542 - loss: 0.3685    23/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.8660 - loss: 0.3503  34/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.8682 - loss: 0.3436  45/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8675 - loss: 0.3449  56/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8668 - loss: 0.3474  67/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8663 - loss: 0.3485  78/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8653 - loss: 0.3500  89/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8649 - loss: 0.3507 100/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8648 - loss: 0.3513 111/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8649 - loss: 0.3513 122/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8650 - loss: 0.3515 132/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8649 - loss: 0.3519 143/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8648 - loss: 0.3525 154/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8648 - loss: 0.3529 165/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8648 - loss: 0.3532 176/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8649 - loss: 0.3535 187/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8650 - loss: 0.3536 198/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.8651 - loss: 0.3536 209/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3536 220/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8652 - loss: 0.3537 231/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3539 242/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3541 253/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3543 264/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3547 275/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8650 - loss: 0.3550 286/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8650 - loss: 0.3554 297/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8650 - loss: 0.3556 308/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8650 - loss: 0.3558 319/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8650 - loss: 0.3560 330/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3560 341/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3561 352/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8651 - loss: 0.3562 363/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8652 - loss: 0.3562 374/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8652 - loss: 0.3563 385/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8653 - loss: 0.3563 396/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8653 - loss: 0.3562 407/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8654 - loss: 0.3562 418/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8655 - loss: 0.3562 429/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8655 - loss: 0.3561 440/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8656 - loss: 0.3560 451/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8657 - loss: 0.3560 462/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8658 - loss: 0.3559 473/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8659 - loss: 0.3558 484/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8660 - loss: 0.3556 495/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8661 - loss: 0.3555 506/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8662 - loss: 0.3554 517/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8663 - loss: 0.3553 528/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8664 - loss: 0.3552 539/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8665 - loss: 0.3551 550/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8666 - loss: 0.3550 561/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8667 - loss: 0.3549 572/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8667 - loss: 0.3548 584/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8669 - loss: 0.3547 596/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8670 - loss: 0.3546 607/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8670 - loss: 0.3544 618/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8671 - loss: 0.3543 629/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8672 - loss: 0.3542 640/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8673 - loss: 0.3541 651/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8674 - loss: 0.3540 662/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8675 - loss: 0.3539 673/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8676 - loss: 0.3538 684/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8677 - loss: 0.3536 695/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8678 - loss: 0.3535 706/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8679 - loss: 0.3534 717/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8680 - loss: 0.3533 728/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8681 - loss: 0.3531 739/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8682 - loss: 0.3530 750/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8683 - loss: 0.3528 759/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8684 - loss: 0.3527 770/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8685 - loss: 0.3525 781/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8686 - loss: 0.3524 791/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8687 - loss: 0.3523 802/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8688 - loss: 0.3521 813/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8688 - loss: 0.3520 824/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8689 - loss: 0.3518 835/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8690 - loss: 0.3517 846/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8691 - loss: 0.3516 857/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8692 - loss: 0.3514 868/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8693 - loss: 0.3513 879/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8694 - loss: 0.3512 890/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8695 - loss: 0.3510 901/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8695 - loss: 0.3509 912/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8696 - loss: 0.3508 923/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8697 - loss: 0.3506 933/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8698 - loss: 0.3505 941/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8698 - loss: 0.3504 950/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8699 - loss: 0.3503 960/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8700 - loss: 0.3502 971/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8701 - loss: 0.3501 982/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8701 - loss: 0.3499 993/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8702 - loss: 0.34981001/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8703 - loss: 0.34971011/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8703 - loss: 0.34961022/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8704 - loss: 0.34951032/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8705 - loss: 0.34941042/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8706 - loss: 0.34931053/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8706 - loss: 0.34921063/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8707 - loss: 0.34911074/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8708 - loss: 0.34901085/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8708 - loss: 0.34881095/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8709 - loss: 0.34871106/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8710 - loss: 0.34861117/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8710 - loss: 0.34851128/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8711 - loss: 0.34841139/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8712 - loss: 0.34831149/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8713 - loss: 0.34821159/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8713 - loss: 0.34811169/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8714 - loss: 0.34801179/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8714 - loss: 0.34791189/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8715 - loss: 0.34781197/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8715 - loss: 0.34771207/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8716 - loss: 0.34761217/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8716 - loss: 0.34751227/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8717 - loss: 0.34741238/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8718 - loss: 0.34731249/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8718 - loss: 0.34721260/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8719 - loss: 0.34711271/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8719 - loss: 0.34701281/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8720 - loss: 0.34691292/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8721 - loss: 0.34681303/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8721 - loss: 0.34671314/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8722 - loss: 0.34651325/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8722 - loss: 0.34641336/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8723 - loss: 0.34631346/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8724 - loss: 0.34621357/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8724 - loss: 0.34611368/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8725 - loss: 0.34601379/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8725 - loss: 0.34591390/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8726 - loss: 0.34581400/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8727 - loss: 0.34571410/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8727 - loss: 0.34561421/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8728 - loss: 0.34551432/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8728 - loss: 0.34541443/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8729 - loss: 0.34531453/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8729 - loss: 0.34521464/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8730 - loss: 0.34511475/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8730 - loss: 0.34501486/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8731 - loss: 0.34491497/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8731 - loss: 0.34481508/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8732 - loss: 0.34461519/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8732 - loss: 0.34451529/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8733 - loss: 0.34451539/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8733 - loss: 0.34441549/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8734 - loss: 0.34431560/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8734 - loss: 0.34421571/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8734 - loss: 0.34411582/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8735 - loss: 0.34401593/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8735 - loss: 0.34391604/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8736 - loss: 0.34381614/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8736 - loss: 0.34371624/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8737 - loss: 0.34371635/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8737 - loss: 0.34361646/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8738 - loss: 0.34351656/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8738 - loss: 0.34341665/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8738 - loss: 0.34331675/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8739 - loss: 0.34321686/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8739 - loss: 0.34311697/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8740 - loss: 0.34311708/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8740 - loss: 0.34301718/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8740 - loss: 0.34291729/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8741 - loss: 0.34281740/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8741 - loss: 0.34271751/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8742 - loss: 0.34261761/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8742 - loss: 0.34261772/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8742 - loss: 0.34251783/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8743 - loss: 0.34241794/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8743 - loss: 0.34231805/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8744 - loss: 0.34221816/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8744 - loss: 0.34211827/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8745 - loss: 0.34211838/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8745 - loss: 0.34201849/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8745 - loss: 0.34191860/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8746 - loss: 0.34181870/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8746 - loss: 0.34171875/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.8746 - loss: 0.3417
+Epoch 3/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 24s 13ms/step - accuracy: 0.9375 - loss: 0.2110  12/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.9382 - loss: 0.2650    23/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.9285 - loss: 0.2748  34/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9213 - loss: 0.2785  45/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9168 - loss: 0.2803  56/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9128 - loss: 0.2825  67/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9099 - loss: 0.2835  78/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9079 - loss: 0.2838  88/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9066 - loss: 0.2844  99/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9056 - loss: 0.2848 110/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9046 - loss: 0.2854 121/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9036 - loss: 0.2858 132/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9030 - loss: 0.2857 143/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9026 - loss: 0.2855 154/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9023 - loss: 0.2852 164/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9021 - loss: 0.2849 174/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9019 - loss: 0.2845 184/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9017 - loss: 0.2843 194/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9015 - loss: 0.2842 204/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9012 - loss: 0.2842 214/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9010 - loss: 0.2843 224/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9008 - loss: 0.2845 235/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9006 - loss: 0.2847 245/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9004 - loss: 0.2849 256/1875 ━━━━━━━━━━━━━━━━━━━━ 8s 5ms/step - accuracy: 0.9002 - loss: 0.2851 266/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.9000 - loss: 0.2851 277/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8999 - loss: 0.2852 288/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8998 - loss: 0.2853 299/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8996 - loss: 0.2854 310/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8995 - loss: 0.2856 321/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8993 - loss: 0.2856 332/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8992 - loss: 0.2857 342/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8991 - loss: 0.2857 352/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8990 - loss: 0.2857 363/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8989 - loss: 0.2858 373/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8988 - loss: 0.2859 383/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8987 - loss: 0.2860 394/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8986 - loss: 0.2862 405/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8985 - loss: 0.2863 416/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8983 - loss: 0.2864 427/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8982 - loss: 0.2865 438/1875 ━━━━━━━━━━━━━━━━━━━━ 7s 5ms/step - accuracy: 0.8981 - loss: 0.2867 449/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8980 - loss: 0.2868 460/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8978 - loss: 0.2869 470/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8977 - loss: 0.2870 481/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8976 - loss: 0.2871 492/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8975 - loss: 0.2872 503/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8974 - loss: 0.2874 514/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8973 - loss: 0.2875 525/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8973 - loss: 0.2876 536/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8972 - loss: 0.2877 547/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8971 - loss: 0.2878 558/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8970 - loss: 0.2879 569/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8969 - loss: 0.2879 580/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8969 - loss: 0.2880 591/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8968 - loss: 0.2881 602/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8967 - loss: 0.2882 612/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8967 - loss: 0.2882 623/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8966 - loss: 0.2883 634/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8965 - loss: 0.2884 645/1875 ━━━━━━━━━━━━━━━━━━━━ 6s 5ms/step - accuracy: 0.8965 - loss: 0.2885 656/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8964 - loss: 0.2885 666/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8963 - loss: 0.2886 676/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8963 - loss: 0.2886 687/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8962 - loss: 0.2887 698/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8962 - loss: 0.2888 709/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8961 - loss: 0.2888 720/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8961 - loss: 0.2888 731/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8960 - loss: 0.2888 742/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8960 - loss: 0.2889 753/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8959 - loss: 0.2889 764/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8959 - loss: 0.2889 775/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8959 - loss: 0.2889 785/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8958 - loss: 0.2889 794/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8958 - loss: 0.2889 804/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8958 - loss: 0.2889 814/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8957 - loss: 0.2889 825/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8957 - loss: 0.2889 836/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8957 - loss: 0.2889 847/1875 ━━━━━━━━━━━━━━━━━━━━ 5s 5ms/step - accuracy: 0.8957 - loss: 0.2889 858/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8956 - loss: 0.2889 869/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8956 - loss: 0.2889 880/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8956 - loss: 0.2889 891/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8956 - loss: 0.2889 901/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8955 - loss: 0.2889 911/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8955 - loss: 0.2889 922/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8955 - loss: 0.2889 933/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8954 - loss: 0.2889 944/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8954 - loss: 0.2889 955/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8954 - loss: 0.2889 966/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8954 - loss: 0.2889 977/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8953 - loss: 0.2889 988/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8953 - loss: 0.2889 999/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8953 - loss: 0.28891010/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8953 - loss: 0.28891021/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8953 - loss: 0.28891032/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8952 - loss: 0.28891041/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8952 - loss: 0.28891046/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8952 - loss: 0.28891056/1875 ━━━━━━━━━━━━━━━━━━━━ 4s 5ms/step - accuracy: 0.8952 - loss: 0.28891067/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8952 - loss: 0.28891078/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8951 - loss: 0.28891089/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8951 - loss: 0.28891099/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8951 - loss: 0.28891110/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8951 - loss: 0.28891121/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8950 - loss: 0.28891132/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8950 - loss: 0.28891143/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8950 - loss: 0.28891154/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8950 - loss: 0.28891165/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8950 - loss: 0.28891176/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8950 - loss: 0.28891187/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28881198/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28881209/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28881220/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28881231/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28881242/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28871253/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28871263/1875 ━━━━━━━━━━━━━━━━━━━━ 3s 5ms/step - accuracy: 0.8949 - loss: 0.28871274/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28871285/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28861296/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28861307/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28861317/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28851328/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28851339/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28851350/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28841361/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28841372/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28841383/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28841394/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28831405/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28831416/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28831427/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28821438/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28821449/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28821460/1875 ━━━━━━━━━━━━━━━━━━━━ 2s 5ms/step - accuracy: 0.8949 - loss: 0.28811471/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28811482/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28811493/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28801504/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28801515/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28801526/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28791537/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28791548/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28781559/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28781570/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28781581/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28771592/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28771603/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28761614/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28761625/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28761636/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28751647/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28751658/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28741669/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 5ms/step - accuracy: 0.8949 - loss: 0.28741680/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8949 - loss: 0.28731691/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28731702/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28721713/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28721724/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28721735/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28711746/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28711757/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28711768/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28701779/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28701790/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28691801/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28691812/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28691823/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28691834/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28681844/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8950 - loss: 0.28681854/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8951 - loss: 0.28681865/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 5ms/step - accuracy: 0.8951 - loss: 0.2867
+Loss is lower than 0.4 so cancelling training!
+cancelling training with:
+3
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 9s 5ms/step - accuracy: 0.8951 - loss: 0.2867</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>&lt;keras.src.callbacks.history.History at 0x157b87dd0&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluate" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> evaluate</h1>
+<div id="edf8731e" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the model on unseen data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>model.evaluate(test_images, test_labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  1/313 ━━━━━━━━━━━━━━━━━━━━ 15s 49ms/step - accuracy: 0.8750 - loss: 0.5599 32/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8915 - loss: 0.3071   64/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8948 - loss: 0.2967 97/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8961 - loss: 0.2917131/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8956 - loss: 0.2932164/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8951 - loss: 0.2940198/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8946 - loss: 0.2952231/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8942 - loss: 0.2956265/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8942 - loss: 0.2950299/313 ━━━━━━━━━━━━━━━━━━━━ 0s 2ms/step - accuracy: 0.8943 - loss: 0.2943313/313 ━━━━━━━━━━━━━━━━━━━━ 1s 2ms/step - accuracy: 0.8943 - loss: 0.2941</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<pre><code>[0.2877785861492157, 0.8942999839782715]</code></pre>
+</div>
+</div>
+</section>
+<section id="resource" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> resource:</h1>
+<p>https://www.coursera.org/learn/introduction-tensorflow/home/info</p>
+<p>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1</p>
+<p>https://github.com/zalandoresearch/fashion-mnist</p>
+
+
+<!-- -->
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb19" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "W3:Enhancing Vision with Convolutional Neural Networks"</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">  error: false</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-location: right</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-bg: true</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-border-left: "#31BAE9"</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>Week3 Enhancing Vision with Convolutional Neural Networks</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>Welcome to week 3! In week 2 you saw a basic Neural Network for Computer Vision. It did the job nicely, but it was a little naive in its approach. This week we’ll see how to make it better, as discussed by Laurence and Andrew here.</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="fu"># convolutional</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/131.png)</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/132.png)</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>pooling</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/133.png)</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.__version__)</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a><span class="fu"># Load the data</span></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Fashion MNIST dataset</span></span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>fmnist <span class="op">=</span> tf.keras.datasets.fashion_mnist</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the training and test split of the Fashion MNIST dataset</span></span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>(training_images, training_labels), (test_images, test_labels) <span class="op">=</span> fmnist.load_data()</span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-65"><a href="#cb19-65" aria-hidden="true" tabindex="-1"></a><span class="co"># You can put between 0 to 59999 here</span></span>
+<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-68"><a href="#cb19-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Set number of characters per row when printing</span></span>
+<span id="cb19-69"><a href="#cb19-69" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(linewidth<span class="op">=</span><span class="dv">320</span>)</span>
+<span id="cb19-70"><a href="#cb19-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-71"><a href="#cb19-71" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the label and image</span></span>
+<span id="cb19-72"><a href="#cb19-72" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'LABEL: </span><span class="sc">{</span>training_labels[index]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb19-73"><a href="#cb19-73" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'</span><span class="ch">\n</span><span class="ss">IMAGE PIXEL ARRAY:</span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>training_images[index]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb19-74"><a href="#cb19-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-75"><a href="#cb19-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-78"><a href="#cb19-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-79"><a href="#cb19-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the image</span></span>
+<span id="cb19-80"><a href="#cb19-80" aria-hidden="true" tabindex="-1"></a>plt.imshow(training_images[index])</span>
+<span id="cb19-81"><a href="#cb19-81" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-82"><a href="#cb19-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-83"><a href="#cb19-83" aria-hidden="true" tabindex="-1"></a>You'll notice that all of the values in the number are between 0 and 255. If you are training a neural network especially in image processing, for various reasons it will usually learn better if you scale all values to between 0 and 1. It's a process called normalization and fortunately in Python, it's easy to normalize an array without looping. You do it like this:</span>
+<span id="cb19-84"><a href="#cb19-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-87"><a href="#cb19-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-88"><a href="#cb19-88" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the pixel values of the train and test images</span></span>
+<span id="cb19-89"><a href="#cb19-89" aria-hidden="true" tabindex="-1"></a>training_images  <span class="op">=</span> training_images <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb19-90"><a href="#cb19-90" aria-hidden="true" tabindex="-1"></a>test_images <span class="op">=</span> test_images <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb19-91"><a href="#cb19-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-92"><a href="#cb19-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-93"><a href="#cb19-93" aria-hidden="true" tabindex="-1"></a><span class="fu"># define convolutional model</span></span>
+<span id="cb19-94"><a href="#cb19-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-95"><a href="#cb19-95" aria-hidden="true" tabindex="-1"></a>input 28 by 28 black&amp;white image </span>
+<span id="cb19-96"><a href="#cb19-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-97"><a href="#cb19-97" aria-hidden="true" tabindex="-1"></a>flow into32 3by3 convolutional layers and 2by2 pooling</span>
+<span id="cb19-98"><a href="#cb19-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-99"><a href="#cb19-99" aria-hidden="true" tabindex="-1"></a>output is 10 neural(0-9) with softmax function </span>
+<span id="cb19-100"><a href="#cb19-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-103"><a href="#cb19-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-104"><a href="#cb19-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the model</span></span>
+<span id="cb19-105"><a href="#cb19-105" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb19-106"><a href="#cb19-106" aria-hidden="true" tabindex="-1"></a>                                                         </span>
+<span id="cb19-107"><a href="#cb19-107" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add convolutions and max pooling</span></span>
+<span id="cb19-108"><a href="#cb19-108" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>, input_shape<span class="op">=</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)),</span>
+<span id="cb19-109"><a href="#cb19-109" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb19-110"><a href="#cb19-110" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb19-111"><a href="#cb19-111" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb19-112"><a href="#cb19-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-113"><a href="#cb19-113" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add the same layers as before</span></span>
+<span id="cb19-114"><a href="#cb19-114" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Flatten(),</span>
+<span id="cb19-115"><a href="#cb19-115" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">128</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb19-116"><a href="#cb19-116" aria-hidden="true" tabindex="-1"></a>  tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
+<span id="cb19-117"><a href="#cb19-117" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb19-118"><a href="#cb19-118" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-119"><a href="#cb19-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-120"><a href="#cb19-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-123"><a href="#cb19-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-124"><a href="#cb19-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb19-125"><a href="#cb19-125" aria-hidden="true" tabindex="-1"></a>model.summary()</span>
+<span id="cb19-126"><a href="#cb19-126" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-127"><a href="#cb19-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-128"><a href="#cb19-128" aria-hidden="true" tabindex="-1"></a><span class="fu"># compile model</span></span>
+<span id="cb19-129"><a href="#cb19-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-132"><a href="#cb19-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-133"><a href="#cb19-133" aria-hidden="true" tabindex="-1"></a><span class="co"># the v2.11+ optimizer `tf.keras.optimizers.Adam` runs slowly on M1/M2 Macs</span></span>
+<span id="cb19-134"><a href="#cb19-134" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer <span class="op">=</span> tf.optimizers.Adam(),</span>
+<span id="cb19-135"><a href="#cb19-135" aria-hidden="true" tabindex="-1"></a>              loss <span class="op">=</span> <span class="st">'sparse_categorical_crossentropy'</span>,</span>
+<span id="cb19-136"><a href="#cb19-136" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb19-137"><a href="#cb19-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-138"><a href="#cb19-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-139"><a href="#cb19-139" aria-hidden="true" tabindex="-1"></a><span class="fu"># Callbacks</span></span>
+<span id="cb19-140"><a href="#cb19-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-143"><a href="#cb19-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-144"><a href="#cb19-144" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb19-145"><a href="#cb19-145" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb19-146"><a href="#cb19-146" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb19-147"><a href="#cb19-147" aria-hidden="true" tabindex="-1"></a><span class="co">    Halts the training when the loss falls below 0.4</span></span>
+<span id="cb19-148"><a href="#cb19-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-149"><a href="#cb19-149" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb19-150"><a href="#cb19-150" aria-hidden="true" tabindex="-1"></a><span class="co">      epoch (integer) - index of epoch (required but unused in the function definition below)</span></span>
+<span id="cb19-151"><a href="#cb19-151" aria-hidden="true" tabindex="-1"></a><span class="co">      logs (dict) - metric results from the training epoch</span></span>
+<span id="cb19-152"><a href="#cb19-152" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb19-153"><a href="#cb19-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-154"><a href="#cb19-154" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check the loss</span></span>
+<span id="cb19-155"><a href="#cb19-155" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'loss'</span>) <span class="op">&lt;</span> <span class="fl">0.3</span>):</span>
+<span id="cb19-156"><a href="#cb19-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-157"><a href="#cb19-157" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Stop if threshold is met</span></span>
+<span id="cb19-158"><a href="#cb19-158" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Loss is lower than 0.4 so cancelling training!"</span>)</span>
+<span id="cb19-159"><a href="#cb19-159" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"cancelling training with:"</span>)</span>
+<span id="cb19-160"><a href="#cb19-160" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(epoch<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb19-161"><a href="#cb19-161" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb19-162"><a href="#cb19-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-163"><a href="#cb19-163" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb19-164"><a href="#cb19-164" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span>
+<span id="cb19-165"><a href="#cb19-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-166"><a href="#cb19-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-167"><a href="#cb19-167" aria-hidden="true" tabindex="-1"></a><span class="fu"># train model</span></span>
+<span id="cb19-168"><a href="#cb19-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-171"><a href="#cb19-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-172"><a href="#cb19-172" aria-hidden="true" tabindex="-1"></a>model.fit(training_images, training_labels, epochs<span class="op">=</span><span class="dv">10</span>,callbacks<span class="op">=</span>[callbacks])</span>
+<span id="cb19-173"><a href="#cb19-173" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-174"><a href="#cb19-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-175"><a href="#cb19-175" aria-hidden="true" tabindex="-1"></a><span class="fu"># evaluate</span></span>
+<span id="cb19-176"><a href="#cb19-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-179"><a href="#cb19-179" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb19-180"><a href="#cb19-180" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the model on unseen data</span></span>
+<span id="cb19-181"><a href="#cb19-181" aria-hidden="true" tabindex="-1"></a>model.evaluate(test_images, test_labels)</span>
+<span id="cb19-182"><a href="#cb19-182" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-183"><a href="#cb19-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-184"><a href="#cb19-184" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb19-185"><a href="#cb19-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-186"><a href="#cb19-186" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/introduction-tensorflow/home/info</span>
+<span id="cb19-187"><a href="#cb19-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-188"><a href="#cb19-188" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1</span>
+<span id="cb19-189"><a href="#cb19-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-190"><a href="#cb19-190" aria-hidden="true" tabindex="-1"></a>https://github.com/zalandoresearch/fashion-mnist</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This website is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

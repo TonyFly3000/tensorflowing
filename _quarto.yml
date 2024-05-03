@@ -1,0 +1,91 @@
+project:
+  type: website
+  output-dir: docs
+
+
+language: 
+  search-box-placeholder: Search
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    grid:
+      sidebar-width: 300px
+      body-width: 900px
+      margin-width: 300px
+      gutter-width: 1rem
+
+website:
+  back-to-top-navigation: true
+  search:
+    location: navbar
+    type: textbox
+
+  title: "Tensorflowing"
+  favicon: "logo.jpg"
+  navbar:
+    logo: "1.png"
+    left:
+      - text: "Home"
+        file: index.qmd
+        
+      - sidebar:bar0
+      - sidebar:bar1
+      - sidebar:bar2
+      - sidebar:bar3   
+      - sidebar:bar4
+      - sidebar:bar5
+
+
+  sidebar:
+
+    - id: bar0
+      title: "Intro"
+      style: "floating"
+      background: light
+      collapse-level: 2
+      contents: intro
+
+    - id: bar1
+      title: "Deep Neural Networks"
+      style: "floating"
+      background: light
+      collapse-level: 2
+      contents: DeepLearning
+
+    - id: bar2
+      title: "Convolutional Neural Networks"
+      style: "floating"
+      background: light
+      collapse-level: 2
+      contents: Convolutional Neural Networks in TensorFlow
+
+    - id: bar3
+      title: "Natural Language Processing"
+      style: "floating"
+      background: light
+      collapse-level: 2
+      contents: Natural Language Processing  
+
+    - id: bar4
+      title: "Time Series"
+      style: "floating"
+      background: light
+      collapse-level: 2
+      contents: Time Series
+
+    - id: bar5
+      title: "tensorflow tree model"
+      style: "floating"
+      background: light
+      collapse-level: 2
+      contents: tree model
+
+  page-footer:
+    right: "This website is built with ❤️ and [Quarto](https://quarto.org/)."
+      
+execute:
+  freeze: true
+

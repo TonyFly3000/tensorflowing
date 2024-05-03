@@ -1,0 +1,12 @@
+{
+  "hash": "f013974c4f1209ee9cbcff50752c962c",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"Introduction to TensorFlow W1:A New Programming Paradigm\"\nexecute:\n  warning: false\n  error: false\nformat:\n  html:\n    toc: true\n    toc-location: right\n    code-fold: show\n    code-tools: true\n    number-sections: true\n    code-block-bg: true\n    code-block-border-left: \"#31BAE9\"\n---\n\nby Laurence Moroney\n\n![](images/2-01.png){width=\"365\"}\n\n::: {#3eb3a56c .cell execution_count=1}\n``` {.python .cell-code}\nimport tensorflow as tf\nimport numpy as np\nfrom tensorflow import keras\n\nprint(tf.__version__)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n2.16.1\n```\n:::\n:::\n\n\n::: {#b9c7e1aa .cell execution_count=2}\n``` {.python .cell-code}\n# Build a simple Sequential model\nmodel = tf.keras.Sequential([keras.layers.Dense(units=1, input_shape=[1])])\n```\n:::\n\n\n::: {#927c20e2 .cell execution_count=3}\n``` {.python .cell-code}\n# Compile the model\nmodel.compile(optimizer='sgd', loss='mean_squared_error')\n```\n:::\n\n\n::: {#0830f9cd .cell execution_count=4}\n``` {.python .cell-code}\n# Declare model inputs and outputs for training\nxs = np.array([-1.0,  0.0, 1.0, 2.0, 3.0, 4.0], dtype=float)\nys = np.array([-3.0, -1.0, 1.0, 3.0, 5.0, 7.0], dtype=float)\n```\n:::\n\n\n::: {#05975c69 .cell execution_count=5}\n``` {.python .cell-code}\n# Train the model\nmodel.fit(xs, ys, epochs=500,verbose=0)\n```\n\n::: {.cell-output .cell-output-display execution_count=5}\n```\n<keras.src.callbacks.history.History at 0x2848f63d0>\n```\n:::\n:::\n\n\n::: {#3a449677 .cell execution_count=6}\n``` {.python .cell-code}\n# Make a prediction\nprint(model.predict(x=np.array([10.0])))\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\r1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 13ms/step\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\r1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 13ms/step\n[[18.976614]]\n```\n:::\n:::\n\n\n# resource:\n\nhttps://www.coursera.org/learn/introduction-tensorflow/home/info\n\nhttps://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1\n\n",
+    "supporting": [
+      "c1w1_files/figure-html"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

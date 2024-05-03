@@ -1,0 +1,567 @@
+---
+title: "W2:Word Embeddings"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+Week2 Word Embeddings
+
+Last week you saw how to use the Tokenizer to prepare your text to be used by a neural network by converting words into numeric tokens, and sequencing sentences from these tokens. This week you'll learn about Embeddings, where these tokens are mapped as vectors in a high dimension space. With Embeddings and labelled examples, these vectors can then be tuned so that words with similar meaning will have a similar direction in the vector space. This will begin the process of training a neural network to understand sentiment in text -- and you'll begin by looking at movie reviews, training a neural network on texts that are labelled 'positive' or 'negative' and determining which words in a sentence drive those meanings
+
+```{python}
+
+import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+
+
+import tensorflow as tf
+print(tf.__version__)
+```
+
+# Training a binary classifier with the IMDB Reviews Dataset
+
+## download datasets:
+
+```{python}
+#| eval: false
+pip install -q tensorflow-datasets
+```
+
+## load data
+
+```{python}
+import tensorflow_datasets as tfds
+
+# Load the IMDB Reviews dataset
+imdb, info = tfds.load("imdb_reviews", with_info=True, as_supervised=True)
+```
+
+```{python}
+# Print information about the dataset
+print(info)
+```
+
+```{python}
+# Print the contents of the dataset you downloaded
+print(imdb)
+```
+
+```{python}
+# Take 2 training examples and print its contents
+for example in imdb['train'].take(2):
+  print(example)
+```
+
+# make it into train and test data
+
+```{python}
+import numpy as np
+
+# Get the train and test sets
+train_data, test_data = imdb['train'], imdb['test']
+
+# Initialize sentences and labels lists
+training_sentences = []
+training_labels = []
+
+testing_sentences = []
+testing_labels = []
+
+# Loop over all training examples and save the sentences and labels
+for s,l in train_data:
+  training_sentences.append(s.numpy().decode('utf8'))
+  training_labels.append(l.numpy())
+
+# Loop over all test examples and save the sentences and labels
+for s,l in test_data:
+  testing_sentences.append(s.numpy().decode('utf8'))
+  testing_labels.append(l.numpy())
+
+# Convert labels lists to numpy array
+training_labels_final = np.array(training_labels)
+testing_labels_final = np.array(testing_labels)
+```
+
+```{python}
+len(training_sentences)
+```
+
+```{python}
+training_sentences[1]
+```
+
+```{python}
+training_labels_final[1]
+```
+
+```{python}
+len(testing_sentences)
+```
+
+```{python}
+testing_sentences[1]
+```
+
+
+```{python}
+testing_labels_final[1]
+```
+
+## Tokenizer
+
+using 10000 max common words and each line max 120 words.
+
+```{python}
+# Parameters
+
+vocab_size = 10000
+max_length = 120
+embedding_dim = 16
+#trunc_type='pre'
+trunc_type='post'
+oov_tok = "<OOV>"
+```
+
+```{python}
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+
+# Initialize the Tokenizer class
+tokenizer = Tokenizer(num_words = vocab_size, oov_token=oov_tok)
+
+
+# Generate the word index dictionary for the training sentences
+tokenizer.fit_on_texts(training_sentences)
+word_index = tokenizer.word_index
+
+# Generate and pad the training sequences
+sequences = tokenizer.texts_to_sequences(training_sentences)
+padded = pad_sequences(sequences,maxlen=max_length, truncating=trunc_type)
+
+
+# the testing set is tokenizerd base on the training set
+# Generate and pad the test sequences
+testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
+testing_padded = pad_sequences(testing_sequences,maxlen=max_length, truncating=trunc_type)
+```
+
+```{python}
+                          
+reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])            
+
+def decode_review(text):
+    return ' '.join([reverse_word_index.get(i, '?') for i in text])
+```
+
+```{python}
+len(padded[0])
+```
+
+first line
+
+```{python}
+print(decode_review(padded[1]))
+```
+
+first line after tokenizer
+
+```{python}
+print(sequences[1])
+```
+
+## define model
+
+```{python}
+
+# Build the model
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(vocab_size, embedding_dim, 
+    #input_length=max_length input_length is remove in Keras 3  so change to keras 2 in the beginning of this notebook
+    input_length=max_length
+    
+    ),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(6, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+```
+
+## compile model
+
+```{python}
+# Setup the training parameters
+model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+```
+
+```{python}
+# Print the model summary
+model.summary()
+```
+
+## Callbacks
+
+```{python}
+
+class myCallback(tf.keras.callbacks.Callback):
+  def on_epoch_end(self, epoch, logs={}):
+    if(logs.get('val_accuracy')>0.88):
+      print("\nReached 88% val_accuracy so cancelling training!")
+      self.model.stop_training = True
+
+# Instantiate class
+callbacks = myCallback()
+```
+
+## train model
+
+```{python}
+num_epochs = 10
+
+# Train the model
+history=model.fit(
+  padded, training_labels_final, epochs=num_epochs, 
+  validation_data=(testing_padded, testing_labels_final),
+  verbose=1,
+  callbacks=[callbacks]
+)
+```
+
+```{python}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+epochs = range(len(acc))
+```
+
+```{python}
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+#------------------------------------------------
+# Plot training and validation accuracy per epoch
+#------------------------------------------------
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+plt.legend()
+plt.show()
+plt.figure()
+
+plt.plot(epochs, loss, 'r', label='Training Loss')
+plt.plot(epochs, val_loss, 'b', label='Validation Loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+```
+
+## Visualize Word Embeddings
+
+```{python}
+# Get the embedding layer from the model (i.e. first layer)
+embedding_layer = model.layers[0]
+
+# Get the weights of the embedding layer
+embedding_weights = embedding_layer.get_weights()[0]
+
+# Print the shape. Expected is (vocab_size, embedding_dim)
+print(embedding_weights.shape) 
+```
+
+```{python}
+# Get the index-word dictionary
+reverse_word_index = tokenizer.index_word
+
+#reverse_word_index
+```
+
+# Training a binary classifier with the sarcasm Dataset
+
+```{python}
+#| eval: false
+import urllib.request
+urllib.request.urlretrieve("https://storage.googleapis.com/tensorflow-1-public/course3/sarcasm.json","sarcasm.json")
+```
+
+## read data
+
+```{python}
+import json
+
+# Load the JSON file
+with open("./sarcasm.json", 'r') as f:
+    datastore = json.load(f)
+```
+
+```{python}
+# Initialize lists
+sentences = [] 
+labels = []
+urls = []
+
+# Append elements in the dictionaries into each list
+for item in datastore:
+    sentences.append(item['headline'])
+    labels.append(item['is_sarcastic'])
+    urls.append(item['article_link'])
+```
+
+## make it into train and test data
+
+```{python}
+# Number of examples to use for training
+training_size = 20000
+
+# Vocabulary size of the tokenizer
+vocab_size = 10000
+
+# Maximum length of the padded sequences
+max_length = 32
+
+# Output dimensions of the Embedding layer
+embedding_dim = 16
+```
+
+```{python}
+# Split the sentences
+training_sentences = sentences[0:training_size]
+testing_sentences = sentences[training_size:]
+
+# Split the labels
+training_labels = labels[0:training_size]
+testing_labels = labels[training_size:]
+```
+
+```{python}
+len(training_sentences)
+```
+
+```{python}
+training_sentences[1]
+
+training_labels_final[1]
+```
+
+```{python}
+len(testing_sentences)
+```
+
+```{python}
+
+testing_sentences[1]
+
+testing_labels_final[1]
+```
+
+## Tokenizer
+
+```{python}
+import numpy as np
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+# Parameters for padding and OOV tokens
+trunc_type='post'
+padding_type='post'
+oov_tok = "<OOV>"
+
+# Initialize the Tokenizer class
+tokenizer = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
+
+# Generate the word index dictionary
+tokenizer.fit_on_texts(training_sentences)
+word_index = tokenizer.word_index
+
+# Generate and pad the training sequences
+training_sequences = tokenizer.texts_to_sequences(training_sentences)
+training_padded = pad_sequences(training_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+
+# Generate and pad the testing sequences
+testing_sequences = tokenizer.texts_to_sequences(testing_sentences)
+testing_padded = pad_sequences(testing_sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
+
+# Convert the labels lists into numpy arrays
+training_labels = np.array(training_labels)
+testing_labels = np.array(testing_labels)
+```
+
+```{python}
+import tensorflow as tf
+
+# Initialize a GlobalAveragePooling1D (GAP1D) layer
+gap1d_layer = tf.keras.layers.GlobalAveragePooling1D()
+
+# Define sample array
+sample_array = np.array([[[10,2],[1,3],[1,1]]])
+
+# Print shape and contents of sample array
+print(f'shape of sample_array = {sample_array.shape}')
+print(f'sample array: {sample_array}')
+
+# Pass the sample array to the GAP1D layer
+output = gap1d_layer(sample_array)
+
+# Print shape and contents of the GAP1D output array
+print(f'output shape of gap1d_layer: {output.shape}')
+print(f'output array of gap1d_layer: {output.numpy()}')
+```
+
+## define model
+
+```{python}
+# Build the model
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    tf.keras.layers.GlobalAveragePooling1D(),
+    tf.keras.layers.Dense(24, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+```
+
+## compile model
+
+```{python}
+# Setup the training parameters
+model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+```
+
+```{python}
+# Print the model summary
+model.summary()
+```
+
+## Callbacks
+
+```{python}
+
+class myCallback(tf.keras.callbacks.Callback):
+  def on_epoch_end(self, epoch, logs={}):
+    if(logs.get('val_accuracy')>0.88):
+      print("\nReached 88% val_accuracy so cancelling training!")
+      self.model.stop_training = True
+
+# Instantiate class
+callbacks = myCallback()
+```
+
+## train model
+
+```{python}
+num_epochs = 10
+
+
+num_epochs = 30
+
+# Train the model
+history = model.fit(
+      training_padded, training_labels, epochs=num_epochs,
+      validation_data=(testing_padded, testing_labels), 
+      verbose=1,
+      callbacks=[callbacks]
+)
+
+
+```
+
+## Visualize the Results
+
+```{python}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+epochs = range(len(acc))
+```
+
+```{python}
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+#------------------------------------------------
+# Plot training and validation accuracy per epoch
+#------------------------------------------------
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+plt.legend()
+plt.show()
+plt.figure()
+
+plt.plot(epochs, loss, 'r', label='Training Loss')
+plt.plot(epochs, val_loss, 'b', label='Validation Loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+```
+
+## Visualize Word Embeddings
+
+```{python}
+# Get the index-word dictionary
+reverse_word_index = tokenizer.index_word
+
+# Get the embedding layer from the model (i.e. first layer)
+embedding_layer = model.layers[0]
+
+# Get the weights of the embedding layer
+embedding_weights = embedding_layer.get_weights()[0]
+
+# Print the shape. Expected is (vocab_size, embedding_dim)
+print(embedding_weights.shape) 
+```
+
+# IMDB Subword Tokenization data
+
+plain_text - this is the default and the one you used in Lab 1 of this week
+
+```{python}
+#| eval: false
+import tensorflow_datasets as tfds
+
+# Download the plain text default config
+imdb_plaintext, info_plaintext = tfds.load("imdb_reviews", with_info=True, as_supervised=True)
+```
+
+subwords8k - a pre-tokenized dataset (i.e. instead of sentences of type string, it will already give you the tokenized sequences). You will see how this looks in later sections.
+
+subword Tokenizer will cut the word. the training result will not be good because its breaking the word.
+
+![](images/2.png){width="280"}
+
+```{python}
+import tensorflow_datasets as tfds
+
+# Download the subword encoded pretokenized dataset
+imdb_subwords, info_subwords = tfds.load("imdb_reviews/subwords8k", with_info=True, as_supervised=True)
+```
+
+```{python}
+# Print description of features
+info_subwords.features
+```
+
+```{python}
+# Get the encoder
+tokenizer_subwords = info_subwords.features['text'].encoder
+
+# Take 2 training examples and decode the text feature
+for example in imdb_subwords['train'].take(2):
+  print(tokenizer_subwords.decode(example[0]))
+```
+
+# resource:
+
+https://www.coursera.org/learn/natural-language-processing-tensorflow
+
+https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C3

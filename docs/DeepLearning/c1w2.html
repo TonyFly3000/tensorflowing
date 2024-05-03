@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tensorflowing - W2:Introduction to Computer Vision</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.jpg" rel="icon" type="image/jpeg">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Tensorflowing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-intro" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Intro</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-intro">    
+        <li class="dropdown-header">Intro</li>
+        <li>
+    <a class="dropdown-item" href="../intro/about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-deep-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Deep Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-deep-neural-networks">    
+        <li class="dropdown-header">DeepLearning</li>
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w1.html">
+ <span class="dropdown-text">W1:A New Programming Paradigm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w2.html">
+ <span class="dropdown-text">W2:Introduction to Computer Vision</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w3.html">
+ <span class="dropdown-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w4.html">
+ <span class="dropdown-text">W4:Using Real-world Images</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-convolutional-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Convolutional Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-convolutional-neural-networks">    
+        <li class="dropdown-header">Convolutional Neural Networks in TensorFlow</li>
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week1.html">
+ <span class="dropdown-text">W1:Exploring a Larger Dataset</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week2.html">
+ <span class="dropdown-text">W2:Augmentation: A technique to avoid overfitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week3.html">
+ <span class="dropdown-text">W3:Transfer learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week4.html">
+ <span class="dropdown-text">W4:multi-class classification</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-natural-language-processing" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Natural Language Processing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-natural-language-processing">    
+        <li class="dropdown-header">Natural Language Processing</li>
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week1.html">
+ <span class="dropdown-text">W1:Sentiment in text</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week2.html">
+ <span class="dropdown-text">W2:Word Embeddings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week3.html">
+ <span class="dropdown-text">W3:Sequence models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week4.html">
+ <span class="dropdown-text">W4:Sequence models and literature</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-time-series" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Time Series</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-time-series">    
+        <li class="dropdown-header">Time Series</li>
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week1.html">
+ <span class="dropdown-text">W1:Sequences and Prediction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week2.html">
+ <span class="dropdown-text">W2:Deep Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week3.html">
+ <span class="dropdown-text">W3:Recurrent Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week4.html">
+ <span class="dropdown-text">W4:Real-world time series data</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tensorflow-tree-model" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">tensorflow tree model</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tensorflow-tree-model">    
+        <li class="dropdown-header">tree model</li>
+        <li>
+    <a class="dropdown-item" href="../tree model/1 install package.html">
+ <span class="dropdown-text">install pacakge</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/2 Keras random forests regression model.html">
+ <span class="dropdown-text">Keras random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/3 Keras tuned random forests regression model.html">
+ <span class="dropdown-text">Keras tuned random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/4 Keras GBT regression model.html">
+ <span class="dropdown-text">Keras Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/5 Keras tuned GBT regression model.html">
+ <span class="dropdown-text">Keras tuned Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../DeepLearning/c1w1.html">DeepLearning</a></li><li class="breadcrumb-item"><a href="../DeepLearning/c1w2.html">W2:Introduction to Computer Vision</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">DeepLearning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W1:A New Programming Paradigm</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">W2:Introduction to Computer Vision</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W4:Using Real-world Images</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#load-the-data" id="toc-load-the-data" class="nav-link active" data-scroll-target="#load-the-data"><span class="header-section-number">1</span> Load the data</a></li>
+  <li><a href="#define-model" id="toc-define-model" class="nav-link" data-scroll-target="#define-model"><span class="header-section-number">2</span> define model</a></li>
+  <li><a href="#compile-model" id="toc-compile-model" class="nav-link" data-scroll-target="#compile-model"><span class="header-section-number">3</span> compile model</a></li>
+  <li><a href="#callbacks" id="toc-callbacks" class="nav-link" data-scroll-target="#callbacks"><span class="header-section-number">4</span> Callbacks</a></li>
+  <li><a href="#train-model" id="toc-train-model" class="nav-link" data-scroll-target="#train-model"><span class="header-section-number">5</span> train model</a></li>
+  <li><a href="#evaluate" id="toc-evaluate" class="nav-link" data-scroll-target="#evaluate"><span class="header-section-number">6</span> evaluate</a></li>
+  <li><a href="#resource" id="toc-resource" class="nav-link" data-scroll-target="#resource"><span class="header-section-number">7</span> resource:</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../DeepLearning/c1w1.html">DeepLearning</a></li><li class="breadcrumb-item"><a href="../DeepLearning/c1w2.html">W2:Introduction to Computer Vision</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Introduction to TensorFlow W2:Introduction to Computer Vision</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>by Laurence Moroney</p>
+<div id="454c1e37" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sys.version)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>3.11.4 (v3.11.4:d2340ef257, Jun  6 2023, 19:15:51) [Clang 13.0.0 (clang-1300.0.29.30)]</code></pre>
+</div>
+</div>
+<div id="50bc23fa" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.__version__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>2.16.1</code></pre>
+</div>
+</div>
+<p><img src="images/1.png" class="img-fluid"></p>
+<section id="load-the-data" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Load the data</h1>
+<div id="20a770fc" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Fashion MNIST dataset</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fmnist <span class="op">=</span> tf.keras.datasets.fashion_mnist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="ccf3d2ef" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the training and test split of the Fashion MNIST dataset</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>(training_images, training_labels), (test_images, test_labels) <span class="op">=</span> fmnist.load_data()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="912098c5" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># You can put between 0 to 59999 here</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Set number of characters per row when printing</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(linewidth<span class="op">=</span><span class="dv">320</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the label and image</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'LABEL: </span><span class="sc">{</span>training_labels[index]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'</span><span class="ch">\n</span><span class="ss">IMAGE PIXEL ARRAY:</span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>training_images[index]<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>LABEL: 9
+
+IMAGE PIXEL ARRAY:
+ [[  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   1   0   0  13  73   0   0   1   4   0   0   0   0   1   1   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   3   0  36 136 127  62  54   0   0   0   1   3   4   0   0   3]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   6   0 102 204 176 134 144 123  23   0   0   0   0  12  10   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0 155 236 207 178 107 156 161 109  64  23  77 130  72  15]
+ [  0   0   0   0   0   0   0   0   0   0   0   1   0  69 207 223 218 216 216 163 127 121 122 146 141  88 172  66]
+ [  0   0   0   0   0   0   0   0   0   1   1   1   0 200 232 232 233 229 223 223 215 213 164 127 123 196 229   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0 183 225 216 223 228 235 227 224 222 224 221 223 245 173   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0 193 228 218 213 198 180 212 210 211 213 223 220 243 202   0]
+ [  0   0   0   0   0   0   0   0   0   1   3   0  12 219 220 212 218 192 169 227 208 218 224 212 226 197 209  52]
+ [  0   0   0   0   0   0   0   0   0   0   6   0  99 244 222 220 218 203 198 221 215 213 222 220 245 119 167  56]
+ [  0   0   0   0   0   0   0   0   0   4   0   0  55 236 228 230 228 240 232 213 218 223 234 217 217 209  92   0]
+ [  0   0   1   4   6   7   2   0   0   0   0   0 237 226 217 223 222 219 222 221 216 223 229 215 218 255  77   0]
+ [  0   3   0   0   0   0   0   0   0  62 145 204 228 207 213 221 218 208 211 218 224 223 219 215 224 244 159   0]
+ [  0   0   0   0  18  44  82 107 189 228 220 222 217 226 200 205 211 230 224 234 176 188 250 248 233 238 215   0]
+ [  0  57 187 208 224 221 224 208 204 214 208 209 200 159 245 193 206 223 255 255 221 234 221 211 220 232 246   0]
+ [  3 202 228 224 221 211 211 214 205 205 205 220 240  80 150 255 229 221 188 154 191 210 204 209 222 228 225   0]
+ [ 98 233 198 210 222 229 229 234 249 220 194 215 217 241  65  73 106 117 168 219 221 215 217 223 223 224 229  29]
+ [ 75 204 212 204 193 205 211 225 216 185 197 206 198 213 240 195 227 245 239 223 218 212 209 222 220 221 230  67]
+ [ 48 203 183 194 213 197 185 190 194 192 202 214 219 221 220 236 225 216 199 206 186 181 177 172 181 205 206 115]
+ [  0 122 219 193 179 171 183 196 204 210 213 207 211 210 200 196 194 191 195 191 198 192 176 156 167 177 210  92]
+ [  0   0  74 189 212 191 175 172 175 181 185 188 189 188 193 198 204 209 210 210 211 188 188 194 192 216 170   0]
+ [  2   0   0   0  66 200 222 237 239 242 246 243 244 221 220 193 191 179 182 182 181 176 166 168  99  58   0   0]
+ [  0   0   0   0   0   0   0  40  61  44  72  41  35   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]
+ [  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0]]</code></pre>
+</div>
+</div>
+<div id="749e7c8b" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the image</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(training_images[index])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c1w2_files/figure-html/cell-7-output-1.png" width="415" height="411" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You’ll notice that all of the values in the number are between 0 and 255. If you are training a neural network especially in image processing, for various reasons it will usually learn better if you scale all values to between 0 and 1. It’s a process called normalization and fortunately in Python, it’s easy to normalize an array without looping. You do it like this:</p>
+<div id="8a258b74" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the pixel values of the train and test images</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>training_images  <span class="op">=</span> training_images <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>test_images <span class="op">=</span> test_images <span class="op">/</span> <span class="fl">255.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="define-model" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> define model</h1>
+<p><strong>Sequential</strong>: That defines a sequence of layers in the neural network.</p>
+<p><strong>Flatten</strong>: Remember earlier where our images were a 28x28 pixel matrix when you printed them out? Flatten just takes that square and turns it into a 1-dimensional array.</p>
+<p><strong>Dense</strong>: Adds a layer of neurons</p>
+<p>Each layer of neurons need an activation function to tell them what to do. There are a lot of options, but just use these for now:</p>
+<p><strong>ReLU</strong> effectively means:</p>
+<p>if x &gt; 0: return x</p>
+<p>else: return 0</p>
+<p><strong>Softmax</strong> takes a list of values and scales these so the sum of all elements will be equal to 1</p>
+<div id="b0effca7" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([tf.keras.layers.Flatten(), </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                                    tf.keras.layers.Dense(<span class="dv">128</span>, activation<span class="op">=</span>tf.nn.relu), </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                                    tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span>tf.nn.softmax)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="ff5151fd" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Model: "sequential"</span>
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold"> Layer (type)                    </span>┃<span style="font-weight: bold"> Output Shape           </span>┃<span style="font-weight: bold">       Param # </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ flatten (<span style="color: #0087ff; text-decoration-color: #0087ff">Flatten</span>)               │ ?                      │   <span style="color: #00af00; text-decoration-color: #00af00">0</span> (unbuilt) │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                   │ ?                      │   <span style="color: #00af00; text-decoration-color: #00af00">0</span> (unbuilt) │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ ?                      │   <span style="color: #00af00; text-decoration-color: #00af00">0</span> (unbuilt) │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Total params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Non-trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+</div>
+</section>
+<section id="compile-model" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> compile model</h1>
+<div id="02f8f589" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer <span class="op">=</span> tf.optimizers.Adam(),</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>              loss <span class="op">=</span> <span class="st">'sparse_categorical_crossentropy'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="callbacks" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Callbacks</h1>
+<div id="665c8921" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Halts the training when the loss falls below 0.4</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">      epoch (integer) - index of epoch (required but unused in the function definition below)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">      logs (dict) - metric results from the training epoch</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check the loss</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'loss'</span>) <span class="op">&lt;</span> <span class="fl">0.3</span>):</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Stop if threshold is met</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Loss is lower than 0.4 so cancelling training!"</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"cancelling training with:"</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(epoch<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="train-model" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> train model</h1>
+<div id="ecc33409" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.fit(training_images, training_labels, epochs<span class="op">=</span><span class="dv">10</span>,callbacks<span class="op">=</span>[callbacks])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 7:25 238ms/step - accuracy: 0.0938 - loss: 2.4555  86/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 592us/step - accuracy: 0.5677 - loss: 1.2886   167/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 606us/step - accuracy: 0.6333 - loss: 1.0827 249/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 609us/step - accuracy: 0.6678 - loss: 0.9772 331/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 610us/step - accuracy: 0.6896 - loss: 0.9106 412/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7047 - loss: 0.8639 496/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 610us/step - accuracy: 0.7166 - loss: 0.8271 580/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 608us/step - accuracy: 0.7261 - loss: 0.7980 663/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 608us/step - accuracy: 0.7340 - loss: 0.7741 746/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 608us/step - accuracy: 0.7407 - loss: 0.7540 828/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 609us/step - accuracy: 0.7465 - loss: 0.7366 909/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 609us/step - accuracy: 0.7514 - loss: 0.7217 991/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 610us/step - accuracy: 0.7558 - loss: 0.70831073/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 610us/step - accuracy: 0.7597 - loss: 0.69641154/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7633 - loss: 0.68581236/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7666 - loss: 0.67591319/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7696 - loss: 0.66671402/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7724 - loss: 0.65821484/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7750 - loss: 0.65041565/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7773 - loss: 0.64321647/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7796 - loss: 0.63651729/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7816 - loss: 0.63011811/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 611us/step - accuracy: 0.7836 - loss: 0.62431875/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 612us/step - accuracy: 0.7850 - loss: 0.6199
+Epoch 2/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 15s 8ms/step - accuracy: 0.8750 - loss: 0.4051  84/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 606us/step - accuracy: 0.8529 - loss: 0.4055 168/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 603us/step - accuracy: 0.8536 - loss: 0.4031 254/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8540 - loss: 0.4004 338/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8537 - loss: 0.3993 422/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8541 - loss: 0.3973 506/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8545 - loss: 0.3961 590/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8550 - loss: 0.3947 675/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 596us/step - accuracy: 0.8555 - loss: 0.3935 760/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 596us/step - accuracy: 0.8560 - loss: 0.3922 843/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8564 - loss: 0.3912 927/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8568 - loss: 0.39031013/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8571 - loss: 0.38941097/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8574 - loss: 0.38851181/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8577 - loss: 0.38771265/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8580 - loss: 0.38701349/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8582 - loss: 0.38631433/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8585 - loss: 0.38581518/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8586 - loss: 0.38531602/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8588 - loss: 0.38491686/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8590 - loss: 0.38451771/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8591 - loss: 0.38421856/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8593 - loss: 0.38381875/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 598us/step - accuracy: 0.8593 - loss: 0.3838
+Epoch 3/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 15s 9ms/step - accuracy: 0.8750 - loss: 0.3526  84/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 606us/step - accuracy: 0.8907 - loss: 0.3048 167/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 604us/step - accuracy: 0.8882 - loss: 0.3091 251/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 602us/step - accuracy: 0.8862 - loss: 0.3142 335/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 602us/step - accuracy: 0.8847 - loss: 0.3182 417/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 604us/step - accuracy: 0.8836 - loss: 0.3208 500/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 604us/step - accuracy: 0.8827 - loss: 0.3226 583/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8820 - loss: 0.3241 666/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8815 - loss: 0.3250 750/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8811 - loss: 0.3257 834/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 604us/step - accuracy: 0.8808 - loss: 0.3263 917/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8805 - loss: 0.32691001/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 604us/step - accuracy: 0.8801 - loss: 0.32761087/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8798 - loss: 0.32831170/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8795 - loss: 0.32881253/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8793 - loss: 0.32921336/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8792 - loss: 0.32951418/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8791 - loss: 0.32981501/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8790 - loss: 0.33001585/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8789 - loss: 0.33021669/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 603us/step - accuracy: 0.8788 - loss: 0.33031754/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 602us/step - accuracy: 0.8788 - loss: 0.33041837/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 602us/step - accuracy: 0.8787 - loss: 0.33061875/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 603us/step - accuracy: 0.8787 - loss: 0.3306
+Epoch 4/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 15s 9ms/step - accuracy: 0.8750 - loss: 0.3010  85/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 597us/step - accuracy: 0.8804 - loss: 0.3106 169/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 599us/step - accuracy: 0.8790 - loss: 0.3170 253/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 600us/step - accuracy: 0.8797 - loss: 0.3186 336/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 601us/step - accuracy: 0.8810 - loss: 0.3172 420/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 600us/step - accuracy: 0.8818 - loss: 0.3166 504/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 600us/step - accuracy: 0.8825 - loss: 0.3163 588/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 600us/step - accuracy: 0.8830 - loss: 0.3157 672/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 600us/step - accuracy: 0.8836 - loss: 0.3150 757/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 599us/step - accuracy: 0.8840 - loss: 0.3146 841/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8842 - loss: 0.3144 925/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 599us/step - accuracy: 0.8843 - loss: 0.31421011/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8844 - loss: 0.31391095/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 598us/step - accuracy: 0.8845 - loss: 0.31371180/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8847 - loss: 0.31351264/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8848 - loss: 0.31321349/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8849 - loss: 0.31301434/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8849 - loss: 0.31291519/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8849 - loss: 0.31281602/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8850 - loss: 0.31261686/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8850 - loss: 0.31251771/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8850 - loss: 0.31231855/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 597us/step - accuracy: 0.8850 - loss: 0.31221875/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 597us/step - accuracy: 0.8851 - loss: 0.3122
+Epoch 5/10
+   1/1875 ━━━━━━━━━━━━━━━━━━━━ 16s 9ms/step - accuracy: 0.8438 - loss: 0.2643  84/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 606us/step - accuracy: 0.8847 - loss: 0.3237 167/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 607us/step - accuracy: 0.8872 - loss: 0.3198 250/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 606us/step - accuracy: 0.8884 - loss: 0.3171 333/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 606us/step - accuracy: 0.8892 - loss: 0.3148 416/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 606us/step - accuracy: 0.8897 - loss: 0.3127 499/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 606us/step - accuracy: 0.8899 - loss: 0.3115 582/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 606us/step - accuracy: 0.8900 - loss: 0.3105 664/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 606us/step - accuracy: 0.8899 - loss: 0.3096 747/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 606us/step - accuracy: 0.8900 - loss: 0.3087 831/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8901 - loss: 0.3075 915/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8903 - loss: 0.3063 998/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8905 - loss: 0.30521081/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8907 - loss: 0.30421164/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8909 - loss: 0.30331247/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8910 - loss: 0.30261330/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8911 - loss: 0.30191414/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8913 - loss: 0.30141497/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8913 - loss: 0.30091580/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8914 - loss: 0.30051664/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8915 - loss: 0.30001747/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8916 - loss: 0.29971829/1875 ━━━━━━━━━━━━━━━━━━━━ 0s 605us/step - accuracy: 0.8916 - loss: 0.2993
+Loss is lower than 0.4 so cancelling training!
+cancelling training with:
+5
+1875/1875 ━━━━━━━━━━━━━━━━━━━━ 1s 606us/step - accuracy: 0.8916 - loss: 0.2992</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<pre><code>&lt;keras.src.callbacks.history.History at 0x1674ad990&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluate" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> evaluate</h1>
+<div id="9d9cee36" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the model on unseen data</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>model.evaluate(test_images, test_labels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  1/313 ━━━━━━━━━━━━━━━━━━━━ 11s 37ms/step - accuracy: 0.9062 - loss: 0.2753184/313 ━━━━━━━━━━━━━━━━━━━━ 0s 274us/step - accuracy: 0.8751 - loss: 0.3365313/313 ━━━━━━━━━━━━━━━━━━━━ 0s 267us/step - accuracy: 0.8741 - loss: 0.3396</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<pre><code>[0.3379897177219391, 0.8741000294685364]</code></pre>
+</div>
+</div>
+</section>
+<section id="resource" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> resource:</h1>
+<p>https://www.coursera.org/learn/introduction-tensorflow/home/info</p>
+<p>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1</p>
+<p>https://github.com/zalandoresearch/fashion-mnist</p>
+
+
+<!-- -->
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb21" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "W2:Introduction to Computer Vision"</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">  error: false</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-location: right</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-bg: true</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-border-left: "#31BAE9"</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>Week2 Introduction to Computer Vision</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>Welcome to week 2 of the course! In week 1 you learned all about how Machine Learning and Deep Learning is a new programming paradigm. This week you’re going to take that to the next level by beginning to solve problems of computer vision with just a few lines of code!</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>Check out this conversation between Laurence and Andrew where they discuss it and introduce you to Computer Vision!</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sys.version)</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.__version__)</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/1.png)</span></span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a><span class="fu"># Load the data</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Fashion MNIST dataset</span></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>fmnist <span class="op">=</span> tf.keras.datasets.fashion_mnist</span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the training and test split of the Fashion MNIST dataset</span></span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>(training_images, training_labels), (test_images, test_labels) <span class="op">=</span> fmnist.load_data()</span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a><span class="co"># You can put between 0 to 59999 here</span></span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a><span class="co"># Set number of characters per row when printing</span></span>
+<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(linewidth<span class="op">=</span><span class="dv">320</span>)</span>
+<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the label and image</span></span>
+<span id="cb21-77"><a href="#cb21-77" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'LABEL: </span><span class="sc">{</span>training_labels[index]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb21-78"><a href="#cb21-78" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'</span><span class="ch">\n</span><span class="ss">IMAGE PIXEL ARRAY:</span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>training_images[index]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb21-79"><a href="#cb21-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-80"><a href="#cb21-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-83"><a href="#cb21-83" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-84"><a href="#cb21-84" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the image</span></span>
+<span id="cb21-85"><a href="#cb21-85" aria-hidden="true" tabindex="-1"></a>plt.imshow(training_images[index])</span>
+<span id="cb21-86"><a href="#cb21-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-87"><a href="#cb21-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a>You'll notice that all of the values in the number are between 0 and 255. If you are training a neural network especially in image processing, for various reasons it will usually learn better if you scale all values to between 0 and 1. It's a process called normalization and fortunately in Python, it's easy to normalize an array without looping. You do it like this:</span>
+<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize the pixel values of the train and test images</span></span>
+<span id="cb21-94"><a href="#cb21-94" aria-hidden="true" tabindex="-1"></a>training_images  <span class="op">=</span> training_images <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb21-95"><a href="#cb21-95" aria-hidden="true" tabindex="-1"></a>test_images <span class="op">=</span> test_images <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-97"><a href="#cb21-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-98"><a href="#cb21-98" aria-hidden="true" tabindex="-1"></a><span class="fu"># define model</span></span>
+<span id="cb21-99"><a href="#cb21-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-100"><a href="#cb21-100" aria-hidden="true" tabindex="-1"></a>**Sequential**: That defines a sequence of layers in the neural network.</span>
+<span id="cb21-101"><a href="#cb21-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-102"><a href="#cb21-102" aria-hidden="true" tabindex="-1"></a>**Flatten**: Remember earlier where our images were a 28x28 pixel matrix when you printed them out? Flatten just takes that square and turns it into a 1-dimensional array.</span>
+<span id="cb21-103"><a href="#cb21-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-104"><a href="#cb21-104" aria-hidden="true" tabindex="-1"></a>**Dense**: Adds a layer of neurons</span>
+<span id="cb21-105"><a href="#cb21-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-106"><a href="#cb21-106" aria-hidden="true" tabindex="-1"></a>Each layer of neurons need an activation function to tell them what to do. There are a lot of options, but just use these for now:</span>
+<span id="cb21-107"><a href="#cb21-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-108"><a href="#cb21-108" aria-hidden="true" tabindex="-1"></a>**ReLU** effectively means:</span>
+<span id="cb21-109"><a href="#cb21-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-110"><a href="#cb21-110" aria-hidden="true" tabindex="-1"></a>if x <span class="sc">\&gt;</span> 0: return x</span>
+<span id="cb21-111"><a href="#cb21-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-112"><a href="#cb21-112" aria-hidden="true" tabindex="-1"></a>else: return 0</span>
+<span id="cb21-113"><a href="#cb21-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-114"><a href="#cb21-114" aria-hidden="true" tabindex="-1"></a>**Softmax** takes a list of values and scales these so the sum of all elements will be equal to 1</span>
+<span id="cb21-115"><a href="#cb21-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-118"><a href="#cb21-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-119"><a href="#cb21-119" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([tf.keras.layers.Flatten(), </span>
+<span id="cb21-120"><a href="#cb21-120" aria-hidden="true" tabindex="-1"></a>                                    tf.keras.layers.Dense(<span class="dv">128</span>, activation<span class="op">=</span>tf.nn.relu), </span>
+<span id="cb21-121"><a href="#cb21-121" aria-hidden="true" tabindex="-1"></a>                                    tf.keras.layers.Dense(<span class="dv">10</span>, activation<span class="op">=</span>tf.nn.softmax)])</span>
+<span id="cb21-122"><a href="#cb21-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-123"><a href="#cb21-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-124"><a href="#cb21-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-125"><a href="#cb21-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-128"><a href="#cb21-128" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-129"><a href="#cb21-129" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb21-130"><a href="#cb21-130" aria-hidden="true" tabindex="-1"></a>model.summary()</span>
+<span id="cb21-131"><a href="#cb21-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-132"><a href="#cb21-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-133"><a href="#cb21-133" aria-hidden="true" tabindex="-1"></a><span class="fu"># compile model</span></span>
+<span id="cb21-134"><a href="#cb21-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-137"><a href="#cb21-137" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-138"><a href="#cb21-138" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(optimizer <span class="op">=</span> tf.optimizers.Adam(),</span>
+<span id="cb21-139"><a href="#cb21-139" aria-hidden="true" tabindex="-1"></a>              loss <span class="op">=</span> <span class="st">'sparse_categorical_crossentropy'</span>,</span>
+<span id="cb21-140"><a href="#cb21-140" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb21-141"><a href="#cb21-141" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-142"><a href="#cb21-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-143"><a href="#cb21-143" aria-hidden="true" tabindex="-1"></a><span class="fu"># Callbacks</span></span>
+<span id="cb21-144"><a href="#cb21-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-147"><a href="#cb21-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-148"><a href="#cb21-148" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb21-149"><a href="#cb21-149" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb21-150"><a href="#cb21-150" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb21-151"><a href="#cb21-151" aria-hidden="true" tabindex="-1"></a><span class="co">    Halts the training when the loss falls below 0.4</span></span>
+<span id="cb21-152"><a href="#cb21-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-153"><a href="#cb21-153" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb21-154"><a href="#cb21-154" aria-hidden="true" tabindex="-1"></a><span class="co">      epoch (integer) - index of epoch (required but unused in the function definition below)</span></span>
+<span id="cb21-155"><a href="#cb21-155" aria-hidden="true" tabindex="-1"></a><span class="co">      logs (dict) - metric results from the training epoch</span></span>
+<span id="cb21-156"><a href="#cb21-156" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb21-157"><a href="#cb21-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-158"><a href="#cb21-158" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check the loss</span></span>
+<span id="cb21-159"><a href="#cb21-159" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'loss'</span>) <span class="op">&lt;</span> <span class="fl">0.3</span>):</span>
+<span id="cb21-160"><a href="#cb21-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-161"><a href="#cb21-161" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Stop if threshold is met</span></span>
+<span id="cb21-162"><a href="#cb21-162" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Loss is lower than 0.4 so cancelling training!"</span>)</span>
+<span id="cb21-163"><a href="#cb21-163" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"cancelling training with:"</span>)</span>
+<span id="cb21-164"><a href="#cb21-164" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(epoch<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb21-165"><a href="#cb21-165" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb21-166"><a href="#cb21-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-167"><a href="#cb21-167" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb21-168"><a href="#cb21-168" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span>
+<span id="cb21-169"><a href="#cb21-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-170"><a href="#cb21-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-171"><a href="#cb21-171" aria-hidden="true" tabindex="-1"></a><span class="fu"># train model</span></span>
+<span id="cb21-172"><a href="#cb21-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-175"><a href="#cb21-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-176"><a href="#cb21-176" aria-hidden="true" tabindex="-1"></a>model.fit(training_images, training_labels, epochs<span class="op">=</span><span class="dv">10</span>,callbacks<span class="op">=</span>[callbacks])</span>
+<span id="cb21-177"><a href="#cb21-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-178"><a href="#cb21-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-179"><a href="#cb21-179" aria-hidden="true" tabindex="-1"></a><span class="fu"># evaluate</span></span>
+<span id="cb21-180"><a href="#cb21-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-183"><a href="#cb21-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-184"><a href="#cb21-184" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the model on unseen data</span></span>
+<span id="cb21-185"><a href="#cb21-185" aria-hidden="true" tabindex="-1"></a>model.evaluate(test_images, test_labels)</span>
+<span id="cb21-186"><a href="#cb21-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-187"><a href="#cb21-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-188"><a href="#cb21-188" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb21-189"><a href="#cb21-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-190"><a href="#cb21-190" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/introduction-tensorflow/home/info</span>
+<span id="cb21-191"><a href="#cb21-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-192"><a href="#cb21-192" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1</span>
+<span id="cb21-193"><a href="#cb21-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-194"><a href="#cb21-194" aria-hidden="true" tabindex="-1"></a>https://github.com/zalandoresearch/fashion-mnist</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This website is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

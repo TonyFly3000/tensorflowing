@@ -1,0 +1,124 @@
+---
+title: "install tensorflow"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+
+```{python}
+
+import sys
+
+import pandas as pd
+import sklearn as sk
+import scipy as sp
+import tensorflow as tf
+import platform
+```
+
+
+
+
+
+
+Show all package verion online
+
+```{python}
+import os
+os.system('pip index versions keras')
+```
+
+
+
+install tensorflow in terminal:
+```{python}
+#| eval: false
+import os
+os.system('pip install tensorflow')
+
+os.system('pip install numpy  --upgrade')
+os.system('pip install pandas  --upgrade')
+os.system('pip install matplotlib  --upgrade')
+os.system('pip install scikit-learn  --upgrade')
+os.system('pip install scipy  --upgrade')
+os.system('pip install plotly  --upgrade')
+```
+
+
+install keras 2 in terminal:
+
+```{python}
+#| eval: false
+import os
+os.system('pip install tf_keras')
+```
+
+```{python}
+import sys
+import tensorflow.keras
+#import keras
+import pandas as pd
+import sklearn as sk
+import scipy as sp
+import tensorflow as tf
+import platform
+
+print("Python Platform:")
+print({platform.platform()})
+print("")
+
+print("Tensor Flow Version: ")
+print({tf.__version__})
+print("")
+
+#print("Keras Version: ")
+#print({keras.__version__})
+print("")
+
+print("Python:")
+print({sys.version})
+print("")
+
+print("Pandas:")
+print({pd.__version__})
+print("")
+
+print("Scikit-Learn:")
+print({sk.__version__})
+print("")
+
+print("SciPy:")
+print({sp.__version__})
+print("")
+
+gpu = len(tf.config.list_physical_devices('GPU'))>0
+print("GPU is", "available" if gpu else "NOT AVAILABLE")
+```
+
+
+
+
+
+install specific version 
+```{python}
+#| eval: false
+import os
+os.system('pip install keras==2.15.0')
+```
+
+uninstall package 
+```{python}
+#| eval: false
+import os
+os.system('pip uninstall keras')
+```

@@ -1,0 +1,194 @@
+---
+title: "Keras tuned random forests regression model"
+subtitle: "with house price data"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+
+#  package
+
+
+## download package
+```{python}
+#| eval: false
+import os
+os.system('pip install tensorflow_decision_forests')
+```
+
+
+
+## load package
+
+
+```{python}
+import os
+# Keep using Keras 2
+os.environ['TF_USE_LEGACY_KERAS'] = '1'
+
+import tensorflow_decision_forests as tfdf
+
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+import tf_keras
+import math
+```
+
+
+
+```{python}
+# Check the version of TensorFlow Decision Forests
+print("Found TensorFlow Decision Forests v" + tfdf.__version__)
+```
+
+# data
+
+data download form [kaggle](https://www.kaggle.com/competitions/house-prices-advanced-regression-techniques/data)
+
+
+## read data
+
+```{python}
+
+train_file_path = "data/train.csv"
+dataset_df = pd.read_csv(train_file_path)
+print("Full train dataset shape is {}".format(dataset_df.shape))
+
+```
+
+
+```{python}
+dataset_df.head(3)
+```
+
+```{python}
+dataset_df = dataset_df.drop('Id', axis=1)
+dataset_df.head(3)
+```
+
+
+```{python}
+#dataset_df.info()
+```
+
+
+## data pre
+
+```{python}
+import numpy as np
+def split_dataset(dataset, test_ratio=0.30):
+  test_indices = np.random.rand(len(dataset)) < test_ratio
+  return dataset[~test_indices], dataset[test_indices]
+
+train_ds_pd, valid_ds_pd = split_dataset(dataset_df)
+print("{} examples in training, {} examples in testing.".format(
+    len(train_ds_pd), len(valid_ds_pd)))
+```
+
+```{python}
+label = 'SalePrice'
+train_ds = tfdf.keras.pd_dataframe_to_tf_dataset(train_ds_pd, label=label, task = tfdf.keras.Task.REGRESSION)
+valid_ds = tfdf.keras.pd_dataframe_to_tf_dataset(valid_ds_pd, label=label, task = tfdf.keras.Task.REGRESSION)
+```
+
+
+
+
+
+# model
+
+## define tuning
+
+```{python}
+tuner = tfdf.tuner.RandomSearch(num_trials=20)
+
+# Hyper-parameters to optimize.
+tuner.choice("max_depth", [4, 5, 6, 7]).choice("num_trees",[300,400])
+```
+
+
+## define tuning model
+
+```{python}
+# A good template of hyper-parameters.
+model_8 = tfdf.keras.RandomForestModel(task = tfdf.keras.Task.REGRESSION
+                                                ,tuner=tuner
+                                                )
+
+```
+
+
+```{python}
+# A good template of hyper-parameters.
+#model_8 = tfdf.keras.RandomForestModel(task = tfdf.keras.Task.REGRESSION
+#                                                ,hyperparameter_template="benchmark_rank1"
+#                                                )
+
+```
+
+## compile model
+```{python}
+model_8.compile(metrics=["mse"])
+```
+
+
+## Train the model
+
+```{python}
+model_8.fit(train_ds)
+```
+
+```{python}
+evaluation = model_8.evaluate(valid_ds, return_dict=True)
+print()
+```
+
+
+
+
+## Evaluate the model
+
+
+```{python}
+evaluation = model_8.evaluate(valid_ds, return_dict=True)
+print()
+```
+
+
+```{python}
+for name, value in evaluation.items():
+  mse=value
+```
+
+RMSE
+```{python}
+import math
+math.sqrt(mse)
+```
+
+
+```{python}
+import matplotlib.pyplot as plt
+logs = model_8.make_inspector().training_logs()
+plt.plot([log.num_trees for log in logs], [log.evaluation.rmse for log in logs])
+plt.xlabel("Number of trees")
+plt.ylabel("RMSE (out-of-bag)")
+plt.show()
+```
+
+
+
+# reference:
+
+https://colab.research.google.com/github/tensorflow/decision-forests/blob/main/documentation/tutorials/beginner_colab.ipynb#scrollTo=xUy4ULEMtDXB

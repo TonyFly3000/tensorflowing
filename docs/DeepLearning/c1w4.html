@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tensorflowing - W4:Using Real-world Images</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.jpg" rel="icon" type="image/jpeg">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Tensorflowing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-intro" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Intro</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-intro">    
+        <li class="dropdown-header">Intro</li>
+        <li>
+    <a class="dropdown-item" href="../intro/about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-deep-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Deep Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-deep-neural-networks">    
+        <li class="dropdown-header">DeepLearning</li>
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w1.html">
+ <span class="dropdown-text">W1:A New Programming Paradigm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w2.html">
+ <span class="dropdown-text">W2:Introduction to Computer Vision</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w3.html">
+ <span class="dropdown-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w4.html">
+ <span class="dropdown-text">W4:Using Real-world Images</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-convolutional-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Convolutional Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-convolutional-neural-networks">    
+        <li class="dropdown-header">Convolutional Neural Networks in TensorFlow</li>
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week1.html">
+ <span class="dropdown-text">W1:Exploring a Larger Dataset</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week2.html">
+ <span class="dropdown-text">W2:Augmentation: A technique to avoid overfitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week3.html">
+ <span class="dropdown-text">W3:Transfer learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week4.html">
+ <span class="dropdown-text">W4:multi-class classification</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-natural-language-processing" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Natural Language Processing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-natural-language-processing">    
+        <li class="dropdown-header">Natural Language Processing</li>
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week1.html">
+ <span class="dropdown-text">W1:Sentiment in text</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week2.html">
+ <span class="dropdown-text">W2:Word Embeddings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week3.html">
+ <span class="dropdown-text">W3:Sequence models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week4.html">
+ <span class="dropdown-text">W4:Sequence models and literature</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-time-series" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Time Series</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-time-series">    
+        <li class="dropdown-header">Time Series</li>
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week1.html">
+ <span class="dropdown-text">W1:Sequences and Prediction</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week2.html">
+ <span class="dropdown-text">W2:Deep Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week3.html">
+ <span class="dropdown-text">W3:Recurrent Neural Networks for Time Series</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Time Series/c4week4.html">
+ <span class="dropdown-text">W4:Real-world time series data</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tensorflow-tree-model" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">tensorflow tree model</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tensorflow-tree-model">    
+        <li class="dropdown-header">tree model</li>
+        <li>
+    <a class="dropdown-item" href="../tree model/1 install package.html">
+ <span class="dropdown-text">install pacakge</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/2 Keras random forests regression model.html">
+ <span class="dropdown-text">Keras random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/3 Keras tuned random forests regression model.html">
+ <span class="dropdown-text">Keras tuned random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/4 Keras GBT regression model.html">
+ <span class="dropdown-text">Keras Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/5 Keras tuned GBT regression model.html">
+ <span class="dropdown-text">Keras tuned Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../DeepLearning/c1w1.html">DeepLearning</a></li><li class="breadcrumb-item"><a href="../DeepLearning/c1w4.html">W4:Using Real-world Images</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">DeepLearning</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W1:A New Programming Paradigm</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W2:Introduction to Computer Vision</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../DeepLearning/c1w4.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">W4:Using Real-world Images</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#download-data" id="toc-download-data" class="nav-link active" data-scroll-target="#download-data"><span class="header-section-number">1</span> download data</a>
+  <ul class="collapse">
+  <li><a href="#download-horse-or-human.zip" id="toc-download-horse-or-human.zip" class="nav-link" data-scroll-target="#download-horse-or-human.zip"><span class="header-section-number">1.1</span> download horse-or-human.zip</a></li>
+  <li><a href="#download-validation-horse-or-human.zip" id="toc-download-validation-horse-or-human.zip" class="nav-link" data-scroll-target="#download-validation-horse-or-human.zip"><span class="header-section-number">1.2</span> download validation-horse-or-human.zip</a></li>
+  </ul></li>
+  <li><a href="#load-the-data" id="toc-load-the-data" class="nav-link" data-scroll-target="#load-the-data"><span class="header-section-number">2</span> Load the data</a></li>
+  <li><a href="#define-convolutional-model" id="toc-define-convolutional-model" class="nav-link" data-scroll-target="#define-convolutional-model"><span class="header-section-number">3</span> define convolutional model</a></li>
+  <li><a href="#compile-model" id="toc-compile-model" class="nav-link" data-scroll-target="#compile-model"><span class="header-section-number">4</span> compile model</a></li>
+  <li><a href="#callbacks" id="toc-callbacks" class="nav-link" data-scroll-target="#callbacks"><span class="header-section-number">5</span> Callbacks</a></li>
+  <li><a href="#train-model" id="toc-train-model" class="nav-link" data-scroll-target="#train-model"><span class="header-section-number">6</span> train model</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="header-section-number">7</span> Prediction</a></li>
+  <li><a href="#resource" id="toc-resource" class="nav-link" data-scroll-target="#resource"><span class="header-section-number">8</span> resource:</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../DeepLearning/c1w1.html">DeepLearning</a></li><li class="breadcrumb-item"><a href="../DeepLearning/c1w4.html">W4:Using Real-world Images</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Introduction to TensorFlow W4:Using Real-world Images</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>by Laurence Moroney</p>
+<section id="download-data" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> download data</h1>
+<section id="download-horse-or-human.zip" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="download-horse-or-human.zip"><span class="header-section-number">1.1</span> download horse-or-human.zip</h2>
+<div id="554eddcd" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve(<span class="st">"https://storage.googleapis.com/tensorflow-1-public/course2/week3/horse-or-human.zip"</span>, <span class="st">"horse-or-human.zip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="download-validation-horse-or-human.zip" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="download-validation-horse-or-human.zip"><span class="header-section-number">1.2</span> download validation-horse-or-human.zip</h2>
+<div id="cc9a2fb6" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve(<span class="st">"https://storage.googleapis.com/tensorflow-1-public/course2/week3/validation-horse-or-human.zip"</span>, <span class="st">"validation-horse-or-human.zip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="c5aea7ed" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Unzip training set</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./horse-or-human.zip'</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./horse-or-human'</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Unzip validation set</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./validation-horse-or-human.zip'</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./validation-horse-or-human'</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>zip_ref.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="723dd215" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'./horse-or-human/horses/horse01-0.png'</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>im.size <span class="co"># (width,height) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<pre><code>(300, 300)</code></pre>
+</div>
+</div>
+<div id="3f6b1f10" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with training horse pictures</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>train_horse_dir <span class="op">=</span> os.path.join(<span class="st">'./horse-or-human/horses'</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with training human pictures</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>train_human_dir <span class="op">=</span> os.path.join(<span class="st">'./horse-or-human/humans'</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with validation horse pictures</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>validation_horse_dir <span class="op">=</span> os.path.join(<span class="st">'./validation-horse-or-human/horses'</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with validation human pictures</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>validation_human_dir <span class="op">=</span> os.path.join(<span class="st">'./validation-horse-or-human/humans'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="a3672bb6" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train_horse_names <span class="op">=</span> os.listdir(train_horse_dir)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'TRAIN SET HORSES: </span><span class="sc">{</span>train_horse_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>train_human_names <span class="op">=</span> os.listdir(train_human_dir)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'TRAIN SET HUMANS: </span><span class="sc">{</span>train_human_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>validation_horse_names <span class="op">=</span> os.listdir(validation_horse_dir)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'VAL SET HORSES: </span><span class="sc">{</span>validation_horse_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>validation_human_names <span class="op">=</span> os.listdir(validation_human_dir)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'VAL SET HUMANS: </span><span class="sc">{</span>validation_human_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>TRAIN SET HORSES: ['horse43-5.png', 'horse06-5.png', 'horse20-6.png', 'horse04-7.png', 'horse41-7.png', 'horse22-4.png', 'horse19-2.png', 'horse24-2.png', 'horse37-8.png', 'horse02-1.png']
+TRAIN SET HUMANS: ['human17-22.png', 'human10-17.png', 'human10-03.png', 'human07-27.png', 'human09-22.png', 'human05-22.png', 'human02-03.png', 'human02-17.png', 'human15-27.png', 'human12-12.png']
+VAL SET HORSES: ['horse1-204.png', 'horse2-112.png', 'horse3-498.png', 'horse5-032.png', 'horse5-018.png', 'horse1-170.png', 'horse5-192.png', 'horse1-411.png', 'horse4-232.png', 'horse3-070.png']
+VAL SET HUMANS: ['valhuman04-20.png', 'valhuman03-01.png', 'valhuman04-08.png', 'valhuman03-15.png', 'valhuman01-04.png', 'valhuman01-10.png', 'valhuman01-11.png', 'valhuman01-05.png', 'valhuman03-14.png', 'valhuman03-00.png']</code></pre>
+</div>
+</div>
+<div id="03d17dbb" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total training horse images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(train_horse_dir))<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total training human images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(train_human_dir))<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total validation horse images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(validation_horse_dir))<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total validation human images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(validation_human_dir))<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>total training horse images: 500
+total training human images: 527
+total validation horse images: 128
+total validation human images: 128</code></pre>
+</div>
+</div>
+<div id="733e0966" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image <span class="im">as</span> mpimg</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters for our graph; we'll output images in a 4x4 configuration</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>nrows <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>ncols <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Index for iterating over images</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>pic_index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up matplotlib fig, and size it to fit 4x4 pics</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.gcf()</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>fig.set_size_inches(ncols <span class="op">*</span> <span class="dv">4</span>, nrows <span class="op">*</span> <span class="dv">4</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>pic_index <span class="op">+=</span> <span class="dv">8</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>next_horse_pix <span class="op">=</span> [os.path.join(train_horse_dir, fname) </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> train_horse_names[pic_index<span class="op">-</span><span class="dv">8</span>:pic_index]]</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>next_human_pix <span class="op">=</span> [os.path.join(train_human_dir, fname) </span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> train_human_names[pic_index<span class="op">-</span><span class="dv">8</span>:pic_index]]</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, img_path <span class="kw">in</span> <span class="bu">enumerate</span>(next_horse_pix<span class="op">+</span>next_human_pix):</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set up subplot; subplot indices start at 1</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  sp <span class="op">=</span> plt.subplot(nrows, ncols, i <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  sp.axis(<span class="st">'Off'</span>) <span class="co"># Don't show axes (or gridlines)</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  img <span class="op">=</span> mpimg.imread(img_path)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  plt.imshow(img)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c1w4_files/figure-html/cell-9-output-1.png" width="1208" height="1202" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="38785314" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.__version__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>2.16.1</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="load-the-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Load the data</h1>
+<p>picture file structure</p>
+<p><img src="images/2.png" class="img-fluid" width="422"></p>
+<p>ImageDataGenerator: All images will be resized to 300x300</p>
+<div id="bbbf7c4a" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.preprocessing.image <span class="im">import</span> ImageDataGenerator</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># All images will be rescaled by 1./255</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>train_datagen <span class="op">=</span> ImageDataGenerator(rescale<span class="op">=</span><span class="dv">1</span><span class="op">/</span><span class="dv">255</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>validation_datagen <span class="op">=</span> ImageDataGenerator(rescale<span class="op">=</span><span class="dv">1</span><span class="op">/</span><span class="dv">255</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Flow training images in batches of 128 using train_datagen generator</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>train_generator <span class="op">=</span> train_datagen.flow_from_directory(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'./horse-or-human/'</span>,  <span class="co"># This is the source directory for training images</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>),  <span class="co"># All images will be resized to 300x300</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        batch_size<span class="op">=</span><span class="dv">128</span>,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since you use binary_crossentropy loss, you need binary labels</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        class_mode<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Flow validation images in batches of 128 using validation_datagen generator</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>validation_generator <span class="op">=</span> validation_datagen.flow_from_directory(</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'./validation-horse-or-human/'</span>,  <span class="co"># This is the source directory for validation images</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>),  <span class="co"># All images will be resized to 300x300</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        batch_size<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since you use binary_crossentropy loss, you need binary labels</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        class_mode<span class="op">=</span><span class="st">'binary'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 1027 images belonging to 2 classes.
+Found 256 images belonging to 2 classes.</code></pre>
+</div>
+</div>
+</section>
+<section id="define-convolutional-model" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> define convolutional model</h1>
+<p>input 300 by 300 color image</p>
+<p>flow into 16 3by3 convolutional layers and 2by2 pooling</p>
+<p>output is 1 neural(0/1) sigmoid function.its good for binary</p>
+<div id="b84a323c" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note the input shape is the desired size of the image 300x300 with 3 bytes color</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is the first convolution</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">16</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>, input_shape<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>, <span class="dv">3</span>)),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The second convolution</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The third convolution</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The fourth convolution</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The fifth convolution</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the results to feed into a DNN</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Flatten(),</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 512 neuron hidden layer</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">512</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Only 1 output neuron. It will contain a value from 0-1 where 0 for 1 class ('horses') and 1 for the other ('humans')</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">1</span>, activation<span class="op">=</span><span class="st">'sigmoid'</span>)</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="c5459f65" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Model: "sequential"</span>
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold"> Layer (type)                    </span>┃<span style="font-weight: bold"> Output Shape           </span>┃<span style="font-weight: bold">       Param # </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ conv2d (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">298</span>, <span style="color: #00af00; text-decoration-color: #00af00">298</span>, <span style="color: #00af00; text-decoration-color: #00af00">16</span>)   │           <span style="color: #00af00; text-decoration-color: #00af00">448</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)    │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">149</span>, <span style="color: #00af00; text-decoration-color: #00af00">149</span>, <span style="color: #00af00; text-decoration-color: #00af00">16</span>)   │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">147</span>, <span style="color: #00af00; text-decoration-color: #00af00">147</span>, <span style="color: #00af00; text-decoration-color: #00af00">32</span>)   │         <span style="color: #00af00; text-decoration-color: #00af00">4,640</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">73</span>, <span style="color: #00af00; text-decoration-color: #00af00">73</span>, <span style="color: #00af00; text-decoration-color: #00af00">32</span>)     │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_2 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">71</span>, <span style="color: #00af00; text-decoration-color: #00af00">71</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │        <span style="color: #00af00; text-decoration-color: #00af00">18,496</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_2 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">35</span>, <span style="color: #00af00; text-decoration-color: #00af00">35</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_3 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">33</span>, <span style="color: #00af00; text-decoration-color: #00af00">33</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │        <span style="color: #00af00; text-decoration-color: #00af00">36,928</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_3 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">16</span>, <span style="color: #00af00; text-decoration-color: #00af00">16</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_4 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">14</span>, <span style="color: #00af00; text-decoration-color: #00af00">14</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │        <span style="color: #00af00; text-decoration-color: #00af00">36,928</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_4 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">7</span>, <span style="color: #00af00; text-decoration-color: #00af00">7</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)       │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (<span style="color: #0087ff; text-decoration-color: #0087ff">Flatten</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">3136</span>)           │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                   │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">512</span>)            │     <span style="color: #00af00; text-decoration-color: #00af00">1,606,144</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">1</span>)              │           <span style="color: #00af00; text-decoration-color: #00af00">513</span> │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Total params: </span><span style="color: #00af00; text-decoration-color: #00af00">1,704,097</span> (6.50 MB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">1,704,097</span> (6.50 MB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Non-trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+</div>
+</section>
+<section id="compile-model" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> compile model</h1>
+<div id="465a8d22" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># v2.11+ optimizer `tf.keras.optimizers.RMSprop` runs slowly on M1/M2 Macs</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> RMSprop</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'binary_crossentropy'</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>RMSprop(learning_rate<span class="op">=</span><span class="fl">0.001</span>),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="callbacks" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Callbacks</h1>
+<div id="623401d1" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Halts the training when the loss falls below 0.15</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">      epoch (integer) - index of epoch (required but unused in the function definition below)</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">      logs (dict) - metric results from the training epoch</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check the loss</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'loss'</span>) <span class="op">&lt;</span> <span class="fl">0.15</span>):</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Stop if threshold is met</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Loss is lower than 0.2 so cancelling training!"</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"cancelling training with:"</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(epoch<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="train-model" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> train model</h1>
+<div id="7f60debf" class="cell" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>      train_generator,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>      steps_per_epoch<span class="op">=</span><span class="dv">8</span>,  </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      epochs<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      verbose<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      validation_data <span class="op">=</span> validation_generator,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      validation_steps<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>      callbacks<span class="op">=</span>[callbacks])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Loss is lower than 0.2 so cancelling training!
+cancelling training with:
+10</code></pre>
+</div>
+</div>
+</section>
+<section id="prediction" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Prediction</h1>
+<p>Prediction a validation horses</p>
+<div id="962300ca" class="cell" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.utils <span class="im">import</span> load_img, img_to_array</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>fn<span class="op">=</span><span class="st">'horse1-241.png'</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">'./validation-horse-or-human/horses/'</span><span class="op">+</span> fn</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> load_img(path, target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>))</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> img_to_array(img)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">255</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.expand_dims(x, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> np.vstack([x])</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> model.predict(images, batch_size<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classes[<span class="dv">0</span>])</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> classes[<span class="dv">0</span>]<span class="op">&gt;</span><span class="fl">0.5</span>:</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a human"</span>)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a horse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 44ms/step1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 45ms/step
+[5.7587976e-11]
+horse1-241.png is a horse</code></pre>
+</div>
+</div>
+<p>Prediction a human from internet</p>
+<div id="ab01d3f7" class="cell" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.utils <span class="im">import</span> load_img, img_to_array</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>fn<span class="op">=</span><span class="st">'daniel craig.png'</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">'./random/'</span><span class="op">+</span> fn</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> load_img(path, target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>))</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> img_to_array(img)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">255</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.expand_dims(x, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> np.vstack([x])</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> model.predict(images, batch_size<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classes[<span class="dv">0</span>])</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> classes[<span class="dv">0</span>]<span class="op">&gt;</span><span class="fl">0.5</span>:</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a human"</span>)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a horse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 12ms/step1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 13ms/step
+[0.01623141]
+daniel craig.png is a horse</code></pre>
+</div>
+</div>
+</section>
+<section id="resource" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> resource:</h1>
+<p>https://www.coursera.org/learn/introduction-tensorflow/home/info</p>
+<p>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1</p>
+<p>https://github.com/zalandoresearch/fashion-mnist</p>
+
+
+<!-- -->
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb26" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "W4:Using Real-world Images"</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co">  error: false</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-location: right</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-bg: true</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-border-left: "#31BAE9"</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>Week4 Using Real-world Images</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>Last week you saw how to improve the results from your deep neural network using convolutions. It was a good start, but the data you used was very basic. What happens when your images are larger, or if the features aren’t always in the same place? Andrew and Laurence discuss this to prepare you for what you’ll learn this week: handling complex images!</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="fu"># download data</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## download horse-or-human.zip</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve(<span class="st">"https://storage.googleapis.com/tensorflow-1-public/course2/week3/horse-or-human.zip"</span>, <span class="st">"horse-or-human.zip"</span>)</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## download validation-horse-or-human.zip</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve(<span class="st">"https://storage.googleapis.com/tensorflow-1-public/course2/week3/validation-horse-or-human.zip"</span>, <span class="st">"validation-horse-or-human.zip"</span>)</span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Unzip training set</span></span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./horse-or-human.zip'</span></span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./horse-or-human'</span>)</span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Unzip validation set</span></span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./validation-horse-or-human.zip'</span></span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./validation-horse-or-human'</span>)</span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a>zip_ref.close()</span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-64"><a href="#cb26-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-65"><a href="#cb26-65" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb26-66"><a href="#cb26-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'./horse-or-human/horses/horse01-0.png'</span>)</span>
+<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a>im.size <span class="co"># (width,height) </span></span>
+<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-74"><a href="#cb26-74" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-75"><a href="#cb26-75" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb26-76"><a href="#cb26-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-77"><a href="#cb26-77" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with training horse pictures</span></span>
+<span id="cb26-78"><a href="#cb26-78" aria-hidden="true" tabindex="-1"></a>train_horse_dir <span class="op">=</span> os.path.join(<span class="st">'./horse-or-human/horses'</span>)</span>
+<span id="cb26-79"><a href="#cb26-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-80"><a href="#cb26-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with training human pictures</span></span>
+<span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a>train_human_dir <span class="op">=</span> os.path.join(<span class="st">'./horse-or-human/humans'</span>)</span>
+<span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with validation horse pictures</span></span>
+<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a>validation_horse_dir <span class="op">=</span> os.path.join(<span class="st">'./validation-horse-or-human/horses'</span>)</span>
+<span id="cb26-85"><a href="#cb26-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory with validation human pictures</span></span>
+<span id="cb26-87"><a href="#cb26-87" aria-hidden="true" tabindex="-1"></a>validation_human_dir <span class="op">=</span> os.path.join(<span class="st">'./validation-horse-or-human/humans'</span>)</span>
+<span id="cb26-88"><a href="#cb26-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-89"><a href="#cb26-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-92"><a href="#cb26-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-93"><a href="#cb26-93" aria-hidden="true" tabindex="-1"></a>train_horse_names <span class="op">=</span> os.listdir(train_horse_dir)</span>
+<span id="cb26-94"><a href="#cb26-94" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'TRAIN SET HORSES: </span><span class="sc">{</span>train_horse_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-95"><a href="#cb26-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-96"><a href="#cb26-96" aria-hidden="true" tabindex="-1"></a>train_human_names <span class="op">=</span> os.listdir(train_human_dir)</span>
+<span id="cb26-97"><a href="#cb26-97" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'TRAIN SET HUMANS: </span><span class="sc">{</span>train_human_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-98"><a href="#cb26-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-99"><a href="#cb26-99" aria-hidden="true" tabindex="-1"></a>validation_horse_names <span class="op">=</span> os.listdir(validation_horse_dir)</span>
+<span id="cb26-100"><a href="#cb26-100" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'VAL SET HORSES: </span><span class="sc">{</span>validation_horse_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-101"><a href="#cb26-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-102"><a href="#cb26-102" aria-hidden="true" tabindex="-1"></a>validation_human_names <span class="op">=</span> os.listdir(validation_human_dir)</span>
+<span id="cb26-103"><a href="#cb26-103" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'VAL SET HUMANS: </span><span class="sc">{</span>validation_human_names[:<span class="dv">10</span>]<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-104"><a href="#cb26-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-105"><a href="#cb26-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-108"><a href="#cb26-108" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-109"><a href="#cb26-109" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total training horse images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(train_horse_dir))<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-110"><a href="#cb26-110" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total training human images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(train_human_dir))<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-111"><a href="#cb26-111" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total validation horse images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(validation_horse_dir))<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-112"><a href="#cb26-112" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'total validation human images: </span><span class="sc">{</span><span class="bu">len</span>(os.listdir(validation_human_dir))<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb26-113"><a href="#cb26-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-114"><a href="#cb26-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-117"><a href="#cb26-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-118"><a href="#cb26-118" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb26-119"><a href="#cb26-119" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image <span class="im">as</span> mpimg</span>
+<span id="cb26-120"><a href="#cb26-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-121"><a href="#cb26-121" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters for our graph; we'll output images in a 4x4 configuration</span></span>
+<span id="cb26-122"><a href="#cb26-122" aria-hidden="true" tabindex="-1"></a>nrows <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb26-123"><a href="#cb26-123" aria-hidden="true" tabindex="-1"></a>ncols <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb26-124"><a href="#cb26-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-125"><a href="#cb26-125" aria-hidden="true" tabindex="-1"></a><span class="co"># Index for iterating over images</span></span>
+<span id="cb26-126"><a href="#cb26-126" aria-hidden="true" tabindex="-1"></a>pic_index <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb26-127"><a href="#cb26-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-128"><a href="#cb26-128" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up matplotlib fig, and size it to fit 4x4 pics</span></span>
+<span id="cb26-129"><a href="#cb26-129" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.gcf()</span>
+<span id="cb26-130"><a href="#cb26-130" aria-hidden="true" tabindex="-1"></a>fig.set_size_inches(ncols <span class="op">*</span> <span class="dv">4</span>, nrows <span class="op">*</span> <span class="dv">4</span>)</span>
+<span id="cb26-131"><a href="#cb26-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-132"><a href="#cb26-132" aria-hidden="true" tabindex="-1"></a>pic_index <span class="op">+=</span> <span class="dv">8</span></span>
+<span id="cb26-133"><a href="#cb26-133" aria-hidden="true" tabindex="-1"></a>next_horse_pix <span class="op">=</span> [os.path.join(train_horse_dir, fname) </span>
+<span id="cb26-134"><a href="#cb26-134" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> train_horse_names[pic_index<span class="op">-</span><span class="dv">8</span>:pic_index]]</span>
+<span id="cb26-135"><a href="#cb26-135" aria-hidden="true" tabindex="-1"></a>next_human_pix <span class="op">=</span> [os.path.join(train_human_dir, fname) </span>
+<span id="cb26-136"><a href="#cb26-136" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> train_human_names[pic_index<span class="op">-</span><span class="dv">8</span>:pic_index]]</span>
+<span id="cb26-137"><a href="#cb26-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-138"><a href="#cb26-138" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, img_path <span class="kw">in</span> <span class="bu">enumerate</span>(next_horse_pix<span class="op">+</span>next_human_pix):</span>
+<span id="cb26-139"><a href="#cb26-139" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set up subplot; subplot indices start at 1</span></span>
+<span id="cb26-140"><a href="#cb26-140" aria-hidden="true" tabindex="-1"></a>  sp <span class="op">=</span> plt.subplot(nrows, ncols, i <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb26-141"><a href="#cb26-141" aria-hidden="true" tabindex="-1"></a>  sp.axis(<span class="st">'Off'</span>) <span class="co"># Don't show axes (or gridlines)</span></span>
+<span id="cb26-142"><a href="#cb26-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-143"><a href="#cb26-143" aria-hidden="true" tabindex="-1"></a>  img <span class="op">=</span> mpimg.imread(img_path)</span>
+<span id="cb26-144"><a href="#cb26-144" aria-hidden="true" tabindex="-1"></a>  plt.imshow(img)</span>
+<span id="cb26-145"><a href="#cb26-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-146"><a href="#cb26-146" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb26-147"><a href="#cb26-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-148"><a href="#cb26-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-151"><a href="#cb26-151" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-152"><a href="#cb26-152" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb26-153"><a href="#cb26-153" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb26-154"><a href="#cb26-154" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb26-155"><a href="#cb26-155" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb26-156"><a href="#cb26-156" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tf.__version__)</span>
+<span id="cb26-157"><a href="#cb26-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-158"><a href="#cb26-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-159"><a href="#cb26-159" aria-hidden="true" tabindex="-1"></a><span class="fu"># Load the data</span></span>
+<span id="cb26-160"><a href="#cb26-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-161"><a href="#cb26-161" aria-hidden="true" tabindex="-1"></a>picture file structure</span>
+<span id="cb26-162"><a href="#cb26-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-163"><a href="#cb26-163" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/2.png)</span>{width="422"}</span>
+<span id="cb26-164"><a href="#cb26-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-165"><a href="#cb26-165" aria-hidden="true" tabindex="-1"></a>ImageDataGenerator: All images will be resized to 300x300</span>
+<span id="cb26-166"><a href="#cb26-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-169"><a href="#cb26-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-170"><a href="#cb26-170" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.preprocessing.image <span class="im">import</span> ImageDataGenerator</span>
+<span id="cb26-171"><a href="#cb26-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-172"><a href="#cb26-172" aria-hidden="true" tabindex="-1"></a><span class="co"># All images will be rescaled by 1./255</span></span>
+<span id="cb26-173"><a href="#cb26-173" aria-hidden="true" tabindex="-1"></a>train_datagen <span class="op">=</span> ImageDataGenerator(rescale<span class="op">=</span><span class="dv">1</span><span class="op">/</span><span class="dv">255</span>)</span>
+<span id="cb26-174"><a href="#cb26-174" aria-hidden="true" tabindex="-1"></a>validation_datagen <span class="op">=</span> ImageDataGenerator(rescale<span class="op">=</span><span class="dv">1</span><span class="op">/</span><span class="dv">255</span>)</span>
+<span id="cb26-175"><a href="#cb26-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-176"><a href="#cb26-176" aria-hidden="true" tabindex="-1"></a><span class="co"># Flow training images in batches of 128 using train_datagen generator</span></span>
+<span id="cb26-177"><a href="#cb26-177" aria-hidden="true" tabindex="-1"></a>train_generator <span class="op">=</span> train_datagen.flow_from_directory(</span>
+<span id="cb26-178"><a href="#cb26-178" aria-hidden="true" tabindex="-1"></a>        <span class="st">'./horse-or-human/'</span>,  <span class="co"># This is the source directory for training images</span></span>
+<span id="cb26-179"><a href="#cb26-179" aria-hidden="true" tabindex="-1"></a>        target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>),  <span class="co"># All images will be resized to 300x300</span></span>
+<span id="cb26-180"><a href="#cb26-180" aria-hidden="true" tabindex="-1"></a>        batch_size<span class="op">=</span><span class="dv">128</span>,</span>
+<span id="cb26-181"><a href="#cb26-181" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since you use binary_crossentropy loss, you need binary labels</span></span>
+<span id="cb26-182"><a href="#cb26-182" aria-hidden="true" tabindex="-1"></a>        class_mode<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb26-183"><a href="#cb26-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-184"><a href="#cb26-184" aria-hidden="true" tabindex="-1"></a><span class="co"># Flow validation images in batches of 128 using validation_datagen generator</span></span>
+<span id="cb26-185"><a href="#cb26-185" aria-hidden="true" tabindex="-1"></a>validation_generator <span class="op">=</span> validation_datagen.flow_from_directory(</span>
+<span id="cb26-186"><a href="#cb26-186" aria-hidden="true" tabindex="-1"></a>        <span class="st">'./validation-horse-or-human/'</span>,  <span class="co"># This is the source directory for validation images</span></span>
+<span id="cb26-187"><a href="#cb26-187" aria-hidden="true" tabindex="-1"></a>        target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>),  <span class="co"># All images will be resized to 300x300</span></span>
+<span id="cb26-188"><a href="#cb26-188" aria-hidden="true" tabindex="-1"></a>        batch_size<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb26-189"><a href="#cb26-189" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Since you use binary_crossentropy loss, you need binary labels</span></span>
+<span id="cb26-190"><a href="#cb26-190" aria-hidden="true" tabindex="-1"></a>        class_mode<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb26-191"><a href="#cb26-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-192"><a href="#cb26-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-193"><a href="#cb26-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-194"><a href="#cb26-194" aria-hidden="true" tabindex="-1"></a><span class="fu"># define convolutional model</span></span>
+<span id="cb26-195"><a href="#cb26-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-196"><a href="#cb26-196" aria-hidden="true" tabindex="-1"></a>input 300 by 300 color image</span>
+<span id="cb26-197"><a href="#cb26-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-198"><a href="#cb26-198" aria-hidden="true" tabindex="-1"></a>flow into 16 3by3 convolutional layers and 2by2 pooling</span>
+<span id="cb26-199"><a href="#cb26-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-200"><a href="#cb26-200" aria-hidden="true" tabindex="-1"></a>output is 1 neural(0/1) sigmoid function.its good for binary</span>
+<span id="cb26-201"><a href="#cb26-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-204"><a href="#cb26-204" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-205"><a href="#cb26-205" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb26-206"><a href="#cb26-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-207"><a href="#cb26-207" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb26-208"><a href="#cb26-208" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note the input shape is the desired size of the image 300x300 with 3 bytes color</span></span>
+<span id="cb26-209"><a href="#cb26-209" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is the first convolution</span></span>
+<span id="cb26-210"><a href="#cb26-210" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">16</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>, input_shape<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>, <span class="dv">3</span>)),</span>
+<span id="cb26-211"><a href="#cb26-211" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb26-212"><a href="#cb26-212" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The second convolution</span></span>
+<span id="cb26-213"><a href="#cb26-213" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">32</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb26-214"><a href="#cb26-214" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb26-215"><a href="#cb26-215" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The third convolution</span></span>
+<span id="cb26-216"><a href="#cb26-216" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb26-217"><a href="#cb26-217" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb26-218"><a href="#cb26-218" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The fourth convolution</span></span>
+<span id="cb26-219"><a href="#cb26-219" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb26-220"><a href="#cb26-220" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb26-221"><a href="#cb26-221" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The fifth convolution</span></span>
+<span id="cb26-222"><a href="#cb26-222" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb26-223"><a href="#cb26-223" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb26-224"><a href="#cb26-224" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the results to feed into a DNN</span></span>
+<span id="cb26-225"><a href="#cb26-225" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Flatten(),</span>
+<span id="cb26-226"><a href="#cb26-226" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 512 neuron hidden layer</span></span>
+<span id="cb26-227"><a href="#cb26-227" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">512</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb26-228"><a href="#cb26-228" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Only 1 output neuron. It will contain a value from 0-1 where 0 for 1 class ('horses') and 1 for the other ('humans')</span></span>
+<span id="cb26-229"><a href="#cb26-229" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">1</span>, activation<span class="op">=</span><span class="st">'sigmoid'</span>)</span>
+<span id="cb26-230"><a href="#cb26-230" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb26-231"><a href="#cb26-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-232"><a href="#cb26-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-235"><a href="#cb26-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-236"><a href="#cb26-236" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the model summary</span></span>
+<span id="cb26-237"><a href="#cb26-237" aria-hidden="true" tabindex="-1"></a>model.summary()</span>
+<span id="cb26-238"><a href="#cb26-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-239"><a href="#cb26-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-240"><a href="#cb26-240" aria-hidden="true" tabindex="-1"></a><span class="fu"># compile model</span></span>
+<span id="cb26-241"><a href="#cb26-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-244"><a href="#cb26-244" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-245"><a href="#cb26-245" aria-hidden="true" tabindex="-1"></a><span class="co"># v2.11+ optimizer `tf.keras.optimizers.RMSprop` runs slowly on M1/M2 Macs</span></span>
+<span id="cb26-246"><a href="#cb26-246" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> RMSprop</span>
+<span id="cb26-247"><a href="#cb26-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-248"><a href="#cb26-248" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">'binary_crossentropy'</span>,</span>
+<span id="cb26-249"><a href="#cb26-249" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>RMSprop(learning_rate<span class="op">=</span><span class="fl">0.001</span>),</span>
+<span id="cb26-250"><a href="#cb26-250" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb26-251"><a href="#cb26-251" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-252"><a href="#cb26-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-253"><a href="#cb26-253" aria-hidden="true" tabindex="-1"></a><span class="fu"># Callbacks</span></span>
+<span id="cb26-254"><a href="#cb26-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-257"><a href="#cb26-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-258"><a href="#cb26-258" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb26-259"><a href="#cb26-259" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb26-260"><a href="#cb26-260" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb26-261"><a href="#cb26-261" aria-hidden="true" tabindex="-1"></a><span class="co">    Halts the training when the loss falls below 0.15</span></span>
+<span id="cb26-262"><a href="#cb26-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-263"><a href="#cb26-263" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb26-264"><a href="#cb26-264" aria-hidden="true" tabindex="-1"></a><span class="co">      epoch (integer) - index of epoch (required but unused in the function definition below)</span></span>
+<span id="cb26-265"><a href="#cb26-265" aria-hidden="true" tabindex="-1"></a><span class="co">      logs (dict) - metric results from the training epoch</span></span>
+<span id="cb26-266"><a href="#cb26-266" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb26-267"><a href="#cb26-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-268"><a href="#cb26-268" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check the loss</span></span>
+<span id="cb26-269"><a href="#cb26-269" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'loss'</span>) <span class="op">&lt;</span> <span class="fl">0.15</span>):</span>
+<span id="cb26-270"><a href="#cb26-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-271"><a href="#cb26-271" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Stop if threshold is met</span></span>
+<span id="cb26-272"><a href="#cb26-272" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Loss is lower than 0.15 so cancelling training!"</span>)</span>
+<span id="cb26-273"><a href="#cb26-273" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"cancelling training with:"</span>)</span>
+<span id="cb26-274"><a href="#cb26-274" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(epoch<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb26-275"><a href="#cb26-275" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb26-276"><a href="#cb26-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-277"><a href="#cb26-277" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb26-278"><a href="#cb26-278" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span>
+<span id="cb26-279"><a href="#cb26-279" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-280"><a href="#cb26-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-281"><a href="#cb26-281" aria-hidden="true" tabindex="-1"></a><span class="fu"># train model</span></span>
+<span id="cb26-282"><a href="#cb26-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-285"><a href="#cb26-285" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-286"><a href="#cb26-286" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
+<span id="cb26-287"><a href="#cb26-287" aria-hidden="true" tabindex="-1"></a>      train_generator,</span>
+<span id="cb26-288"><a href="#cb26-288" aria-hidden="true" tabindex="-1"></a>      steps_per_epoch<span class="op">=</span><span class="dv">8</span>,  </span>
+<span id="cb26-289"><a href="#cb26-289" aria-hidden="true" tabindex="-1"></a>      epochs<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb26-290"><a href="#cb26-290" aria-hidden="true" tabindex="-1"></a>      validation_data <span class="op">=</span> validation_generator,</span>
+<span id="cb26-291"><a href="#cb26-291" aria-hidden="true" tabindex="-1"></a>      validation_steps<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb26-292"><a href="#cb26-292" aria-hidden="true" tabindex="-1"></a>      callbacks<span class="op">=</span>[callbacks])</span>
+<span id="cb26-293"><a href="#cb26-293" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb26-294"><a href="#cb26-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-295"><a href="#cb26-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-296"><a href="#cb26-296" aria-hidden="true" tabindex="-1"></a><span class="fu"># Prediction</span></span>
+<span id="cb26-297"><a href="#cb26-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-298"><a href="#cb26-298" aria-hidden="true" tabindex="-1"></a>Prediction a validation horses</span>
+<span id="cb26-299"><a href="#cb26-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-302"><a href="#cb26-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-303"><a href="#cb26-303" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb26-304"><a href="#cb26-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-305"><a href="#cb26-305" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.utils <span class="im">import</span> load_img, img_to_array</span>
+<span id="cb26-306"><a href="#cb26-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-307"><a href="#cb26-307" aria-hidden="true" tabindex="-1"></a>fn<span class="op">=</span><span class="st">'horse1-241.png'</span></span>
+<span id="cb26-308"><a href="#cb26-308" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">'./validation-horse-or-human/horses/'</span><span class="op">+</span> fn</span>
+<span id="cb26-309"><a href="#cb26-309" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> load_img(path, target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>))</span>
+<span id="cb26-310"><a href="#cb26-310" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> img_to_array(img)</span>
+<span id="cb26-311"><a href="#cb26-311" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">255</span></span>
+<span id="cb26-312"><a href="#cb26-312" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.expand_dims(x, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb26-313"><a href="#cb26-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-314"><a href="#cb26-314" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> np.vstack([x])</span>
+<span id="cb26-315"><a href="#cb26-315" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> model.predict(images, batch_size<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb26-316"><a href="#cb26-316" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classes[<span class="dv">0</span>])</span>
+<span id="cb26-317"><a href="#cb26-317" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> classes[<span class="dv">0</span>]<span class="op">&gt;</span><span class="fl">0.5</span>:</span>
+<span id="cb26-318"><a href="#cb26-318" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a human"</span>)</span>
+<span id="cb26-319"><a href="#cb26-319" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb26-320"><a href="#cb26-320" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a horse"</span>)</span>
+<span id="cb26-321"><a href="#cb26-321" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb26-322"><a href="#cb26-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-323"><a href="#cb26-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-324"><a href="#cb26-324" aria-hidden="true" tabindex="-1"></a>Prediction a human from internet</span>
+<span id="cb26-325"><a href="#cb26-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-328"><a href="#cb26-328" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb26-329"><a href="#cb26-329" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb26-330"><a href="#cb26-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-331"><a href="#cb26-331" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.utils <span class="im">import</span> load_img, img_to_array</span>
+<span id="cb26-332"><a href="#cb26-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-333"><a href="#cb26-333" aria-hidden="true" tabindex="-1"></a>fn<span class="op">=</span><span class="st">'daniel craig.png'</span></span>
+<span id="cb26-334"><a href="#cb26-334" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">'./random/'</span><span class="op">+</span> fn</span>
+<span id="cb26-335"><a href="#cb26-335" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> load_img(path, target_size<span class="op">=</span>(<span class="dv">300</span>, <span class="dv">300</span>))</span>
+<span id="cb26-336"><a href="#cb26-336" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> img_to_array(img)</span>
+<span id="cb26-337"><a href="#cb26-337" aria-hidden="true" tabindex="-1"></a>x <span class="op">/=</span> <span class="dv">255</span></span>
+<span id="cb26-338"><a href="#cb26-338" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.expand_dims(x, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb26-339"><a href="#cb26-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-340"><a href="#cb26-340" aria-hidden="true" tabindex="-1"></a>images <span class="op">=</span> np.vstack([x])</span>
+<span id="cb26-341"><a href="#cb26-341" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> model.predict(images, batch_size<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb26-342"><a href="#cb26-342" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classes[<span class="dv">0</span>])</span>
+<span id="cb26-343"><a href="#cb26-343" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> classes[<span class="dv">0</span>]<span class="op">&gt;</span><span class="fl">0.5</span>:</span>
+<span id="cb26-344"><a href="#cb26-344" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a human"</span>)</span>
+<span id="cb26-345"><a href="#cb26-345" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb26-346"><a href="#cb26-346" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(fn<span class="op">+</span><span class="st">" is a horse"</span>)</span>
+<span id="cb26-347"><a href="#cb26-347" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb26-348"><a href="#cb26-348" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb26-349"><a href="#cb26-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-350"><a href="#cb26-350" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb26-351"><a href="#cb26-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-352"><a href="#cb26-352" aria-hidden="true" tabindex="-1"></a>https://www.coursera.org/learn/introduction-tensorflow/home/info</span>
+<span id="cb26-353"><a href="#cb26-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-354"><a href="#cb26-354" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1</span>
+<span id="cb26-355"><a href="#cb26-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-356"><a href="#cb26-356" aria-hidden="true" tabindex="-1"></a>https://github.com/zalandoresearch/fashion-mnist</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This website is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

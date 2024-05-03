@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Tensorflowing - W4:multi-class classification</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.jpg" rel="icon" type="image/jpeg">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../1.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Tensorflowing</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-intro" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Intro</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-intro">    
+        <li class="dropdown-header">Intro</li>
+        <li>
+    <a class="dropdown-item" href="../intro/about.html">
+ <span class="dropdown-text">About</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-deep-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Deep Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-deep-neural-networks">    
+        <li class="dropdown-header">DeepLearning</li>
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w1.html">
+ <span class="dropdown-text">Introduction to TensorFlow W1:A New Programming Paradigm</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w2.html">
+ <span class="dropdown-text">Introduction to TensorFlow W2:Introduction to Computer Vision</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w3.html">
+ <span class="dropdown-text">Introduction to TensorFlow W3:Enhancing Vision with Convolutional Neural Networks</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../DeepLearning/c1w4.html">
+ <span class="dropdown-text">Introduction to TensorFlow W4:Using Real-world Images</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-convolutional-neural-networks" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Convolutional Neural Networks</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-convolutional-neural-networks">    
+        <li class="dropdown-header">Convolutional Neural Networks in TensorFlow</li>
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week1.html">
+ <span class="dropdown-text">W1:Exploring a Larger Dataset</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week2.html">
+ <span class="dropdown-text">W2:Augmentation: A technique to avoid overfitting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week3.html">
+ <span class="dropdown-text">W3:Transfer learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Convolutional Neural Networks in TensorFlow/c2week4.html">
+ <span class="dropdown-text">W4:multi-class classification</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-natural-language-processing" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Natural Language Processing</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-natural-language-processing">    
+        <li class="dropdown-header">Natural Language Processing</li>
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week1.html">
+ <span class="dropdown-text">W1:Sentiment in text</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week2.html">
+ <span class="dropdown-text">W2:Word Embeddings</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week3.html">
+ <span class="dropdown-text">W3:Sequence models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Natural Language Processing/c3week4.html">
+ <span class="dropdown-text">W4:Sequence models and literature</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-time-series" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Time Series</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-time-series">    
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-tensorflow-tree-model" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">tensorflow tree model</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-tensorflow-tree-model">    
+        <li class="dropdown-header">tree model</li>
+        <li>
+    <a class="dropdown-item" href="../tree model/1 install package.html">
+ <span class="dropdown-text">install pacakge</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/2 Keras random forests regression model.html">
+ <span class="dropdown-text">Keras random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/3 Keras tuned random forests regression model.html">
+ <span class="dropdown-text">Keras tuned random forests regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/4 Keras GBT regression model.html">
+ <span class="dropdown-text">Keras Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../tree model/5 Keras tuned GBT regression model.html">
+ <span class="dropdown-text">Keras tuned Gradient BoostedTrees Model regression model</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Convolutional Neural Networks in TensorFlow/c2week1.html">Convolutional Neural Networks in TensorFlow</a></li><li class="breadcrumb-item"><a href="../Convolutional Neural Networks in TensorFlow/c2week4.html">W4:multi-class classification</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Convolutional Neural Networks in TensorFlow</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Convolutional Neural Networks in TensorFlow/c2week1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W1:Exploring a Larger Dataset</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Convolutional Neural Networks in TensorFlow/c2week2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W2:Augmentation: A technique to avoid overfitting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Convolutional Neural Networks in TensorFlow/c2week3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">W3:Transfer learning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Convolutional Neural Networks in TensorFlow/c2week4.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">W4:multi-class classification</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#download-data" id="toc-download-data" class="nav-link active" data-scroll-target="#download-data"><span class="header-section-number">1</span> download data</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">2</span> load data</a></li>
+  <li><a href="#define-model" id="toc-define-model" class="nav-link" data-scroll-target="#define-model"><span class="header-section-number">3</span> define model</a></li>
+  <li><a href="#complie-model" id="toc-complie-model" class="nav-link" data-scroll-target="#complie-model"><span class="header-section-number">4</span> complie model</a></li>
+  <li><a href="#callbacks" id="toc-callbacks" class="nav-link" data-scroll-target="#callbacks"><span class="header-section-number">5</span> Callbacks</a></li>
+  <li><a href="#train-model" id="toc-train-model" class="nav-link" data-scroll-target="#train-model"><span class="header-section-number">6</span> train model</a></li>
+  <li><a href="#resource" id="toc-resource" class="nav-link" data-scroll-target="#resource"><span class="header-section-number">7</span> resource:</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Convolutional Neural Networks in TensorFlow/c2week1.html">Convolutional Neural Networks in TensorFlow</a></li><li class="breadcrumb-item"><a href="../Convolutional Neural Networks in TensorFlow/c2week4.html">W4:multi-class classification</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">W4:multi-class classification</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><img src="images/41.png" class="img-fluid" width="445"></p>
+<div id="1d1fc6f7" class="cell" data-execution_count="1">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> RMSprop</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.preprocessing.image <span class="im">import</span> ImageDataGenerator</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shutil <span class="im">import</span> copyfile</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> os <span class="im">import</span> getcwd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="download-data" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> download data</h1>
+<p>download trainning data</p>
+<div id="eee327ca" class="cell" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve( <span class="st">"https://storage.googleapis.com/learning-datasets/rps.zip"</span>, <span class="st">"./tmp/rps.zip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>download testing data</p>
+<div id="f01b2770" class="cell" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve( <span class="st">"https://storage.googleapis.com/learning-datasets/rps-test-set.zip"</span>, <span class="st">"./tmp/rps-test-set.zip"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>unzip</p>
+<div id="8574169f" class="cell" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./tmp/rps.zip'</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./tmp/'</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>zip_ref.close()</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./tmp/rps-test-set.zip'</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./tmp/'</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>zip_ref.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="21839c50" class="cell" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>rock_dir <span class="op">=</span> os.path.join(<span class="st">'./tmp/rps/rock'</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>paper_dir <span class="op">=</span> os.path.join(<span class="st">'./tmp/rps/paper'</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>scissors_dir <span class="op">=</span> os.path.join(<span class="st">'./tmp/rps/scissors'</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total training rock images:'</span>, <span class="bu">len</span>(os.listdir(rock_dir)))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total training paper images:'</span>, <span class="bu">len</span>(os.listdir(paper_dir)))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total training scissors images:'</span>, <span class="bu">len</span>(os.listdir(scissors_dir)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>total training rock images: 840
+total training paper images: 840
+total training scissors images: 840</code></pre>
+</div>
+</div>
+<div id="b0787a03" class="cell" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rock_files <span class="op">=</span> os.listdir(rock_dir)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rock_files[:<span class="dv">10</span>])</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>paper_files <span class="op">=</span> os.listdir(paper_dir)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(paper_files[:<span class="dv">5</span>])</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>scissors_files <span class="op">=</span> os.listdir(scissors_dir)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(scissors_files[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>['rock04-059.png', 'rock01-108.png', 'rock04-065.png', 'rock05ck01-067.png', 'rock05ck01-073.png', 'rock04-071.png', 'rock05ck01-098.png', 'rock02-008.png', 'rock07-k03-013.png', 'rock02-034.png']
+['paper03-088.png', 'paper05-026.png', 'paper05-032.png', 'paper03-077.png', 'paper03-063.png']
+['testscissors03-040.png', 'testscissors03-054.png', 'testscissors03-068.png', 'testscissors03-083.png', 'testscissors03-097.png']</code></pre>
+</div>
+</div>
+<div id="3b3cf9bc" class="cell" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image <span class="im">as</span> mpimg</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>pic_index <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>next_rock <span class="op">=</span> [os.path.join(rock_dir, fname) </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> rock_files[pic_index<span class="op">-</span><span class="dv">2</span>:pic_index]]</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>next_paper <span class="op">=</span> [os.path.join(paper_dir, fname) </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> paper_files[pic_index<span class="op">-</span><span class="dv">2</span>:pic_index]]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>next_scissors <span class="op">=</span> [os.path.join(scissors_dir, fname) </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> scissors_files[pic_index<span class="op">-</span><span class="dv">2</span>:pic_index]]</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, img_path <span class="kw">in</span> <span class="bu">enumerate</span>(next_rock<span class="op">+</span>next_paper<span class="op">+</span>next_scissors):</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(img_path)</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  img <span class="op">=</span> mpimg.imread(img_path)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  plt.imshow(img)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  plt.axis(<span class="st">'Off'</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-8-output-1.png" width="389" height="389" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-8-output-2.png" width="389" height="389" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-8-output-3.png" width="389" height="389" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-8-output-4.png" width="389" height="389" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-8-output-5.png" width="389" height="389" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-8-output-6.png" width="389" height="389" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="load-data" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> load data</h1>
+<div id="d1ae2269" class="cell" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keras_preprocessing</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras_preprocessing <span class="im">import</span> image</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras_preprocessing.image <span class="im">import</span> ImageDataGenerator</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>TRAINING_DIR <span class="op">=</span> <span class="st">"./tmp/rps/"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>training_datagen <span class="op">=</span> ImageDataGenerator(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      rescale <span class="op">=</span> <span class="fl">1.</span><span class="op">/</span><span class="dv">255</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        rotation_range<span class="op">=</span><span class="dv">40</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>      width_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>      height_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>      shear_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>      zoom_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      horizontal_flip<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>      fill_mode<span class="op">=</span><span class="st">'nearest'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="3046304c" class="cell" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>VALIDATION_DIR <span class="op">=</span> <span class="st">"./tmp/rps-test-set/"</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>validation_datagen <span class="op">=</span> ImageDataGenerator(rescale <span class="op">=</span> <span class="fl">1.</span><span class="op">/</span><span class="dv">255</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>train_generator <span class="op">=</span> training_datagen.flow_from_directory(</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    TRAINING_DIR,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    target_size<span class="op">=</span>(<span class="dv">150</span>,<span class="dv">150</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    class_mode<span class="op">=</span><span class="st">'categorical'</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  batch_size<span class="op">=</span><span class="dv">126</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>validation_generator <span class="op">=</span> validation_datagen.flow_from_directory(</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    VALIDATION_DIR,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    target_size<span class="op">=</span>(<span class="dv">150</span>,<span class="dv">150</span>),</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    class_mode<span class="op">=</span><span class="st">'categorical'</span>,</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  batch_size<span class="op">=</span><span class="dv">126</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Found 2520 images belonging to 3 classes.
+Found 372 images belonging to 3 classes.</code></pre>
+</div>
+</div>
+</section>
+<section id="define-model" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> define model</h1>
+<div id="4012e8b7" class="cell" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note the input shape is the desired size of the image 150x150 with 3 bytes color</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is the first convolution</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>, input_shape<span class="op">=</span>(<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>)),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The second convolution</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The third convolution</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">128</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The fourth convolution</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">128</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the results to feed into a DNN</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Flatten(),</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dropout(<span class="fl">0.5</span>),</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 512 neuron hidden layer</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">512</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">3</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="72665d89" class="cell" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Model: "sequential"</span>
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold"> Layer (type)                    </span>┃<span style="font-weight: bold"> Output Shape           </span>┃<span style="font-weight: bold">       Param # </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ conv2d (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">148</span>, <span style="color: #00af00; text-decoration-color: #00af00">148</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)   │         <span style="color: #00af00; text-decoration-color: #00af00">1,792</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)    │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">74</span>, <span style="color: #00af00; text-decoration-color: #00af00">74</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">72</span>, <span style="color: #00af00; text-decoration-color: #00af00">72</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │        <span style="color: #00af00; text-decoration-color: #00af00">36,928</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">36</span>, <span style="color: #00af00; text-decoration-color: #00af00">36</span>, <span style="color: #00af00; text-decoration-color: #00af00">64</span>)     │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_2 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">34</span>, <span style="color: #00af00; text-decoration-color: #00af00">34</span>, <span style="color: #00af00; text-decoration-color: #00af00">128</span>)    │        <span style="color: #00af00; text-decoration-color: #00af00">73,856</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_2 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">17</span>, <span style="color: #00af00; text-decoration-color: #00af00">17</span>, <span style="color: #00af00; text-decoration-color: #00af00">128</span>)    │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_3 (<span style="color: #0087ff; text-decoration-color: #0087ff">Conv2D</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">15</span>, <span style="color: #00af00; text-decoration-color: #00af00">15</span>, <span style="color: #00af00; text-decoration-color: #00af00">128</span>)    │       <span style="color: #00af00; text-decoration-color: #00af00">147,584</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_3 (<span style="color: #0087ff; text-decoration-color: #0087ff">MaxPooling2D</span>)  │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">7</span>, <span style="color: #00af00; text-decoration-color: #00af00">7</span>, <span style="color: #00af00; text-decoration-color: #00af00">128</span>)      │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (<span style="color: #0087ff; text-decoration-color: #0087ff">Flatten</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">6272</span>)           │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dropout (<span style="color: #0087ff; text-decoration-color: #0087ff">Dropout</span>)               │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">6272</span>)           │             <span style="color: #00af00; text-decoration-color: #00af00">0</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                   │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">512</span>)            │     <span style="color: #00af00; text-decoration-color: #00af00">3,211,776</span> │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (<span style="color: #0087ff; text-decoration-color: #0087ff">Dense</span>)                 │ (<span style="color: #00d7ff; text-decoration-color: #00d7ff">None</span>, <span style="color: #00af00; text-decoration-color: #00af00">3</span>)              │         <span style="color: #00af00; text-decoration-color: #00af00">1,539</span> │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Total params: </span><span style="color: #00af00; text-decoration-color: #00af00">3,473,475</span> (13.25 MB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">3,473,475</span> (13.25 MB)
+</pre>
+</div>
+<div class="cell-output cell-output-display">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold"> Non-trainable params: </span><span style="color: #00af00; text-decoration-color: #00af00">0</span> (0.00 B)
+</pre>
+</div>
+</div>
+</section>
+<section id="complie-model" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> complie model</h1>
+<div id="7c18009d" class="cell" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss <span class="op">=</span> <span class="st">'categorical_crossentropy'</span>, optimizer<span class="op">=</span><span class="st">'rmsprop'</span>, metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="callbacks" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Callbacks</h1>
+<div id="34540cfa" class="cell" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'accuracy'</span>)<span class="op">&gt;</span><span class="fl">0.95</span>):</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Reached 95% accuracy so cancelling training!"</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="train-model" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> train model</h1>
+<div id="80febcc7" class="cell" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>      train_generator,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>      <span class="co">#steps_per_epoch=100,  # 2000 images = batch_size * steps</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      epochs<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>      validation_data<span class="op">=</span>validation_generator,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>      <span class="co">#validation_steps=50,  # 1000 images = batch_size * steps</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>      verbose<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      callbacks<span class="op">=</span>[callbacks]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/5
+ 1/20 ━━━━━━━━━━━━━━━━━━━━ 2:34 8s/step - accuracy: 0.3492 - loss: 1.1002 2/20 ━━━━━━━━━━━━━━━━━━━━ 41s 2s/step - accuracy: 0.3373 - loss: 1.5266  3/20 ━━━━━━━━━━━━━━━━━━━━ 38s 2s/step - accuracy: 0.3351 - loss: 1.5877 4/20 ━━━━━━━━━━━━━━━━━━━━ 36s 2s/step - accuracy: 0.3322 - loss: 1.5823 5/20 ━━━━━━━━━━━━━━━━━━━━ 33s 2s/step - accuracy: 0.3283 - loss: 1.5630 6/20 ━━━━━━━━━━━━━━━━━━━━ 31s 2s/step - accuracy: 0.3247 - loss: 1.5394 7/20 ━━━━━━━━━━━━━━━━━━━━ 28s 2s/step - accuracy: 0.3240 - loss: 1.5159 8/20 ━━━━━━━━━━━━━━━━━━━━ 26s 2s/step - accuracy: 0.3229 - loss: 1.4940 9/20 ━━━━━━━━━━━━━━━━━━━━ 24s 2s/step - accuracy: 0.3219 - loss: 1.474010/20 ━━━━━━━━━━━━━━━━━━━━ 22s 2s/step - accuracy: 0.3212 - loss: 1.455711/20 ━━━━━━━━━━━━━━━━━━━━ 20s 2s/step - accuracy: 0.3207 - loss: 1.439212/20 ━━━━━━━━━━━━━━━━━━━━ 18s 2s/step - accuracy: 0.3201 - loss: 1.424313/20 ━━━━━━━━━━━━━━━━━━━━ 15s 2s/step - accuracy: 0.3198 - loss: 1.410614/20 ━━━━━━━━━━━━━━━━━━━━ 13s 2s/step - accuracy: 0.3197 - loss: 1.398215/20 ━━━━━━━━━━━━━━━━━━━━ 11s 2s/step - accuracy: 0.3199 - loss: 1.386716/20 ━━━━━━━━━━━━━━━━━━━━ 8s 2s/step - accuracy: 0.3203 - loss: 1.3762 17/20 ━━━━━━━━━━━━━━━━━━━━ 6s 2s/step - accuracy: 0.3208 - loss: 1.366518/20 ━━━━━━━━━━━━━━━━━━━━ 4s 2s/step - accuracy: 0.3213 - loss: 1.357619/20 ━━━━━━━━━━━━━━━━━━━━ 2s 2s/step - accuracy: 0.3217 - loss: 1.349320/20 ━━━━━━━━━━━━━━━━━━━━ 0s 2s/step - accuracy: 0.3221 - loss: 1.341520/20 ━━━━━━━━━━━━━━━━━━━━ 52s 2s/step - accuracy: 0.3224 - loss: 1.3345 - val_accuracy: 0.3333 - val_loss: 1.0992
+Epoch 2/5
+ 1/20 ━━━━━━━━━━━━━━━━━━━━ 2:09 7s/step - accuracy: 0.4127 - loss: 1.0850 2/20 ━━━━━━━━━━━━━━━━━━━━ 32s 2s/step - accuracy: 0.3929 - loss: 1.0975  3/20 ━━━━━━━━━━━━━━━━━━━━ 34s 2s/step - accuracy: 0.3871 - loss: 1.1001 4/20 ━━━━━━━━━━━━━━━━━━━━ 31s 2s/step - accuracy: 0.3796 - loss: 1.1010 5/20 ━━━━━━━━━━━━━━━━━━━━ 29s 2s/step - accuracy: 0.3789 - loss: 1.1012 6/20 ━━━━━━━━━━━━━━━━━━━━ 29s 2s/step - accuracy: 0.3771 - loss: 1.1012 7/20 ━━━━━━━━━━━━━━━━━━━━ 26s 2s/step - accuracy: 0.3765 - loss: 1.1011 8/20 ━━━━━━━━━━━━━━━━━━━━ 26s 2s/step - accuracy: 0.3761 - loss: 1.1008 9/20 ━━━━━━━━━━━━━━━━━━━━ 24s 2s/step - accuracy: 0.3753 - loss: 1.100610/20 ━━━━━━━━━━━━━━━━━━━━ 22s 2s/step - accuracy: 0.3751 - loss: 1.100211/20 ━━━━━━━━━━━━━━━━━━━━ 19s 2s/step - accuracy: 0.3745 - loss: 1.099812/20 ━━━━━━━━━━━━━━━━━━━━ 17s 2s/step - accuracy: 0.3747 - loss: 1.099313/20 ━━━━━━━━━━━━━━━━━━━━ 15s 2s/step - accuracy: 0.3743 - loss: 1.099014/20 ━━━━━━━━━━━━━━━━━━━━ 13s 2s/step - accuracy: 0.3741 - loss: 1.098815/20 ━━━━━━━━━━━━━━━━━━━━ 11s 2s/step - accuracy: 0.3744 - loss: 1.098716/20 ━━━━━━━━━━━━━━━━━━━━ 9s 2s/step - accuracy: 0.3745 - loss: 1.0985 17/20 ━━━━━━━━━━━━━━━━━━━━ 6s 2s/step - accuracy: 0.3749 - loss: 1.098318/20 ━━━━━━━━━━━━━━━━━━━━ 4s 2s/step - accuracy: 0.3754 - loss: 1.098119/20 ━━━━━━━━━━━━━━━━━━━━ 2s 2s/step - accuracy: 0.3763 - loss: 1.097820/20 ━━━━━━━━━━━━━━━━━━━━ 0s 2s/step - accuracy: 0.3771 - loss: 1.097820/20 ━━━━━━━━━━━━━━━━━━━━ 52s 2s/step - accuracy: 0.3777 - loss: 1.0978 - val_accuracy: 0.3333 - val_loss: 1.1027
+Epoch 3/5
+ 1/20 ━━━━━━━━━━━━━━━━━━━━ 2:16 7s/step - accuracy: 0.3413 - loss: 1.1032 2/20 ━━━━━━━━━━━━━━━━━━━━ 38s 2s/step - accuracy: 0.3452 - loss: 1.1015  3/20 ━━━━━━━━━━━━━━━━━━━━ 38s 2s/step - accuracy: 0.3439 - loss: 1.1001 4/20 ━━━━━━━━━━━━━━━━━━━━ 34s 2s/step - accuracy: 0.3542 - loss: 1.0986 5/20 ━━━━━━━━━━━━━━━━━━━━ 33s 2s/step - accuracy: 0.3583 - loss: 1.0976 6/20 ━━━━━━━━━━━━━━━━━━━━ 31s 2s/step - accuracy: 0.3618 - loss: 1.0966 7/20 ━━━━━━━━━━━━━━━━━━━━ 29s 2s/step - accuracy: 0.3663 - loss: 1.0956 8/20 ━━━━━━━━━━━━━━━━━━━━ 26s 2s/step - accuracy: 0.3678 - loss: 1.0953 9/20 ━━━━━━━━━━━━━━━━━━━━ 24s 2s/step - accuracy: 0.3681 - loss: 1.095110/20 ━━━━━━━━━━━━━━━━━━━━ 23s 2s/step - accuracy: 0.3697 - loss: 1.094711/20 ━━━━━━━━━━━━━━━━━━━━ 20s 2s/step - accuracy: 0.3726 - loss: 1.093812/20 ━━━━━━━━━━━━━━━━━━━━ 18s 2s/step - accuracy: 0.3745 - loss: 1.093313/20 ━━━━━━━━━━━━━━━━━━━━ 16s 2s/step - accuracy: 0.3765 - loss: 1.093614/20 ━━━━━━━━━━━━━━━━━━━━ 13s 2s/step - accuracy: 0.3787 - loss: 1.093715/20 ━━━━━━━━━━━━━━━━━━━━ 11s 2s/step - accuracy: 0.3812 - loss: 1.093516/20 ━━━━━━━━━━━━━━━━━━━━ 9s 2s/step - accuracy: 0.3835 - loss: 1.0931 17/20 ━━━━━━━━━━━━━━━━━━━━ 6s 2s/step - accuracy: 0.3856 - loss: 1.092518/20 ━━━━━━━━━━━━━━━━━━━━ 4s 2s/step - accuracy: 0.3872 - loss: 1.091919/20 ━━━━━━━━━━━━━━━━━━━━ 2s 2s/step - accuracy: 0.3889 - loss: 1.091120/20 ━━━━━━━━━━━━━━━━━━━━ 0s 2s/step - accuracy: 0.3908 - loss: 1.090120/20 ━━━━━━━━━━━━━━━━━━━━ 52s 2s/step - accuracy: 0.3925 - loss: 1.0892 - val_accuracy: 0.3333 - val_loss: 1.0825
+Epoch 4/5
+ 1/20 ━━━━━━━━━━━━━━━━━━━━ 2:27 8s/step - accuracy: 0.3651 - loss: 1.2617 2/20 ━━━━━━━━━━━━━━━━━━━━ 44s 2s/step - accuracy: 0.4167 - loss: 1.2023  3/20 ━━━━━━━━━━━━━━━━━━━━ 43s 3s/step - accuracy: 0.4392 - loss: 1.1691 4/20 ━━━━━━━━━━━━━━━━━━━━ 39s 2s/step - accuracy: 0.4534 - loss: 1.1429 5/20 ━━━━━━━━━━━━━━━━━━━━ 35s 2s/step - accuracy: 0.4608 - loss: 1.1242 6/20 ━━━━━━━━━━━━━━━━━━━━ 31s 2s/step - accuracy: 0.4634 - loss: 1.1118 7/20 ━━━━━━━━━━━━━━━━━━━━ 28s 2s/step - accuracy: 0.4679 - loss: 1.1006 8/20 ━━━━━━━━━━━━━━━━━━━━ 25s 2s/step - accuracy: 0.4722 - loss: 1.0898 9/20 ━━━━━━━━━━━━━━━━━━━━ 23s 2s/step - accuracy: 0.4765 - loss: 1.079810/20 ━━━━━━━━━━━━━━━━━━━━ 20s 2s/step - accuracy: 0.4813 - loss: 1.070311/20 ━━━━━━━━━━━━━━━━━━━━ 18s 2s/step - accuracy: 0.4849 - loss: 1.061912/20 ━━━━━━━━━━━━━━━━━━━━ 16s 2s/step - accuracy: 0.4875 - loss: 1.056613/20 ━━━━━━━━━━━━━━━━━━━━ 14s 2s/step - accuracy: 0.4898 - loss: 1.051414/20 ━━━━━━━━━━━━━━━━━━━━ 12s 2s/step - accuracy: 0.4923 - loss: 1.046015/20 ━━━━━━━━━━━━━━━━━━━━ 10s 2s/step - accuracy: 0.4946 - loss: 1.040916/20 ━━━━━━━━━━━━━━━━━━━━ 8s 2s/step - accuracy: 0.4964 - loss: 1.0366 17/20 ━━━━━━━━━━━━━━━━━━━━ 6s 2s/step - accuracy: 0.4981 - loss: 1.032518/20 ━━━━━━━━━━━━━━━━━━━━ 4s 2s/step - accuracy: 0.5000 - loss: 1.028419/20 ━━━━━━━━━━━━━━━━━━━━ 2s 2s/step - accuracy: 0.5018 - loss: 1.024520/20 ━━━━━━━━━━━━━━━━━━━━ 0s 2s/step - accuracy: 0.5037 - loss: 1.020720/20 ━━━━━━━━━━━━━━━━━━━━ 48s 2s/step - accuracy: 0.5054 - loss: 1.0172 - val_accuracy: 0.7177 - val_loss: 0.5888
+Epoch 5/5
+ 1/20 ━━━━━━━━━━━━━━━━━━━━ 2:09 7s/step - accuracy: 0.5238 - loss: 0.9640 2/20 ━━━━━━━━━━━━━━━━━━━━ 33s 2s/step - accuracy: 0.5139 - loss: 0.9947  3/20 ━━━━━━━━━━━━━━━━━━━━ 31s 2s/step - accuracy: 0.5093 - loss: 1.0023 4/20 ━━━━━━━━━━━━━━━━━━━━ 29s 2s/step - accuracy: 0.5010 - loss: 1.0039 5/20 ━━━━━━━━━━━━━━━━━━━━ 27s 2s/step - accuracy: 0.5021 - loss: 0.9996 6/20 ━━━━━━━━━━━━━━━━━━━━ 25s 2s/step - accuracy: 0.5059 - loss: 0.9922 7/20 ━━━━━━━━━━━━━━━━━━━━ 23s 2s/step - accuracy: 0.5130 - loss: 0.9833 8/20 ━━━━━━━━━━━━━━━━━━━━ 21s 2s/step - accuracy: 0.5184 - loss: 0.9739 9/20 ━━━━━━━━━━━━━━━━━━━━ 19s 2s/step - accuracy: 0.5234 - loss: 0.964910/20 ━━━━━━━━━━━━━━━━━━━━ 18s 2s/step - accuracy: 0.5281 - loss: 0.956411/20 ━━━━━━━━━━━━━━━━━━━━ 16s 2s/step - accuracy: 0.5328 - loss: 0.947912/20 ━━━━━━━━━━━━━━━━━━━━ 15s 2s/step - accuracy: 0.5363 - loss: 0.940713/20 ━━━━━━━━━━━━━━━━━━━━ 13s 2s/step - accuracy: 0.5387 - loss: 0.935814/20 ━━━━━━━━━━━━━━━━━━━━ 11s 2s/step - accuracy: 0.5403 - loss: 0.931815/20 ━━━━━━━━━━━━━━━━━━━━ 9s 2s/step - accuracy: 0.5421 - loss: 0.9280 16/20 ━━━━━━━━━━━━━━━━━━━━ 7s 2s/step - accuracy: 0.5441 - loss: 0.923917/20 ━━━━━━━━━━━━━━━━━━━━ 5s 2s/step - accuracy: 0.5462 - loss: 0.919618/20 ━━━━━━━━━━━━━━━━━━━━ 3s 2s/step - accuracy: 0.5486 - loss: 0.915519/20 ━━━━━━━━━━━━━━━━━━━━ 1s 2s/step - accuracy: 0.5511 - loss: 0.911620/20 ━━━━━━━━━━━━━━━━━━━━ 0s 2s/step - accuracy: 0.5535 - loss: 0.907720/20 ━━━━━━━━━━━━━━━━━━━━ 43s 2s/step - accuracy: 0.5558 - loss: 0.9042 - val_accuracy: 0.6667 - val_loss: 0.5086</code></pre>
+</div>
+</div>
+<div id="98c1f0cc" class="cell" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> history.history[<span class="st">'accuracy'</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>val_acc <span class="op">=</span> history.history[<span class="st">'val_accuracy'</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> history.history[<span class="st">'loss'</span>]</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>val_loss <span class="op">=</span> history.history[<span class="st">'val_loss'</span>]</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="bu">range</span>(<span class="bu">len</span>(acc))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="318cc612" class="cell" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image <span class="im">as</span> mpimg</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#------------------------------------------------</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot training and validation accuracy per epoch</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#------------------------------------------------</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, acc, <span class="st">'r'</span>, label<span class="op">=</span><span class="st">'Training accuracy'</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, val_acc, <span class="st">'b'</span>, label<span class="op">=</span><span class="st">'Validation accuracy'</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Training and validation accuracy'</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, loss, <span class="st">'r'</span>, label<span class="op">=</span><span class="st">'Training Loss'</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, val_loss, <span class="st">'b'</span>, label<span class="op">=</span><span class="st">'Validation Loss'</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Training and validation loss'</span>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-17-output-1.png" width="579" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="c2week4_files/figure-html/cell-17-output-2.png" width="571" height="431" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="resource" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> resource:</h1>
+<p>https://coursera.org/learn/convolutional-neural-networks-tensorflow/home/</p>
+<p>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C2</p>
+<p>https://www.kaggle.com/c/dogs-vs-cats</p>
+
+
+<!-- -->
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb21" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "W4:multi-class classification"</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">  error: false</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-location: right</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: show</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-bg: true</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-block-border-left: "#31BAE9"</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>Week4 Multiclass Classifications</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>You've come a long way, Congratulations! One more thing to do before we move off of ConvNets to the next module, and that's to go beyond binary classification. Each of the examples you've done so far involved classifying one thing or another -- horse or human, cat or dog. When moving beyond binary into Categorical classification there are some coding considerations you need to take into account. You'll look at them this week!</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="al">![](images/41.png)</span>{width="445"}</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> shutil</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> RMSprop</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.preprocessing.image <span class="im">import</span> ImageDataGenerator</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shutil <span class="im">import</span> copyfile</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> os <span class="im">import</span> getcwd</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a><span class="fu"># download data</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>download trainning data</span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve( <span class="st">"https://storage.googleapis.com/learning-datasets/rps.zip"</span>, <span class="st">"./tmp/rps.zip"</span>)</span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>download testing data</span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a>urllib.request.urlretrieve( <span class="st">"https://storage.googleapis.com/learning-datasets/rps-test-set.zip"</span>, <span class="st">"./tmp/rps-test-set.zip"</span>)</span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a>unzip</span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./tmp/rps.zip'</span></span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./tmp/'</span>)</span>
+<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a>zip_ref.close()</span>
+<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a>local_zip <span class="op">=</span> <span class="st">'./tmp/rps-test-set.zip'</span></span>
+<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a>zip_ref <span class="op">=</span> zipfile.ZipFile(local_zip, <span class="st">'r'</span>)</span>
+<span id="cb21-77"><a href="#cb21-77" aria-hidden="true" tabindex="-1"></a>zip_ref.extractall(<span class="st">'./tmp/'</span>)</span>
+<span id="cb21-78"><a href="#cb21-78" aria-hidden="true" tabindex="-1"></a>zip_ref.close()</span>
+<span id="cb21-79"><a href="#cb21-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-80"><a href="#cb21-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-81"><a href="#cb21-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-84"><a href="#cb21-84" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-85"><a href="#cb21-85" aria-hidden="true" tabindex="-1"></a>rock_dir <span class="op">=</span> os.path.join(<span class="st">'./tmp/rps/rock'</span>)</span>
+<span id="cb21-86"><a href="#cb21-86" aria-hidden="true" tabindex="-1"></a>paper_dir <span class="op">=</span> os.path.join(<span class="st">'./tmp/rps/paper'</span>)</span>
+<span id="cb21-87"><a href="#cb21-87" aria-hidden="true" tabindex="-1"></a>scissors_dir <span class="op">=</span> os.path.join(<span class="st">'./tmp/rps/scissors'</span>)</span>
+<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total training rock images:'</span>, <span class="bu">len</span>(os.listdir(rock_dir)))</span>
+<span id="cb21-90"><a href="#cb21-90" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total training paper images:'</span>, <span class="bu">len</span>(os.listdir(paper_dir)))</span>
+<span id="cb21-91"><a href="#cb21-91" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'total training scissors images:'</span>, <span class="bu">len</span>(os.listdir(scissors_dir)))</span>
+<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-97"><a href="#cb21-97" aria-hidden="true" tabindex="-1"></a>rock_files <span class="op">=</span> os.listdir(rock_dir)</span>
+<span id="cb21-98"><a href="#cb21-98" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rock_files[:<span class="dv">10</span>])</span>
+<span id="cb21-99"><a href="#cb21-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-100"><a href="#cb21-100" aria-hidden="true" tabindex="-1"></a>paper_files <span class="op">=</span> os.listdir(paper_dir)</span>
+<span id="cb21-101"><a href="#cb21-101" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(paper_files[:<span class="dv">5</span>])</span>
+<span id="cb21-102"><a href="#cb21-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-103"><a href="#cb21-103" aria-hidden="true" tabindex="-1"></a>scissors_files <span class="op">=</span> os.listdir(scissors_dir)</span>
+<span id="cb21-104"><a href="#cb21-104" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(scissors_files[:<span class="dv">5</span>])</span>
+<span id="cb21-105"><a href="#cb21-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-106"><a href="#cb21-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-109"><a href="#cb21-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-110"><a href="#cb21-110" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb21-111"><a href="#cb21-111" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image <span class="im">as</span> mpimg</span>
+<span id="cb21-112"><a href="#cb21-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-113"><a href="#cb21-113" aria-hidden="true" tabindex="-1"></a>pic_index <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb21-114"><a href="#cb21-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-115"><a href="#cb21-115" aria-hidden="true" tabindex="-1"></a>next_rock <span class="op">=</span> [os.path.join(rock_dir, fname) </span>
+<span id="cb21-116"><a href="#cb21-116" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> rock_files[pic_index<span class="op">-</span><span class="dv">2</span>:pic_index]]</span>
+<span id="cb21-117"><a href="#cb21-117" aria-hidden="true" tabindex="-1"></a>next_paper <span class="op">=</span> [os.path.join(paper_dir, fname) </span>
+<span id="cb21-118"><a href="#cb21-118" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> paper_files[pic_index<span class="op">-</span><span class="dv">2</span>:pic_index]]</span>
+<span id="cb21-119"><a href="#cb21-119" aria-hidden="true" tabindex="-1"></a>next_scissors <span class="op">=</span> [os.path.join(scissors_dir, fname) </span>
+<span id="cb21-120"><a href="#cb21-120" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> fname <span class="kw">in</span> scissors_files[pic_index<span class="op">-</span><span class="dv">2</span>:pic_index]]</span>
+<span id="cb21-121"><a href="#cb21-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-122"><a href="#cb21-122" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, img_path <span class="kw">in</span> <span class="bu">enumerate</span>(next_rock<span class="op">+</span>next_paper<span class="op">+</span>next_scissors):</span>
+<span id="cb21-123"><a href="#cb21-123" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(img_path)</span></span>
+<span id="cb21-124"><a href="#cb21-124" aria-hidden="true" tabindex="-1"></a>  img <span class="op">=</span> mpimg.imread(img_path)</span>
+<span id="cb21-125"><a href="#cb21-125" aria-hidden="true" tabindex="-1"></a>  plt.imshow(img)</span>
+<span id="cb21-126"><a href="#cb21-126" aria-hidden="true" tabindex="-1"></a>  plt.axis(<span class="st">'Off'</span>)</span>
+<span id="cb21-127"><a href="#cb21-127" aria-hidden="true" tabindex="-1"></a>  plt.show()</span>
+<span id="cb21-128"><a href="#cb21-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-129"><a href="#cb21-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-130"><a href="#cb21-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-131"><a href="#cb21-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-132"><a href="#cb21-132" aria-hidden="true" tabindex="-1"></a><span class="fu"># load data</span></span>
+<span id="cb21-135"><a href="#cb21-135" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-136"><a href="#cb21-136" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb21-137"><a href="#cb21-137" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keras_preprocessing</span>
+<span id="cb21-138"><a href="#cb21-138" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras_preprocessing <span class="im">import</span> image</span>
+<span id="cb21-139"><a href="#cb21-139" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> keras_preprocessing.image <span class="im">import</span> ImageDataGenerator</span>
+<span id="cb21-140"><a href="#cb21-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-141"><a href="#cb21-141" aria-hidden="true" tabindex="-1"></a>TRAINING_DIR <span class="op">=</span> <span class="st">"./tmp/rps/"</span></span>
+<span id="cb21-142"><a href="#cb21-142" aria-hidden="true" tabindex="-1"></a>training_datagen <span class="op">=</span> ImageDataGenerator(</span>
+<span id="cb21-143"><a href="#cb21-143" aria-hidden="true" tabindex="-1"></a>      rescale <span class="op">=</span> <span class="fl">1.</span><span class="op">/</span><span class="dv">255</span>,</span>
+<span id="cb21-144"><a href="#cb21-144" aria-hidden="true" tabindex="-1"></a>        rotation_range<span class="op">=</span><span class="dv">40</span>,</span>
+<span id="cb21-145"><a href="#cb21-145" aria-hidden="true" tabindex="-1"></a>      width_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb21-146"><a href="#cb21-146" aria-hidden="true" tabindex="-1"></a>      height_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb21-147"><a href="#cb21-147" aria-hidden="true" tabindex="-1"></a>      shear_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb21-148"><a href="#cb21-148" aria-hidden="true" tabindex="-1"></a>      zoom_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb21-149"><a href="#cb21-149" aria-hidden="true" tabindex="-1"></a>      horizontal_flip<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb21-150"><a href="#cb21-150" aria-hidden="true" tabindex="-1"></a>      fill_mode<span class="op">=</span><span class="st">'nearest'</span>)</span>
+<span id="cb21-151"><a href="#cb21-151" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-152"><a href="#cb21-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-155"><a href="#cb21-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-156"><a href="#cb21-156" aria-hidden="true" tabindex="-1"></a>VALIDATION_DIR <span class="op">=</span> <span class="st">"./tmp/rps-test-set/"</span></span>
+<span id="cb21-157"><a href="#cb21-157" aria-hidden="true" tabindex="-1"></a>validation_datagen <span class="op">=</span> ImageDataGenerator(rescale <span class="op">=</span> <span class="fl">1.</span><span class="op">/</span><span class="dv">255</span>)</span>
+<span id="cb21-158"><a href="#cb21-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-159"><a href="#cb21-159" aria-hidden="true" tabindex="-1"></a>train_generator <span class="op">=</span> training_datagen.flow_from_directory(</span>
+<span id="cb21-160"><a href="#cb21-160" aria-hidden="true" tabindex="-1"></a>    TRAINING_DIR,</span>
+<span id="cb21-161"><a href="#cb21-161" aria-hidden="true" tabindex="-1"></a>    target_size<span class="op">=</span>(<span class="dv">150</span>,<span class="dv">150</span>),</span>
+<span id="cb21-162"><a href="#cb21-162" aria-hidden="true" tabindex="-1"></a>    class_mode<span class="op">=</span><span class="st">'categorical'</span>,</span>
+<span id="cb21-163"><a href="#cb21-163" aria-hidden="true" tabindex="-1"></a>  batch_size<span class="op">=</span><span class="dv">126</span></span>
+<span id="cb21-164"><a href="#cb21-164" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-165"><a href="#cb21-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-166"><a href="#cb21-166" aria-hidden="true" tabindex="-1"></a>validation_generator <span class="op">=</span> validation_datagen.flow_from_directory(</span>
+<span id="cb21-167"><a href="#cb21-167" aria-hidden="true" tabindex="-1"></a>    VALIDATION_DIR,</span>
+<span id="cb21-168"><a href="#cb21-168" aria-hidden="true" tabindex="-1"></a>    target_size<span class="op">=</span>(<span class="dv">150</span>,<span class="dv">150</span>),</span>
+<span id="cb21-169"><a href="#cb21-169" aria-hidden="true" tabindex="-1"></a>    class_mode<span class="op">=</span><span class="st">'categorical'</span>,</span>
+<span id="cb21-170"><a href="#cb21-170" aria-hidden="true" tabindex="-1"></a>  batch_size<span class="op">=</span><span class="dv">126</span></span>
+<span id="cb21-171"><a href="#cb21-171" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-172"><a href="#cb21-172" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-173"><a href="#cb21-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-174"><a href="#cb21-174" aria-hidden="true" tabindex="-1"></a><span class="fu"># define model</span></span>
+<span id="cb21-177"><a href="#cb21-177" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-178"><a href="#cb21-178" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.Sequential([</span>
+<span id="cb21-179"><a href="#cb21-179" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note the input shape is the desired size of the image 150x150 with 3 bytes color</span></span>
+<span id="cb21-180"><a href="#cb21-180" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This is the first convolution</span></span>
+<span id="cb21-181"><a href="#cb21-181" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>, input_shape<span class="op">=</span>(<span class="dv">150</span>, <span class="dv">150</span>, <span class="dv">3</span>)),</span>
+<span id="cb21-182"><a href="#cb21-182" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<span id="cb21-183"><a href="#cb21-183" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The second convolution</span></span>
+<span id="cb21-184"><a href="#cb21-184" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">64</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-185"><a href="#cb21-185" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb21-186"><a href="#cb21-186" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The third convolution</span></span>
+<span id="cb21-187"><a href="#cb21-187" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">128</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-188"><a href="#cb21-188" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb21-189"><a href="#cb21-189" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The fourth convolution</span></span>
+<span id="cb21-190"><a href="#cb21-190" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Conv2D(<span class="dv">128</span>, (<span class="dv">3</span>,<span class="dv">3</span>), activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-191"><a href="#cb21-191" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.MaxPooling2D(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb21-192"><a href="#cb21-192" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Flatten the results to feed into a DNN</span></span>
+<span id="cb21-193"><a href="#cb21-193" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Flatten(),</span>
+<span id="cb21-194"><a href="#cb21-194" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dropout(<span class="fl">0.5</span>),</span>
+<span id="cb21-195"><a href="#cb21-195" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 512 neuron hidden layer</span></span>
+<span id="cb21-196"><a href="#cb21-196" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">512</span>, activation<span class="op">=</span><span class="st">'relu'</span>),</span>
+<span id="cb21-197"><a href="#cb21-197" aria-hidden="true" tabindex="-1"></a>    tf.keras.layers.Dense(<span class="dv">3</span>, activation<span class="op">=</span><span class="st">'softmax'</span>)</span>
+<span id="cb21-198"><a href="#cb21-198" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb21-199"><a href="#cb21-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-200"><a href="#cb21-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-203"><a href="#cb21-203" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-204"><a href="#cb21-204" aria-hidden="true" tabindex="-1"></a>model.summary()</span>
+<span id="cb21-205"><a href="#cb21-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-206"><a href="#cb21-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-207"><a href="#cb21-207" aria-hidden="true" tabindex="-1"></a><span class="fu"># complie model</span></span>
+<span id="cb21-208"><a href="#cb21-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-211"><a href="#cb21-211" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-212"><a href="#cb21-212" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss <span class="op">=</span> <span class="st">'categorical_crossentropy'</span>, optimizer<span class="op">=</span><span class="st">'rmsprop'</span>, metrics<span class="op">=</span>[<span class="st">'accuracy'</span>])</span>
+<span id="cb21-213"><a href="#cb21-213" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-214"><a href="#cb21-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-215"><a href="#cb21-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-216"><a href="#cb21-216" aria-hidden="true" tabindex="-1"></a><span class="fu"># Callbacks</span></span>
+<span id="cb21-217"><a href="#cb21-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-220"><a href="#cb21-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-221"><a href="#cb21-221" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> myCallback(tf.keras.callbacks.Callback):</span>
+<span id="cb21-222"><a href="#cb21-222" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> on_epoch_end(<span class="va">self</span>, epoch, logs<span class="op">=</span>{}):</span>
+<span id="cb21-223"><a href="#cb21-223" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(logs.get(<span class="st">'accuracy'</span>)<span class="op">&gt;</span><span class="fl">0.95</span>):</span>
+<span id="cb21-224"><a href="#cb21-224" aria-hidden="true" tabindex="-1"></a>      <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Reached 95% accuracy so cancelling training!"</span>)</span>
+<span id="cb21-225"><a href="#cb21-225" aria-hidden="true" tabindex="-1"></a>      <span class="va">self</span>.model.stop_training <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb21-226"><a href="#cb21-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-227"><a href="#cb21-227" aria-hidden="true" tabindex="-1"></a><span class="co"># Instantiate class</span></span>
+<span id="cb21-228"><a href="#cb21-228" aria-hidden="true" tabindex="-1"></a>callbacks <span class="op">=</span> myCallback()</span>
+<span id="cb21-229"><a href="#cb21-229" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-230"><a href="#cb21-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-231"><a href="#cb21-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-232"><a href="#cb21-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-233"><a href="#cb21-233" aria-hidden="true" tabindex="-1"></a><span class="fu"># train model</span></span>
+<span id="cb21-234"><a href="#cb21-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-235"><a href="#cb21-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-238"><a href="#cb21-238" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-239"><a href="#cb21-239" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
+<span id="cb21-240"><a href="#cb21-240" aria-hidden="true" tabindex="-1"></a>      train_generator,</span>
+<span id="cb21-241"><a href="#cb21-241" aria-hidden="true" tabindex="-1"></a>      <span class="co">#steps_per_epoch=100,  # 2000 images = batch_size * steps</span></span>
+<span id="cb21-242"><a href="#cb21-242" aria-hidden="true" tabindex="-1"></a>      epochs<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb21-243"><a href="#cb21-243" aria-hidden="true" tabindex="-1"></a>      validation_data<span class="op">=</span>validation_generator,</span>
+<span id="cb21-244"><a href="#cb21-244" aria-hidden="true" tabindex="-1"></a>      <span class="co">#validation_steps=50,  # 1000 images = batch_size * steps</span></span>
+<span id="cb21-245"><a href="#cb21-245" aria-hidden="true" tabindex="-1"></a>      verbose<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb21-246"><a href="#cb21-246" aria-hidden="true" tabindex="-1"></a>      callbacks<span class="op">=</span>[callbacks]</span>
+<span id="cb21-247"><a href="#cb21-247" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb21-248"><a href="#cb21-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-249"><a href="#cb21-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-250"><a href="#cb21-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-251"><a href="#cb21-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-252"><a href="#cb21-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-253"><a href="#cb21-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-256"><a href="#cb21-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-257"><a href="#cb21-257" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> history.history[<span class="st">'accuracy'</span>]</span>
+<span id="cb21-258"><a href="#cb21-258" aria-hidden="true" tabindex="-1"></a>val_acc <span class="op">=</span> history.history[<span class="st">'val_accuracy'</span>]</span>
+<span id="cb21-259"><a href="#cb21-259" aria-hidden="true" tabindex="-1"></a>loss <span class="op">=</span> history.history[<span class="st">'loss'</span>]</span>
+<span id="cb21-260"><a href="#cb21-260" aria-hidden="true" tabindex="-1"></a>val_loss <span class="op">=</span> history.history[<span class="st">'val_loss'</span>]</span>
+<span id="cb21-261"><a href="#cb21-261" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="bu">range</span>(<span class="bu">len</span>(acc))</span>
+<span id="cb21-262"><a href="#cb21-262" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-263"><a href="#cb21-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-264"><a href="#cb21-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-265"><a href="#cb21-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-266"><a href="#cb21-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-269"><a href="#cb21-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb21-270"><a href="#cb21-270" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.image <span class="im">as</span> mpimg</span>
+<span id="cb21-271"><a href="#cb21-271" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb21-272"><a href="#cb21-272" aria-hidden="true" tabindex="-1"></a><span class="co">#------------------------------------------------</span></span>
+<span id="cb21-273"><a href="#cb21-273" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot training and validation accuracy per epoch</span></span>
+<span id="cb21-274"><a href="#cb21-274" aria-hidden="true" tabindex="-1"></a><span class="co">#------------------------------------------------</span></span>
+<span id="cb21-275"><a href="#cb21-275" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, acc, <span class="st">'r'</span>, label<span class="op">=</span><span class="st">'Training accuracy'</span>)</span>
+<span id="cb21-276"><a href="#cb21-276" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, val_acc, <span class="st">'b'</span>, label<span class="op">=</span><span class="st">'Validation accuracy'</span>)</span>
+<span id="cb21-277"><a href="#cb21-277" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Training and validation accuracy'</span>)</span>
+<span id="cb21-278"><a href="#cb21-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-279"><a href="#cb21-279" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb21-280"><a href="#cb21-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-281"><a href="#cb21-281" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, loss, <span class="st">'r'</span>, label<span class="op">=</span><span class="st">'Training Loss'</span>)</span>
+<span id="cb21-282"><a href="#cb21-282" aria-hidden="true" tabindex="-1"></a>plt.plot(epochs, val_loss, <span class="st">'b'</span>, label<span class="op">=</span><span class="st">'Validation Loss'</span>)</span>
+<span id="cb21-283"><a href="#cb21-283" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Training and validation loss'</span>)</span>
+<span id="cb21-284"><a href="#cb21-284" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb21-285"><a href="#cb21-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-286"><a href="#cb21-286" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb21-287"><a href="#cb21-287" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb21-288"><a href="#cb21-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-289"><a href="#cb21-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-290"><a href="#cb21-290" aria-hidden="true" tabindex="-1"></a><span class="fu"># resource:</span></span>
+<span id="cb21-291"><a href="#cb21-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-292"><a href="#cb21-292" aria-hidden="true" tabindex="-1"></a>https://coursera.org/learn/convolutional-neural-networks-tensorflow/home/</span>
+<span id="cb21-293"><a href="#cb21-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-294"><a href="#cb21-294" aria-hidden="true" tabindex="-1"></a>https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C2</span>
+<span id="cb21-295"><a href="#cb21-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-296"><a href="#cb21-296" aria-hidden="true" tabindex="-1"></a>https://www.kaggle.com/c/dogs-vs-cats</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This website is built with ❤️ and <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

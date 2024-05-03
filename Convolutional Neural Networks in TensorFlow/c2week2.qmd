@@ -1,0 +1,355 @@
+---
+title: "W2:Augmentation: A technique to avoid overfitting"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+ 
+Week 2 Augmentation: A technique to avoid overfitting
+
+You've heard the term overfitting a number of times to this point. Overfitting is simply the concept of being over specialized in training -- namely that your model is very good at classifying what it is trained for, but not so good at classifying things that it hasn't seen. In order to generalize your model more effectively, you will of course need a greater breadth of samples to train it on. That's not always possible, but a nice potential shortcut to this is Image Augmentation, where you tweak the training set to potentially increase the diversity of subjects it covers. You'll learn all about that this week!
+
+
+
+```{python}
+import os
+import zipfile
+import random
+import shutil
+import tensorflow as tf
+from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from shutil import copyfile
+from os import getcwd
+```
+
+
+
+
+# download data
+
+## download big cats-and-dogs.zip and we will random split into training and validation folder 
+
+
+```{python}
+os. getcwd()
+```
+
+
+```{python}
+import os
+if not os.path.exists('tmp'):
+    os.makedirs('tmp')
+```
+
+
+```{python}
+#| eval: false
+import urllib.request
+urllib.request.urlretrieve("https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip", "./tmp/cats-and-dogs.zip")
+```
+
+```{python}
+#| eval: false
+import zipfile
+
+local_zip = './tmp/cats-and-dogs.zip'
+zip_ref   = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('./tmp')
+zip_ref.close()
+```
+
+
+```{python}
+#| eval: false
+os.remove('./tmp/cats-and-dogs.zip')
+```
+
+```{python}
+#| eval: false
+os.listdir('./tmp/PetImages')
+```
+
+
+
+```{python}
+#| eval: false
+# grader-required-cell
+
+source_path = '/tmp/PetImages'
+
+source_path_dogs = os.path.join(source_path, 'Dog')
+source_path_cats = os.path.join(source_path, 'Cat')
+
+
+# os.listdir returns a list containing all files under the given path
+print(f"There are {len(os.listdir(source_path_dogs))} images of dogs.")
+print(f"There are {len(os.listdir(source_path_cats))} images of cats.")
+```
+
+```{python}
+#| eval: false
+if not os.path.exists('./tmp/cats-v-dogs'):
+  os.mkdir('./tmp/cats-v-dogs')
+  
+if not os.path.exists('./tmp/cats-v-dogs/training'):
+  os.mkdir('./tmp/cats-v-dogs/training')
+  
+if not os.path.exists('./tmp/cats-v-dogs/testing'): 
+  os.mkdir('./tmp/cats-v-dogs/testing')
+
+if not os.path.exists('./tmp/cats-v-dogs/training/cats'):
+  os.mkdir('./tmp/cats-v-dogs/training/cats')
+
+if not os.path.exists('./tmp/cats-v-dogs/training/dogs'):
+  os.mkdir('./tmp/cats-v-dogs/training/dogs')
+
+if not os.path.exists('./tmp/cats-v-dogs/testing/cats'):
+  os.mkdir('./tmp/cats-v-dogs/testing/cats')
+
+if not os.path.exists('./tmp/cats-v-dogs/testing/dogs'):
+  os.mkdir('./tmp/cats-v-dogs/testing/dogs')
+```
+
+
+```{python}
+
+def split_data(SOURCE, TRAINING, TESTING, SPLIT_SIZE):
+# YOUR CODE STARTS HERE
+    all_files = []
+    
+    for file_name in os.listdir(SOURCE):
+        file_path = SOURCE + file_name
+
+        if os.path.getsize(file_path):
+            all_files.append(file_name)
+        else:
+            print('{} is zero length, so ignoring'.format(file_name))
+    
+    n_files = len(all_files)
+    split_point = int(n_files * SPLIT_SIZE)
+    
+    shuffled = random.sample(all_files, n_files)
+    
+    train_set = shuffled[:split_point]
+    test_set = shuffled[split_point:]
+    
+    for file_name in train_set:
+        copyfile(SOURCE + file_name, TRAINING + file_name)
+        
+    for file_name in test_set:
+        copyfile(SOURCE + file_name, TESTING + file_name)
+
+```
+
+```{python}
+split_size = .9
+CAT_SOURCE_DIR = "./tmp/PetImages/Cat/"
+TRAINING_CATS_DIR = "./tmp/cats-v-dogs/training/cats/"
+TESTING_CATS_DIR = "./tmp/cats-v-dogs/testing/cats/"
+DOG_SOURCE_DIR = "./tmp/PetImages/Dog/"
+TRAINING_DOGS_DIR = "./tmp/cats-v-dogs/training/dogs/"
+TESTING_DOGS_DIR = "./tmp/cats-v-dogs/testing/dogs/"
+```
+
+```{python}
+#| eval: false
+split_data(CAT_SOURCE_DIR, TRAINING_CATS_DIR, TESTING_CATS_DIR, split_size)
+split_data(DOG_SOURCE_DIR, TRAINING_DOGS_DIR, TESTING_DOGS_DIR, split_size)
+```
+
+
+
+```{python}
+print(len(os.listdir('./tmp/cats-v-dogs/training/cats/')))
+print(len(os.listdir('./tmp/cats-v-dogs/training/dogs/')))
+print(len(os.listdir('./tmp/cats-v-dogs/testing/cats/')))
+print(len(os.listdir('./tmp/cats-v-dogs/testing/dogs/')))
+```
+```{python}
+from PIL import Image
+
+im = Image.open('./tmp/cats-v-dogs/training/cats/11.jpg')
+im.size # (width,height) 
+```
+
+# Load the data
+
+
+```{python}
+train_dir='./tmp/cats-v-dogs/training/'
+validation_dir='./tmp/cats-v-dogs/testing/'
+
+```
+
+ImageDataGenerator: All images will be resized to 150x150 and do augmentation to aviod over fiting
+
+```{python}
+train_datagen = ImageDataGenerator(
+      rescale=1./255,
+      rotation_range=40,
+      width_shift_range=0.2,
+      height_shift_range=0.2,
+      shear_range=0.2,
+      zoom_range=0.2,
+      horizontal_flip=True,
+      fill_mode='nearest')
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+```
+
+
+
+```{python}
+# Flow training images in batches of 20 using train_datagen generator
+train_generator = train_datagen.flow_from_directory(
+        train_dir,  # This is the source directory for training images
+        target_size=(150, 150),  # All images will be resized to 150x150
+        batch_size=20,
+        # Since we use binary_crossentropy loss, we need binary labels
+        class_mode='binary')
+
+# Flow validation images in batches of 20 using test_datagen generator
+validation_generator = test_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(150, 150),
+        batch_size=20,
+        class_mode='binary')
+```
+
+```{python}
+import tensorflow as tf
+
+# Build the model
+model = tf.keras.models.Sequential([
+    # Note the input shape is the desired size of the image 300x300 with 3 bytes color
+    # This is the first convolution
+    tf.keras.layers.Conv2D(16, (3,3), activation='relu', input_shape=(150, 150, 3)),
+    tf.keras.layers.MaxPooling2D(2, 2),
+    # The second convolution
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The third convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The fourth convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # The fifth convolution
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    # Flatten the results to feed into a DNN
+    tf.keras.layers.Flatten(),
+    # 512 neuron hidden layer
+    tf.keras.layers.Dense(512, activation='relu'),
+    # Only 1 output neuron. It will contain a value from 0-1 where 0 for 1 class ('horses') and 1 for the other ('humans')
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+```
+
+```{python}
+model.summary()
+```
+
+# compile model
+
+```{python}
+# v2.11+ optimizer `tf.keras.optimizers.RMSprop` runs slowly on M1/M2 Macs
+from tensorflow.keras.optimizers import RMSprop
+
+model.compile(loss='binary_crossentropy',
+              optimizer=RMSprop(learning_rate=0.001),
+              metrics=['accuracy'])
+```
+
+
+# Callbacks
+
+```{python}
+class myCallback(tf.keras.callbacks.Callback):
+  def on_epoch_end(self, epoch, logs={}):
+    '''
+    Halts the training when the loss falls below 0.1
+
+    Args:
+      epoch (integer) - index of epoch (required but unused in the function definition below)
+      logs (dict) - metric results from the training epoch
+    '''
+
+    # Check the loss
+    if(logs.get('loss') < 0.1):
+
+      # Stop if threshold is met
+      print("\nLoss is lower than 0.2 so cancelling training!")
+      print("cancelling training with:")
+      print(epoch+1)
+      self.model.stop_training = True
+
+# Instantiate class
+callbacks = myCallback()
+```
+
+```{python}
+# Train the new model with augmentation
+history = model.fit(
+      train_generator,
+      steps_per_epoch=100,  # 2000 images = batch_size * steps
+      epochs=10,
+      validation_data=validation_generator,
+      validation_steps=50,  # 1000 images = batch_size * steps
+      verbose=1,
+      callbacks=[callbacks]
+      )
+```
+
+# training result
+```{python}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(acc))
+```
+
+```{python}
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+#------------------------------------------------
+# Plot training and validation accuracy per epoch
+#------------------------------------------------
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+
+plt.figure()
+
+plt.plot(epochs, loss, 'r', label='Training Loss')
+plt.plot(epochs, val_loss, 'b', label='Validation Loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+```
+
+
+
+# resource:
+
+https://coursera.org/learn/convolutional-neural-networks-tensorflow/home/
+
+https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C2
+
+https://www.kaggle.com/c/dogs-vs-cats
+
+

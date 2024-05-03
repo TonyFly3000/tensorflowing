@@ -1,0 +1,12 @@
+{
+  "hash": "85085f77013647b7af1046284310a18e",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"W1:Sequences and Prediction\"\nexecute:\n  warning: false\n  error: false\nformat:\n  html:\n    toc: true\n    toc-location: right\n    code-fold: show\n    code-tools: true\n    number-sections: true\n    code-block-bg: true\n    code-block-border-left: \"#31BAE9\"\n---\n\nWeek 1 Sequences and Prediction\n\nHi Learners and welcome to this course on sequences and prediction! In this course we'll take a look at some of the unique considerations involved when handling sequential time series data -- where values change over time, like the temperature on a particular day, or the number of visitors to your web site. We'll discuss various methodologies for predicting future values in these time series, building on what you've learned in previous courses!\n\nwhat exactly is a time series?\n\nIt's typically defined as an ordered sequence of values that are usually equally spaced over time\n\n::: {#fe4dc7bf .cell execution_count=1}\n``` {.python .cell-code}\nimport matplotlib.pyplot as plt\nimport numpy as np\n```\n:::\n\n\n# Fixed partitioning\n\n![](images/clipboard-3451250041.png){width=\"400\"}\n\n# Roll forward partitioning\n\n![](images/clipboard-1393300349.png){width=\"400\"}\n\n![](images/clipboard-3633449115.png){width=\"400\"}\n\n# resource:\n\nhttps://www.coursera.org/learn/tensorflow-sequences-time-series-and-prediction\n\nhttps://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C4\n\n",
+    "supporting": [
+      "c4week1_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

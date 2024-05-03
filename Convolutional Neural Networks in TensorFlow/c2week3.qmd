@@ -1,0 +1,386 @@
+---
+title: "W3:Transfer learning"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+
+Week3 Transfer Learning
+
+
+Building models for yourself is great, and can be very powerful. But, as you've seen, you can be limited by the data you have on hand. Not everybody has access to massive datasets or the compute power that's needed to train them effectively. Transfer learning can help solve this -- where people with models trained on large datasets train them, so that you can either use them directly, or, you can use the features that they have learned and apply them to your scenario. This is Transfer learning, and you'll look into that this week!
+
+
+
+```{python}
+import os
+import zipfile
+import random
+import shutil
+import tensorflow as tf
+from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from shutil import copyfile
+from os import getcwd
+```
+
+![](images/31.png)
+
+![](images/32.png)
+
+# download data
+
+## download big cats-and-dogs.zip and we will random split into training and validation folder
+
+```{python}
+#| eval: false
+os. getcwd()
+```
+
+```{python}
+#| eval: false
+import os
+if not os.path.exists('tmp'):
+    os.makedirs('tmp')
+```
+
+```{python}
+#| eval: false
+import urllib.request
+urllib.request.urlretrieve("https://download.microsoft.com/download/3/E/1/3E1C3F21-ECDB-4869-8368-6DEBA77B919F/kagglecatsanddogs_5340.zip", "./tmp/cats-and-dogs.zip")
+```
+
+```{python}
+#| eval: false
+import zipfile
+
+local_zip = './tmp/cats-and-dogs.zip'
+zip_ref   = zipfile.ZipFile(local_zip, 'r')
+zip_ref.extractall('./tmp')
+zip_ref.close()
+```
+
+# download model Download the inception v3 weights
+
+```{python}
+#| eval: false
+import urllib.request
+urllib.request.urlretrieve("https://storage.googleapis.com/mledu-datasets/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5", "./tmp/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5")
+```
+
+```{python}
+#| eval: false
+os.remove('./tmp/cats-and-dogs.zip')
+```
+
+```{python}
+#| eval: false
+os.listdir('./tmp/PetImages')
+```
+
+```{python}
+#| eval: false
+
+source_path = '/tmp/PetImages'
+
+source_path_dogs = os.path.join(source_path, 'Dog')
+source_path_cats = os.path.join(source_path, 'Cat')
+
+
+# os.listdir returns a list containing all files under the given path
+print(f"There are {len(os.listdir(source_path_dogs))} images of dogs.")
+print(f"There are {len(os.listdir(source_path_cats))} images of cats.")
+```
+
+```{python}
+#| eval: false
+if not os.path.exists('./tmp/cats-v-dogs'):
+  os.mkdir('./tmp/cats-v-dogs')
+  
+if not os.path.exists('./tmp/cats-v-dogs/training'):
+  os.mkdir('./tmp/cats-v-dogs/training')
+  
+if not os.path.exists('./tmp/cats-v-dogs/testing'): 
+  os.mkdir('./tmp/cats-v-dogs/testing')
+
+if not os.path.exists('./tmp/cats-v-dogs/training/cats'):
+  os.mkdir('./tmp/cats-v-dogs/training/cats')
+
+if not os.path.exists('./tmp/cats-v-dogs/training/dogs'):
+  os.mkdir('./tmp/cats-v-dogs/training/dogs')
+
+if not os.path.exists('./tmp/cats-v-dogs/testing/cats'):
+  os.mkdir('./tmp/cats-v-dogs/testing/cats')
+
+if not os.path.exists('./tmp/cats-v-dogs/testing/dogs'):
+  os.mkdir('./tmp/cats-v-dogs/testing/dogs')
+```
+
+```{python}
+#| eval: false
+def split_data(SOURCE, TRAINING, TESTING, SPLIT_SIZE):
+# YOUR CODE STARTS HERE
+    all_files = []
+    
+    for file_name in os.listdir(SOURCE):
+        file_path = SOURCE + file_name
+
+        if os.path.getsize(file_path):
+            all_files.append(file_name)
+        else:
+            print('{} is zero length, so ignoring'.format(file_name))
+    
+    n_files = len(all_files)
+    split_point = int(n_files * SPLIT_SIZE)
+    
+    shuffled = random.sample(all_files, n_files)
+    
+    train_set = shuffled[:split_point]
+    test_set = shuffled[split_point:]
+    
+    for file_name in train_set:
+        copyfile(SOURCE + file_name, TRAINING + file_name)
+        
+    for file_name in test_set:
+        copyfile(SOURCE + file_name, TESTING + file_name)
+
+```
+
+```{python}
+#| eval: false
+split_size = .9
+CAT_SOURCE_DIR = "./tmp/PetImages/Cat/"
+TRAINING_CATS_DIR = "./tmp/cats-v-dogs/training/cats/"
+TESTING_CATS_DIR = "./tmp/cats-v-dogs/testing/cats/"
+DOG_SOURCE_DIR = "./tmp/PetImages/Dog/"
+TRAINING_DOGS_DIR = "./tmp/cats-v-dogs/training/dogs/"
+TESTING_DOGS_DIR = "./tmp/cats-v-dogs/testing/dogs/"
+```
+
+```{python}
+#| eval: false
+split_data(CAT_SOURCE_DIR, TRAINING_CATS_DIR, TESTING_CATS_DIR, split_size)
+split_data(DOG_SOURCE_DIR, TRAINING_DOGS_DIR, TESTING_DOGS_DIR, split_size)
+```
+
+```{python}
+#| eval: false
+print(len(os.listdir('./tmp/cats-v-dogs/training/cats/')))
+print(len(os.listdir('./tmp/cats-v-dogs/training/dogs/')))
+print(len(os.listdir('./tmp/cats-v-dogs/testing/cats/')))
+print(len(os.listdir('./tmp/cats-v-dogs/testing/dogs/')))
+```
+
+```{python}
+#| eval: false
+from PIL import Image
+
+im = Image.open('./tmp/cats-v-dogs/training/cats/11.jpg')
+im.size # (width,height) 
+```
+
+# Load the data
+
+```{python}
+train_dir='./tmp/cats-v-dogs/training/'
+validation_dir='./tmp/cats-v-dogs/testing/'
+
+```
+
+ImageDataGenerator: All images will be resized to 150x150 and do augmentation to aviod over fiting
+
+```{python}
+train_datagen = ImageDataGenerator(
+      rescale=1./255,
+      rotation_range=40,
+      width_shift_range=0.2,
+      height_shift_range=0.2,
+      shear_range=0.2,
+      zoom_range=0.2,
+      horizontal_flip=True,
+      fill_mode='nearest')
+
+test_datagen = ImageDataGenerator(rescale=1./255)
+```
+
+```{python}
+# Flow training images in batches of 20 using train_datagen generator
+train_generator = train_datagen.flow_from_directory(
+        train_dir,  # This is the source directory for training images
+        target_size=(150, 150),  # All images will be resized to 150x150
+        batch_size=20,
+        # Since we use binary_crossentropy loss, we need binary labels
+        class_mode='binary')
+
+# Flow validation images in batches of 20 using test_datagen generator
+validation_generator = test_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(150, 150),
+        batch_size=20,
+        class_mode='binary')
+```
+
+# pre_trained_model
+
+```{python}
+# Import the inception model  
+from tensorflow.keras.applications.inception_v3 import InceptionV3
+
+# Create an instance of the inception model from the local pre-trained weights
+local_weights_file = './tmp/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5'
+```
+
+```{python}
+pre_trained_model = InceptionV3(input_shape = (150, 150, 3),
+                                  include_top = False, 
+                                  weights = None) 
+
+
+pre_trained_model.load_weights(local_weights_file)
+
+# Make all the layers in the pre-trained model non-trainable
+for layer in pre_trained_model.layers:
+  layer.trainable = False
+
+
+```
+
+```{python}
+#pre_trained_model.summary()
+```
+
+```{python}
+total_params = pre_trained_model.count_params()
+num_trainable_params = sum([w.shape.num_elements() for w in pre_trained_model.trainable_weights])
+
+print(f"There are {total_params:,} total parameters in this model.")
+print(f"There are {num_trainable_params:,} trainable parameters in this model.")
+```
+
+```{python}
+# Choose `mixed_7` as the last layer of your base model and not using layer after mixed7
+last_layer = pre_trained_model.get_layer('mixed7')
+#print('last layer output shape: ', last_layer.output_shape)
+last_output = last_layer.output
+```
+
+# base model
+
+![](images/33.png){width="457"}
+
+add Dropout to improve over fitting issue.
+
+```{python}
+from tensorflow.keras import layers
+x = layers.Flatten()(last_output)
+ # Add a fully connected layer with 1024 hidden units and ReLU activation
+x = layers.Dense(1024, activation='relu')(x)
+  # Add a dropout rate of 0.2
+x = layers.Dropout(0.2)(x)  
+  # Add a final sigmoid layer for classification
+x = layers.Dense(1, activation='sigmoid')(x) 
+```
+
+final model
+
+```{python}
+
+# Append the dense network to the base model
+from tensorflow.keras import Model
+model = Model(pre_trained_model.input, x) 
+
+# Print the model summary. See your dense network connected at the end.
+#model.summary()
+```
+
+# compile model
+
+```{python}
+# v2.11+ optimizer `tf.keras.optimizers.RMSprop` runs slowly on M1/M2 Macs
+from tensorflow.keras.optimizers import RMSprop
+
+#from tensorflow.keras.optimizers.legacy import RMSprop
+
+
+model.compile(loss='binary_crossentropy',
+              optimizer=RMSprop(learning_rate=0.001),
+              metrics=['accuracy'])
+```
+
+# Callbacks
+
+```{python}
+
+class myCallback(tf.keras.callbacks.Callback):
+  def on_epoch_end(self, epoch, logs={}):
+    if(logs.get('accuracy')>0.95):
+      print("\nReached 95% accuracy so cancelling training!")
+      self.model.stop_training = True
+
+# Instantiate class
+callbacks = myCallback()
+```
+
+```{python}
+# Train the new model with augmentation
+history = model.fit(
+      train_generator,
+      steps_per_epoch=100,  # 2000 images = batch_size * steps
+      epochs=10,
+      validation_data=validation_generator,
+      validation_steps=50,  # 1000 images = batch_size * steps
+      callbacks=[callbacks]
+      )
+```
+
+# training result
+
+```{python}
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(acc))
+```
+
+
+```{python}
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
+#------------------------------------------------
+# Plot training and validation accuracy per epoch
+#------------------------------------------------
+plt.plot(epochs, acc, 'r', label='Training accuracy')
+plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
+plt.title('Training and validation accuracy')
+
+plt.figure()
+
+plt.plot(epochs, loss, 'r', label='Training Loss')
+plt.plot(epochs, val_loss, 'b', label='Validation Loss')
+plt.title('Training and validation loss')
+plt.legend()
+
+plt.show()
+```
+
+
+
+# resource:
+
+https://coursera.org/learn/convolutional-neural-networks-tensorflow/home/
+
+https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C2
+
+https://www.kaggle.com/c/dogs-vs-cats

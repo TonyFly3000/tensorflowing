@@ -1,0 +1,68 @@
+---
+title: "W1:A New Programming Paradigm"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+
+Week1 A New Programming Paradigm
+
+Welcome to this course on going from Basics to Mastery of TensorFlow. We're excited you're here! In week 1 you'll get a soft introduction to what Machine Learning and Deep Learning are, and how they offer you a new programming paradigm, giving you a new set of tools to open previously unexplored scenarios. All you need to know is some very basic programming skills, and you'll pick the rest up as you go along.
+
+You'll be working with code that works well across both TensorFlow 1.x and the TensorFlow 2.0 alpha. To get started, check out the first video, a conversation between Andrew and Laurence that sets the theme for what you'll study...
+
+
+
+by Laurence Moroney
+
+![](images/2-01.png){width="365"}
+
+```{python}
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
+
+print(tf.__version__)
+```
+
+```{python}
+# Build a simple Sequential model
+model = tf.keras.Sequential([keras.layers.Dense(units=1, input_shape=[1])])
+```
+
+```{python}
+# Compile the model
+model.compile(optimizer='sgd', loss='mean_squared_error')
+```
+
+```{python}
+# Declare model inputs and outputs for training
+xs = np.array([-1.0,  0.0, 1.0, 2.0, 3.0, 4.0], dtype=float)
+ys = np.array([-3.0, -1.0, 1.0, 3.0, 5.0, 7.0], dtype=float)
+```
+
+```{python}
+# Train the model
+model.fit(xs, ys, epochs=500,verbose=0)
+```
+
+```{python}
+# Make a prediction
+print(model.predict(x=np.array([10.0])))
+```
+
+# resource:
+
+https://www.coursera.org/learn/introduction-tensorflow/home/info
+
+https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C1

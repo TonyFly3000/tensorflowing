@@ -1,0 +1,45 @@
+---
+title: "install pacakge"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+
+#  package
+
+```{r}
+#| eval: false
+
+install.packages('tidyverse')
+install.packages('tidymodels')
+```
+
+# package version
+
+```{r}
+print("tidyverse:")
+packageVersion("tidyverse")
+
+print("tidymodels:")
+packageVersion("tidymodels")
+```
+```{r}
+library(tidyverse)
+tidyverse_packages()
+```
+
+```{r}
+library(tidymodels)
+tidymodels_packages()
+```
+

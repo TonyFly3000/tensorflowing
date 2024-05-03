@@ -1,0 +1,12 @@
+{
+  "hash": "493322a3fc883e0f5a5566bd75638895",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"install tensorflow\"\nexecute:\n  warning: false\n  error: false\nformat:\n  html:\n    toc: true\n    toc-location: right\n    code-fold: show\n    code-tools: true\n    number-sections: true\n    code-block-bg: true\n    code-block-border-left: \"#31BAE9\"\n---\n\ninstall tensorflow in terminal:\n\n::: {#932655f4 .cell execution_count=1}\n``` {.python .cell-code}\nimport os\nos.system('pip install tensorflow')\n\nos.system('pip install numpy  --upgrade')\nos.system('pip install pandas  --upgrade')\nos.system('pip install matplotlib  --upgrade')\nos.system('pip install scikit-learn  --upgrade')\nos.system('pip install scipy  --upgrade')\nos.system('pip install plotly  --upgrade')\n```\n:::\n\n\n::: {#2f07788b .cell execution_count=2}\n``` {.python .cell-code}\nimport sys\n#import tensorflow.keras\nimport keras\nimport pandas as pd\nimport sklearn as sk\nimport scipy as sp\nimport tensorflow as tf\nimport platform\n\nprint(\"Python Platform:\")\nprint({platform.platform()})\nprint(\"\")\n\nprint(\"Tensor Flow Version: \")\nprint({tf.__version__})\nprint(\"\")\n\nprint(\"Keras Version: \")\nprint({keras.__version__})\nprint(\"\")\n\nprint(\"Python:\")\nprint({sys.version})\nprint(\"\")\n\nprint(\"Pandas:\")\nprint({pd.__version__})\nprint(\"\")\n\nprint(\"Scikit-Learn:\")\nprint({sk.__version__})\nprint(\"\")\n\nprint(\"SciPy:\")\nprint({sp.__version__})\nprint(\"\")\n\ngpu = len(tf.config.list_physical_devices('GPU'))>0\nprint(\"GPU is\", \"available\" if gpu else \"NOT AVAILABLE\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nPython Platform:\n{'macOS-14.1.1-arm64-arm-64bit'}\n\nTensor Flow Version: \n{'2.16.1'}\n\nKeras Version: \n{'3.1.1'}\n\nPython:\n{'3.11.4 (v3.11.4:d2340ef257, Jun  6 2023, 19:15:51) [Clang 13.0.0 (clang-1300.0.29.30)]'}\n\nPandas:\n{'2.2.1'}\n\nScikit-Learn:\n{'1.4.1.post1'}\n\nSciPy:\n{'1.12.0'}\n\nGPU is NOT AVAILABLE\n```\n:::\n:::\n\n\n",
+    "supporting": [
+      "install tensorflow_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

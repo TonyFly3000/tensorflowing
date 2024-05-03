@@ -1,0 +1,197 @@
+---
+title: "W1:Sentiment in text"
+execute:
+  warning: false
+  error: false
+format:
+  html:
+    toc: true
+    toc-location: right
+    code-fold: show
+    code-tools: true
+    number-sections: true
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+---
+
+
+Week 1 Sentiment in text
+
+The first step in understanding sentiment in text, and in particular when training a neural network to do so is the tokenization of that text. This is the process of converting the text into numeric values, with a number representing a word or a character. This week you'll learn about the Tokenizer and pad_sequences APIs in TensorFlow and how they can be used to prepare and encode text and sentences to get them ready for training neural networks!
+
+# word based encodings,Using API to  make words into numbers.
+
+![](images/1.png){width="424"}
+
+```{python}
+from tensorflow.keras.preprocessing.text import Tokenizer
+
+# Define input sentences
+sentences = [
+    'i love my dog',
+    'I, love my cat'
+    ]
+
+# Initialize the Tokenizer class only encode max 100 words
+tokenizer = Tokenizer(num_words = 100)
+
+# Generate indices for each word in the corpus
+tokenizer.fit_on_texts(sentences)
+
+# Get the indices and print it (dictionary)
+word_index = tokenizer.word_index
+print(word_index)
+```
+
+# add Out-of-vocabulary tokens
+
+```{python}
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+# Define your input texts
+sentences = [
+    'I love my dog',
+    'I love my cat',
+    'You love my dog!',
+    'Do you think my dog is amazing?'
+]
+
+# Initialize the Tokenizer class,"<OOV>" make all not seen word into a number.
+tokenizer = Tokenizer(num_words = 100, oov_token="<OOV>")
+
+# Tokenize the input sentences
+tokenizer.fit_on_texts(sentences)
+
+# Get the word index dictionary
+word_index = tokenizer.word_index
+
+# Generate list of token sequences
+sequences = tokenizer.texts_to_sequences(sentences)
+
+# Print the result
+print("\nWord Index = " , word_index)
+print("\nSequences = " , sequences)
+```
+
+
+
+# padding
+
+```{python}
+test_data = [
+    'i really love my dog',
+    'my dog loves my manatee'
+]
+
+# Generate the sequences
+test_seq = tokenizer.texts_to_sequences(test_data)
+
+# Print the word index dictionary
+print("\nWord Index = " , word_index)
+
+# Print the sequences with OOV
+print("\nTest Sequence = ", test_seq)
+
+
+# maxlen to 10 words
+#padded = pad_sequences(test_seq, maxlen=10)
+
+# make 0 at the end
+padded = pad_sequences(test_seq, padding='post')
+print("\nPadded Test Sequence: ")
+print(padded)
+```
+
+# download data
+
+```{python}
+import urllib.request
+urllib.request.urlretrieve("https://storage.googleapis.com/tensorflow-1-public/course3/sarcasm.json","sarcasm.json")
+```
+
+# read data
+```{python}
+import json
+
+# Load the JSON file
+with open("./sarcasm.json", 'r') as f:
+    datastore = json.load(f)
+```
+
+```{python}
+# Non-sarcastic headline
+print(datastore[0])
+
+# Sarcastic headline
+print(datastore[20000])
+```
+
+```{python}
+# Initialize lists
+sentences = [] 
+labels = []
+urls = []
+
+# Append elements in the dictionaries into each list
+for item in datastore:
+    sentences.append(item['headline'])
+    labels.append(item['is_sarcastic'])
+    urls.append(item['article_link'])
+```
+
+```{python}
+print(len(sentences))
+
+print(len(labels))
+```
+
+```{python}
+sentences[2]
+```
+
+```{python}
+labels[2]
+```
+
+26709 sentences and 40 is the longest word in a  sentences
+
+```{python}
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+# Initialize the Tokenizer class
+tokenizer = Tokenizer(oov_token="<OOV>")
+
+# Generate the word index dictionary
+tokenizer.fit_on_texts(sentences)
+
+# Print the length of the word index
+word_index = tokenizer.word_index
+print(f'number of words in word_index: {len(word_index)}')
+
+# Print the word index
+#print(f'word_index: {word_index}')
+print()
+
+# Generate and pad the sequences
+sequences = tokenizer.texts_to_sequences(sentences)
+padded = pad_sequences(sequences, padding='post')
+
+# Print a sample headline
+index = 2
+print(f'sample headline: {sentences[index]}')
+print()
+
+print(f'padded sequence: {padded[index]}')
+print()
+
+# Print dimensions of padded sequences
+print(f'shape of padded sequences: {padded.shape}')
+```
+
+# resource:
+
+https://www.coursera.org/learn/natural-language-processing-tensorflow
+
+https://github.com/https-deeplearning-ai/tensorflow-1-public/tree/main/C3
